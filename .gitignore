@@ -3,3 +3,6 @@
 !*.*
 *.o
 *.exe
+*.cpp.gcov
+*.gcda
+*.gcno

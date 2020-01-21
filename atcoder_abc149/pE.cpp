@@ -2,7 +2,7 @@
 using namespace std;
 
 int main(){
-    int n, m, t;
+    int n, m;
     cin >> n >> m;
     int a[n];
     vector<int> r;
