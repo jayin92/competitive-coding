@@ -75,6 +75,8 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+// TODO: 線段樹優化建圖: https://hackmd.io/@jzKUzwplS0GLTYCx9tUgig/By9TXxe-U#/5
+int n, q, s;
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
