@@ -1,6 +1,13 @@
 {
     "files.associations": {
         "iostream": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "optional": "cpp",
+        "functional": "cpp",
+        "future": "cpp",
+        "iosfwd": "cpp",
+        "stdexcept": "cpp"
     }
 }
