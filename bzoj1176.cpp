@@ -27,7 +27,7 @@ typedef pair<double,double> pdd;
     _do(__VA_ARGS__);\
 }while(0)
 template<typename T>void _do(T &&_x){cerr<<_x<<endl;}
-template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<", ";_do(_t...);}
+template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<" ,";_do(_t...);}
 template<typename _a,typename _b> ostream& operator << (ostream &_s,const pair<_a,_b> &_p){return _s<<"("<<_p.X<<","<<_p.Y<<")";}
 template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
 {
@@ -79,6 +79,9 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
+    cin >> n >> q >> s;
+    
+
 
     return 0;
-}
+}       

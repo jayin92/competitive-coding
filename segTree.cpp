@@ -1,4 +1,4 @@
-// 利用線段樹解決區間求和
+// 利用線段樹解決區間求和 & 單點修改
 #include <bits/stdc++.h>
 
 using namespace std;

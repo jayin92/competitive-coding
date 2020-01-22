@@ -75,10 +75,77 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+struct Node{
+    int val, tag;
+    Node *lc, *rc;
+    Node(){
+        tag = val = 0;
+        lc = rc = nullptr;
+    }
+    void pull(){
+        val = lc -> val + rc -> val;
+    }
+};
+
+const int n = 5;
+int v[n+1] = {0, 1, 16, 2, 8, 4}; // input, 1-base
+
+Node* build(int L, int R){
+    Node *node = new Node();
+    if( L == R ){
+        node -> val = v[L];
+        return node;
+    }
+    int mid = (L + R) >> 1;
+    node -> lc = build(L, mid);
+    node -> rc = build(mid+1, R);
+    node -> pull();
+    return node;
+}
+
+void push(Node* node, int L, int R){
+    if(!node -> tag) return;
+    if(L != R){
+        int mid = ( L + R ) >> 1;
+        node -> lc -> tag += node -> tag;
+        node -> rc -> tag += node -> tag;
+        node -> lc -> val += node -> tag * (mid - L + 1); 
+        node -> rc -> val += node -> tag * ( R - mid ); 
+    }
+    node -> tag = 0;
+}
+
+void modify(Node* node, int L, int R, int ql, int qr, int d){
+    debug(L, R);
+    if(ql > R || qr < L) return;
+    if(ql <= L && R <= qr){
+        node -> tag += d;
+        node -> val += d * (R - L + 1);
+        return;
+    }
+    push(node, L, R);
+    int mid = (L + R) >> 1;
+    modify(node -> lc, L, mid, ql, qr, d);
+    modify(node -> rc, mid+1, R, ql, qr, d);
+    node -> pull();
+}
+
+int query(Node* node, int L, int R, int ql, int qr){
+    if(ql > R || qr < L) return 0;
+    if(ql <= L && R <= qr) return node -> val;
+    push(node, L, R);
+    int mid = (L + R) >> 1;
+    return query(node -> lc, L, mid, ql, qr) + query(node -> rc, mid + 1, R, ql, qr);
+}
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
+    Node* root = build(1, n);
+    // cout << query(root, 1, n, 1, 5) << endl;
+    modify(root, 1, n, 1, 4, 3);
+
+    // cout << query(root, 1, n, 3, 3) << endl;
 
     return 0;
 }
