@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#pragma GCC optimize("O3","unroll-loops")
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -20,14 +21,14 @@ typedef pair<double,double> pdd;
 #define eb emplace_back
 #define X first
 #define Y second
-#ifdef jayinnn
+#ifdef tmd
 #define TIME(i) Timer i(#i)
 #define debug(...) do{\
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
     _do(__VA_ARGS__);\
 }while(0)
 template<typename T>void _do(T &&_x){cerr<<_x<<endl;}
-template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<", ";_do(_t...);}
+template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<" ,";_do(_t...);}
 template<typename _a,typename _b> ostream& operator << (ostream &_s,const pair<_a,_b> &_p){return _s<<"("<<_p.X<<","<<_p.Y<<")";}
 template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
 {
@@ -71,14 +72,68 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 5003;
 
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+int n;
+ll dp[MAXN][MAXN];
+struct Nut {
+    int a, w;
+    bool operator < (const Nut &oth) const {
+        return a < oth.a;
+    }
+} nt[MAXN];
 
-/********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
+
+    cin >> n;
+    REP (i, n) {
+        #ifdef tmdd
+        if (i < 2) {
+            nt[i].a = 1,
+            nt[i].w = 1000000000;
+        } else {
+            nt[i].a = nt[i-1].a + nt[i-2].a;
+            if (nt[i].a >= 1000000000) {
+                nt[i].a = 1;
+            }
+            nt[i].w = 1000000000;
+        }
+        #else
+        cin >> nt[i].a >> nt[i].w;
+        #endif
+    }
+    sort(nt, nt+n);
+
+    ll ans = 0;
+
+    
+
+    REP (r, n) {
+        debug(nt[r].a, nt[r].w);
+        int ptr = 0;
+        for (int l=r-1;l>=0;l--) {
+            while (ptr<l&&nt[ptr].a+nt[l].a<=nt[r].a) {
+                ptr++;
+            }
+
+            dp[l][r] = nt[l].w + nt[r].w;
+            if (ptr > 0 && l > 0) {
+                dp[l][r] = max(dp[l][r], dp[min(l-1,ptr-1)][l]+nt[r].w);
+            }
+            debug(dp[l][r]);
+            ans = max(ans, dp[l][r]);
+        }
+
+        ll mx = 0;
+        for (int l=0;l<r;l++) {
+            mx = max(dp[l][r], mx);
+            dp[l][r] = mx;
+        }
+    }
+
+    cout << ans << endl;
 
     return 0;
 }

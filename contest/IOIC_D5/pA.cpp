@@ -20,14 +20,14 @@ typedef pair<double,double> pdd;
 #define eb emplace_back
 #define X first
 #define Y second
-#ifdef jayinnn
+#ifdef tmd
 #define TIME(i) Timer i(#i)
 #define debug(...) do{\
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
     _do(__VA_ARGS__);\
 }while(0)
 template<typename T>void _do(T &&_x){cerr<<_x<<endl;}
-template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<", ";_do(_t...);}
+template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<" ,";_do(_t...);}
 template<typename _a,typename _b> ostream& operator << (ostream &_s,const pair<_a,_b> &_p){return _s<<"("<<_p.X<<","<<_p.Y<<")";}
 template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
 {
@@ -73,12 +73,73 @@ const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
 
-mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+int n, m;
+vector<int> edge[MAXN];
+bool g[903][903];
+bool x[903], vis[903];
 
-/********** Good Luck :) **********/
+ll clc (ll sz) {
+    return sz * (sz - 1) / 2;
+}
+
+bool ans = true;
+
+void dfs (int nd, bool cl) {
+    vis[nd] = true;
+    x[nd] = cl;
+    debug(nd, cl);
+
+    REP1 (v, n) {
+        if (v != nd && g[nd][v]) {
+            if (!vis[v]) {
+                dfs(v, 1 - cl);
+            } else {
+                if (cl == x[v]) {
+                    ans = false;
+                }
+            }
+        }
+    }
+}
 int main () {
     TIME(main);
     IOS();
+
+    cin >> n >> m;
+    REP (i, m) {
+        int u, v;
+        cin >> u >> v;
+        edge[u].eb(v);
+        edge[v].eb(u);
+    }
+
+    ll mn = INF;
+    REP1 (i, n) {
+        mn = min(clc(i)+clc(n-i), mn);
+    }
+    debug(mn);
+
+
+    if (m < mn) {
+        cout << "No" << endl;
+        return 0;
+    }
+    REP1 (i, n) {
+        REP1 (j, n) {
+            g[i][j] = true;
+        }
+        for (auto v : edge[i]) {
+            g[i][v] = false;
+        }
+    }
+    
+    REP1 (i, n) {
+        if (!vis[i]) {
+            dfs(i, 1);
+        }
+    }
+
+    cout << (ans ? "Yes" : "No") << endl;
 
     return 0;
 }

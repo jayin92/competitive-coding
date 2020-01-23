@@ -6,3 +6,4 @@
 *.cpp.gcov
 *.gcda
 *.gcno
+.vscode

@@ -7,7 +7,7 @@ parser.add_argument('contest_name',type=str)
 parser.add_argument('problem_count',type=int)
 args = parser.parse_args()
 
-dir_name = args.contest_name + '/'
+dir_name = os.path.join("contest", args.contest_name)
 
 try:
     # Create target Directory
