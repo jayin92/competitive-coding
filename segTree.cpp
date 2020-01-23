@@ -11,7 +11,9 @@ struct Node{
     }
 };
 
-int n, v[n];
+const int n = 5;
+
+int v[n + 1] = {0, 1, 2, 3, 4, 5};
 
 Node* build(int L, int R){
     Node *node = new Node();

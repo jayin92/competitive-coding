@@ -79,7 +79,6 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
-    cin >> n >> q >> s;
     
 
 
