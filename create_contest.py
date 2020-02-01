@@ -7,7 +7,7 @@ parser.add_argument('contest_name',type=str)
 parser.add_argument('problem_count',type=int)
 args = parser.parse_args()
 
-dir_name = os.path.join("contest", args.contest_name)
+dir_name = 'contest/'+args.contest_name + '/'
 
 try:
     # Create target Directory
@@ -22,7 +22,7 @@ for char_val in range(0,args.problem_count):
   file_name = 'p' + chr(char_val + 65) + '.cpp'
 
   try:
-    copyfile('template.cpp', dir_name + file_name)
+    copyfile('template.cpp', os.path.join(dir_name, file_name))
     print('File ' + file_name + ' created')
   except:
     print("Failed while copying file " + file_name)
