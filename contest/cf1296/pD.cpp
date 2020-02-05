@@ -71,7 +71,7 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 200005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
@@ -79,6 +79,26 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
-
+    ll n, a, b, k, h[MAXN];
+    ll sum = 0;
+    cin >> n >> a >> b >> k;
+    sum = a + b;
+    for(int i=0;i<n;i++) cin >> h[i];
+    ll ans = 0;
+    for(int i=0;i<n;i++){
+        h[i] %= sum;
+        debug(i);
+        debug(h[i]);
+        debug(k);
+        if(h[i] == 0) h[i] += sum;
+        if(h[i] > a && a * (1 + k) >= h[i]){
+            h[i] -= a;
+            k -= (h[i] % a == 0 ? h[i] / a : h[i] / a + 1);
+            ans ++;
+        } else if(h[i] <= a){
+            ans ++;
+        }
+    }
+    cout << ans << endl;
     return 0;
 }

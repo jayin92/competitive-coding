@@ -79,6 +79,17 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
-
-    return 0;
+    int t;
+    cin >> t;
+    int n;
+    while(t--){
+        cin >> n;
+        ll ans = 0;
+        while( n >= 10 ){
+            ans += (n / 10) * 10;
+            n = n / 10 + n % 10;
+        }
+        ans += n;
+        cout << ans << endl;
+    }
 }

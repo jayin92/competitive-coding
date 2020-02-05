@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#pragma GCC optimize("O3")
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -62,23 +63,102 @@ public:
 };
 #else
 #define TIME(i)
+#define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #define debug(...)
 #define pary(...)
 #define endl '\n'
-#define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
 
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 200005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 /********** Good Luck :) **********/
+
 int main () {
+    pii dir[4] = {mp(-1, 0), mp(1, 0), mp(0, 1), mp(0, -1)};
     TIME(main);
     IOS();
+    int t;
+    cin >> t;
+    int n;
+    int x[MAXN], y[MAXN];
+    bool flag;
+    int l, r;
+    char tmp;
+    while(t--){
+        cin >> n;
+        if(n == 0){
+            continue;
+        }
+        cin >> tmp;
+        if(tmp == 'L'){
+            x[0] = dir[0].X;
+            y[0] = dir[0].Y;
+        } else if (tmp == 'R'){
+            x[0] = dir[1].X;
+            y[0] = dir[1].Y;
+        } else if (tmp == 'U'){
+            x[0] = dir[2].X;
+            y[0] = dir[2].Y;
+        } else if (tmp == 'D'){
+            x[0] = dir[3].X;
+            y[0] = dir[3].Y;
+        }        
+        debug("t1");
 
+        for(int i=1;i<n;i++){
+            cin >> tmp;
+            debug(i);
+            if(tmp == 'L'){
+                x[i] = x[i - 1] + dir[0].X;
+                y[i] = y[i - 1] + dir[0].Y;
+            } else if (tmp == 'R'){
+                x[i] = x[i - 1] + dir[1].X;
+                y[i] = y[i - 1] + dir[1].Y;
+            } else if (tmp == 'U'){
+                x[i] = x[i - 1] + dir[2].X;
+                y[i] = y[i - 1] + dir[2].Y;
+            } else if (tmp == 'D'){
+                x[i] = x[i - 1] + dir[3].X;
+                y[i] = y[i - 1] + dir[3].Y;
+            }
+        }
+
+        l = r = 0;
+        flag = false;
+        for(int i=1;i<4;i+=2){
+            for(l=0,r=i;l<n && l + i < n;l++,r++){
+                if(x[r] - (l == 0 ? 0 : x[l - 1]) == 0 && y[r] - (l == 0 ? 0 : y[l - 1]) == 0){
+                    cout << l + 1 << " " << r + 1 << endl;
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag){
+                break;
+            }
+        }
+        debug("t1");
+        for(int i=7;i<n;i+=4){
+            for(l=0,r=i;l<n && l + i < n;l++,r++){
+                if(x[r] - (l == 0 ? 0 : x[l - 1]) == 0 && y[r] - (l == 0 ? 0 : y[l - 1]) == 0){
+                    cout << l + 1 << " " << r + 1 << endl;
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag){
+                break;
+            }
+        }
+
+        if(flag == false){
+            cout << -1 << endl;
+        }
+    }
     return 0;
 }
