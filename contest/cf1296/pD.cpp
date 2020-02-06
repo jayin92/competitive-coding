@@ -83,21 +83,18 @@ int main () {
     ll sum = 0;
     cin >> n >> a >> b >> k;
     sum = a + b;
-    for(int i=0;i<n;i++) cin >> h[i];
-    ll ans = 0;
     for(int i=0;i<n;i++){
+        cin >> h[i];
         h[i] %= sum;
-        debug(i);
-        debug(h[i]);
-        debug(k);
         if(h[i] == 0) h[i] += sum;
-        if(h[i] > a && a * (1 + k) >= h[i]){
-            h[i] -= a;
-            k -= (h[i] % a == 0 ? h[i] / a : h[i] / a + 1);
-            ans ++;
-        } else if(h[i] <= a){
-            ans ++;
-        }
+        h[i] = (h[i] + a - 1) / a - 1;
+    }
+    sort(h, h+n);
+    int ans = 0;
+    for(int i=0;i<n;i++){
+        if( k - h[i] < 0 ) break;
+        ans ++;
+        k -= h[i];
     }
     cout << ans << endl;
     return 0;
