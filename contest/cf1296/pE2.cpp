@@ -79,6 +79,23 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
+    int n;
+    string s;
+    cin >> n >> s;
 
+    vector<int> maxdp(26, 0);
+    vector<int> dp(n, 1);
+
+    for(int i=0;i<n;i++){
+        for(int c=25;c>s[i]-'a';c--){
+            dp[i] = max(dp[i], maxdp[c] + 1);
+        }
+        maxdp[s[i] - 'a'] = max(maxdp[s[i] - 'a'], dp[i]);
+    }
+
+    cout << *max_element(ALL(maxdp)) << endl;
+    for(int i=0;i<n;i++) cout << dp[i] << " ";
+    cout << endl;
+    
     return 0;
 }
