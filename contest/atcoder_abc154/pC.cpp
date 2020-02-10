@@ -79,6 +79,22 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
+    set<ll> m;
+    int n;
+    cin >> n;
+    vector<ll> a(n);
+
+    for(int i=0;i<n;i++){
+        cin >> a[i];
+    }
+    for(int i=0;i<n;i++){
+        if(m.count(a[i])){
+            cout << "NO" << endl;
+            return 0;
+        }
+        m.insert(a[i]);
+    }
+    cout << "YES" << endl;
 
     return 0;
 }

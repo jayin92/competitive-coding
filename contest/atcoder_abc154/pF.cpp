@@ -75,10 +75,53 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+ll power(ll x, ll y){
+    ll res = 1;
+    x = x % MOD;
+
+    while (y > 0) {
+        if (y & 1){
+            res = (res * x) % MOD;
+        }
+
+        y = y >> 1;
+        x = (x * x) % MOD;
+    }
+    return res;
+    
+}
+vector<ll> f, f_;
+ll sol(ll x, ll y){
+    ll ans = f[x + y];
+    ans *= f_[x];
+    ans %= MOD;
+    ans *= f_[y];
+    ans %= MOD;
+    return ans;
+}
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-
+    int a, b, c, d;
+    cin >> a >> b >> c >> d;
+    f.resize(c+d+5);
+    f_.resize(c+d+5);
+    f[1] = 1;
+    for(int i=2;i<c+d+5;i++){
+        f[i] = (f[i-1] * i) % MOD;
+    }
+    for(int i=1;i<c+d+5;i++){
+        f_[i] = power(f[i], MOD - 2);
+    }
+    ll ans = 0;
+    // debug(f);
+    ans += sol(c + 1, d + 1) - 1;
+    ans -= sol(c + 1, b) - 1;
+    ans -= sol(a, d + 1) - 1;
+    ans += sol(a, b) - 1;
+    while (ans < 0) ans += MOD;
+    ans %= MOD;
+    cout << ans << endl;
     return 0;
 }

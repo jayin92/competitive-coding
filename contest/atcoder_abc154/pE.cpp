@@ -75,10 +75,52 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+bool cmp(string a, string b){
+    if(a.size() < b.size()) {
+        return false;
+    } else if(a.size() > b.size()){
+        return true;
+    } else {
+        int size = a.size();
+        for(int i=0;i<size;i++){
+            if(a[i] < b[i]){
+                return false;
+            } else if(a[i] > b[i]){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-
+    int k;
+    string a;
+    vector<string> s;
+    cin >> a >> k;
+    for(int i=pow(10, k-1);i<pow(10, k);i++){
+        if(i % 10 != 0){
+            s.pb(to_string(i));
+        }
+    }
+    int sz = s.size();
+    ll ans = 0;
+    bool flag = false;
+    while(!flag){
+        for(int i=0;i<sz;i++){
+            if(cmp(s[i], a) == false){
+                cout << s[i] << endl;
+                ans ++;
+            } else {
+                flag = true;
+                break;
+            }        
+            s[i] += "0";
+        }
+    }
+    cout << ans << endl;
     return 0;
 }

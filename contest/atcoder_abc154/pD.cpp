@@ -79,6 +79,24 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
+    int n, k;
+    cin >> n >> k;
+    vector<double> a(n);
+    vector<double> b(n);
+    for(int i=0;i<n;i++){
+        cin >> a[i];
+        a[i] = (a[i] + 1) / 2.0;
+    }
+    b[0] = a[0];
+    for(int i=1;i<n;i++){
+        b[i] = a[i] + b[i-1];
+    }
+    double ans = b[k-1];
+    for(int i=1;i<=n-k;i++){
+        ans = max(ans, b[i+k-1] - b[i-1]);
+    }
+    
+    cout << fixed << setprecision(8) << ans << endl;
 
     return 0;
 }
