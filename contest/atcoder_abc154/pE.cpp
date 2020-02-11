@@ -75,52 +75,35 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-bool cmp(string a, string b){
-    if(a.size() < b.size()) {
-        return false;
-    } else if(a.size() > b.size()){
-        return true;
-    } else {
-        int size = a.size();
-        for(int i=0;i<size;i++){
-            if(a[i] < b[i]){
-                return false;
-            } else if(a[i] > b[i]){
-                return true;
-            }
-        }
-    }
-    return false;
-}
+int dp[105][4][2];
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int k;
+    int K;
     string a;
-    vector<string> s;
-    cin >> a >> k;
-    for(int i=pow(10, k-1);i<pow(10, k);i++){
-        if(i % 10 != 0){
-            s.pb(to_string(i));
+    cin >> a >> K;
+    int n = a.size();
+    dp[0][0][0] = 1;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<4;j++){
+            for(int k=0;k<2;k++){
+                int nd = a[i] - '0';
+                for(int d=0;d<10;d++){
+                    int ni = i + 1, nj = j, nk = k;
+                    if(d != 0) nj ++;
+                    if(nj > K) continue;
+                    if(k == 0){
+                        if (d > nd) continue;
+                        if (d < nd) nk = 1;
+                    }
+                    dp[ni][nj][nk] += dp[i][j][k];
+                }
+            }
         }
     }
-    int sz = s.size();
-    ll ans = 0;
-    bool flag = false;
-    while(!flag){
-        for(int i=0;i<sz;i++){
-            if(cmp(s[i], a) == false){
-                cout << s[i] << endl;
-                ans ++;
-            } else {
-                flag = true;
-                break;
-            }        
-            s[i] += "0";
-        }
-    }
+    int ans = dp[n][K][0] + dp[n][K][1];
     cout << ans << endl;
     return 0;
 }
