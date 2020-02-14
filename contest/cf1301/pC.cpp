@@ -84,36 +84,16 @@ int main () {
     while(t--){
         ll n, m;
         cin >> n >> m;
-        int put = 1;
         if(m == 0){
             cout << 0 << endl;
             continue;
         }
-        if(m < n - m){
-            put = 0;
-            m = n - m;
-        }
-        vector<int> a(n , 1 - put);
-        ll r = (n - 1) / m + 1;
-        ll ans = 0;
-        debug(a);
-        for(int i=(1 + r)/2-1;i<=n;i+=r){
-            a[i] = put;
-        }
-        for(int i=0;i<n;i++){
-            if(a[i] == 1){
-                ans += n - i;
-            }
-            else{
-                for(int j=i+1;j<n;j++){
-                    if(a[j] == 1){
-                        ans += n - j;
-                        break;
-                    }
-                }
-            }            
-        }
-        debug(a);
+        ll z = n - m;
+        ll g = m + 1;
+        ll k = z / g;
+        ll ans = (1 + n) * n / 2;
+        ans -= k * (k + 1) / 2 * g;
+        ans -= (k + 1) * (z % g);
         cout << ans << endl;
     }
     return 0;

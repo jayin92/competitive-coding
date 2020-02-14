@@ -79,6 +79,67 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
-
+    ll n, m, k;;
+    cin >> n >> m >> k;
+    ll all = 4 * n * m - 2 * n - 2 * m;
+    vector<pair<int, string>> ans;
+    ll move = 0;
+    if(k > all){
+        cout << "NO" << endl;
+    } else {
+        cout << "YES" << endl;
+        for(int i=0;i<n;i++){
+            if(m > 1){
+                ans.eb(m-1, "R");
+                if(i == 0){
+                    ans.eb(m-1, "L");
+                } else {
+                    ans.eb(m-1, "UDL");
+                }
+            }
+            if(n > 1){
+                if(i == n - 1){
+                    ans.eb(n-1, "U");
+                } else {
+                    ans.eb(1, "D");
+                }
+            }
+        }
+        debug(ans);
+        int cmd = 0;
+        string ans_ = "";
+        for(auto j:ans){
+            debug(move, j.first * j.second.size());
+            if(move + j.first * j.second.size() <= k){
+                cmd ++;
+                ans_ += to_string(j.first) + " " + j.second + "\n";
+                move += j.first * j.second.size();
+            } else {
+                debug(move);
+                if(move == k){
+                    cout << cmd << endl;
+                    cout << ans_ << endl;
+                    return 0;
+                }
+                int r = k - move;
+                int sz = j.second.size();
+                if(r / sz >= 1){               
+                    ans_ += to_string(r / sz) + " " + j.second + "\n";
+                    cmd ++;
+                }
+                if(r % sz >= 1){
+                    ans_ += "1 ";
+                    cmd ++;
+                    for(int i=0;i<r % sz;i++){
+                        ans_ += j.second[i];
+                    }
+                }
+                break;
+            }
+        }
+        cout << cmd << endl;
+        cout << ans_ << endl;;
+    }
+    
     return 0;
 }
