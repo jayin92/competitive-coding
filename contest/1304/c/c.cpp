@@ -1,0 +1,177 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef pair<int, ll> pil;
+typedef pair<ll, int> pli;
+typedef pair<double,double> pdd;
+#define SQ(i) ((i)*(i))
+#define MEM(a, b) memset(a, (b), sizeof(a))
+#define SZ(i) int(i.size())
+#define FOR(i, j, k, in) for (int i=j ; i<(k) ; i+=in)
+#define RFOR(i, j, k, in) for (int i=j ; i>=(k) ; i-=in)
+#define REP(i, j) FOR(i, 0, j, 1)
+#define REP1(i,j) FOR(i, 1, j+1, 1)
+#define RREP(i, j) RFOR(i, j, 0, 1)
+#define ALL(_a) _a.begin(),_a.end()
+#define mp make_pair
+#define pb push_back
+#define eb emplace_back
+#define X first
+#define Y second
+#ifdef jayinnn
+#define TIME(i) Timer i(#i)
+#define debug(...) do{\
+    fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
+    _do(__VA_ARGS__);\
+}while(0)
+template<typename T>void _do(T &&_x){cerr<<_x<<endl;}
+template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<", ";_do(_t...);}
+template<typename _a,typename _b> ostream& operator << (ostream &_s,const pair<_a,_b> &_p){return _s<<"("<<_p.X<<","<<_p.Y<<")";}
+template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
+{
+    _s<<"{";
+    for(It _it=_ita;_it!=_itb;_it++)
+    {
+        _s<<(_it==_ita?"":",")<<*_it;
+    }
+    _s<<"}";
+    return _s;
+}
+template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _a> ostream &operator << (ostream &_s,deque<_a> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
+#define IOS()
+class Timer {
+private:
+    string scope_name;
+    chrono::high_resolution_clock::time_point start_time;
+public:
+    Timer (string name) : scope_name(name) {
+        start_time = chrono::high_resolution_clock::now();
+    }
+    ~Timer () {
+        auto stop_time = chrono::high_resolution_clock::now();
+        auto length = chrono::duration_cast<chrono::microseconds>(stop_time - start_time).count();
+        double mlength = double(length) * 0.001;
+        debug(scope_name, mlength);
+    }
+};
+#else
+#define TIME(i)
+#define debug(...)
+#define pary(...)
+#define endl '\n'
+#define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
+#endif
+
+const ll MOD = 1000000007;
+const ll INF = 0x3f3f3f3f3f3f3f3f;
+const int iNF = 0x3f3f3f3f;
+const ll MAXN = 100005;
+
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+// void solve(){
+//     int n, m;
+//         cin >> n >> m;
+//         vector<int> t(n);
+//         vector<int> l(n);
+//         vector<int> h(n);
+//         for(int i=0;i<n;i++){
+//             cin >> t[i] >> l[i] >> h[i];
+//         }
+//         int r = t[0];
+//         if(h[0] < m){
+//             if(m - h[0] > t[0]){
+//                 cout << "NO" << endl;
+//                 return;
+//             } else {
+//                 m = h[0];
+//                 r -= m - h[0];
+//             }
+//         } else if(m < l[0]){
+//             if(l[0] - m > t[0]){
+//                 cout << "NO" << endl;
+//                 return;
+//             } else {
+//                 m = l[0];
+//                 r -= l[0] - m;
+//             }
+//         }
+//         for(int i=0;i<n-1;i++){
+//             if(h[i+1] < l[i]){
+//                 if(m > l[i]){
+//                     m -= min(r, m - l[i]);
+//                 }
+//                 r = t[i+1] - t[i];
+//                 if(m - h[i+1] > r){
+//                     cout << "NO" << endl;
+//                     return;
+//                 } else {
+//                     r -= m - h[i+1];
+//                     m = h[i+1];
+//                 }
+//             } else if(l[i+1] > h[i]) {
+//                 if(h[i] > m){
+//                     m += min(r, h[i] - m);
+//                 }
+//                 r = t[i+1] - t[i];
+//                 if(l[i+1] - m > r){
+//                     cout << "NO" << endl;
+//                     return;
+//                 } else {
+//                     r -= l[i+1] - m;
+//                     m = l[i+1];
+//                 }
+//             } else if(l[i+1] <= h[i] && h[i] <= h[i+1]){
+//                 if(h[i] - l[i+1] >= )
+//             }
+//         }
+// }
+
+
+void solve(){
+    int n, m;
+    cin >> n >> m;
+    vector<int> t(n), l(n), h(n);
+    bool flag = true;
+    for(int i=0;i<n;i++){
+        cin >> t[i] >> l[i] >> h[i];
+    }
+    int prev = 0;
+    int l_, h_;
+    l_ = h_ = m;
+    for(int i=0;i<n;i++){
+        int r = t[i] - prev;
+        l_ -= r;
+        h_ += r;
+        if(h_ < l[i] || l_ > h[i]){
+            flag = false;
+            break;
+        }
+        l_ = max(l_, l[i]);
+        h_ = min(h_, h[i]);
+        prev = t[i];
+    }
+    if(flag){
+        cout << "YES" << endl;
+    } else {
+        cout << "NO" << endl;
+    }
+    
+}
+/********** Good Luck :) **********/
+int main () {
+    TIME(main);
+    IOS();
+    int q;
+    cin >> q;
+    while(q--){
+        solve();
+    }
+
+    return 0;
+}
