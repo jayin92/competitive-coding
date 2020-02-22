@@ -77,8 +77,55 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 /********** Good Luck :) **********/
 int main () {
-    TIME(main);
-    IOS();
+    // TIME(main);
+    // IOS();
+    // For getting input from input.txt file 
+    freopen("input.txt", "r", stdin); 
+  
+    // Printing the Output to output.txt file 
+    freopen("output.txt", "w", stdout);   
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    REP(i, n) cin >> a[i];
+    
+    vector<int> pos(n, 0);
+    vector<int> neg(n, 0);
+    vector<int> zer(n, 0);
+
+    if(a[0] > 0){
+        pos[0] = 1;
+    } else if (a[0] == 0){
+        zer[0] = 1;
+    } else {
+        neg[0] = 1;
+    }
+
+    for(int i=1;i<n;i++){
+        if(a[i] > 0){
+            pos[i] = pos[i - 1] + 1;
+            zer[i] = zer[i - 1];
+            neg[i] = neg[i - 1];
+        } else if (a[i] == 0){
+            pos[i] = pos[i - 1];
+            zer[i] = zer[i - 1] + 1;
+            neg[i] = neg[i - 1];
+        } else {
+            pos[i] = pos[i - 1];
+            zer[i] = zer[i - 1];
+            neg[i] = neg[i - 1] + 1;
+        }
+    }
+    int ans = iNF;
+    for(int i=0;i<n-1;i++){
+        int tmp = 0;
+        tmp += pos[i] + zer[i];
+        tmp += (neg[n-1] - neg[i]) + (zer[n-1] - zer[i]);
+        ans = min(ans, tmp);
+    }
+    cout << ans << endl;
+
+
 
     return 0;
 }
