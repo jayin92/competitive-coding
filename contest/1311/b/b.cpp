@@ -82,25 +82,33 @@ void solve(){
     vector<bool> p(105, false);
 
     REP(i, n) cin >> a[i];
-
+    vector<int> b(a);
+    sort(ALL(b));
     REP(i, m){
         cin >> tmp;
         p[tmp-1] = true;
     }
 
     for(int i=0;i<n;i++){
-        for(int j=i+1;j<n;j++){
-            if(a[i] > a[j]){
-                if(p[i]){
-                    swap(a[i], a[j]);
-                } else {
-                    cout << "NO" << endl;
-                    return;
+        for(int j=0;j<n-1;j++){
+            if(a[j] > a[j+1]){
+                if(p[j]){
+                    swap(a[j], a[j+1]);
                 }
             }
+            debug(a);
+        }
+    }
+    
+    for(int i=0;i<n;i++){
+        if(a[i] != b[i]){
+            cout << "NO" << endl;
+            return;
         }
     }
     cout << "YES" << endl;
+
+    return;
 }
 /********** Good Luck :) **********/
 int main () {
