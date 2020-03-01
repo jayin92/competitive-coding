@@ -75,30 +75,24 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-inline ll fast_mod(const ll input, const ll ceil) {
-    // apply the modulo operator only when needed
-    // (i.e. when the input is greater than the ceiling)
-    return input >= ceil ? input % ceil : input;
-    // NB: the assumption here is that the numbers are positive
-}
-
 vector<vector<ll>> dp;
-vector<vector<ll>> pre;
 ll ans;
-void solve(string s, int pri){
+void solve(string s, int pre){
+    debug(s, ans, pre);
     int sz = s.size();
     int first = s[0] - '0';
-    if(first < pri){
+    if(first < pre){
         return;
     }
     if(sz == 1){
-        ans += first - pri + 1;
-        ans = fast_mod(ans, MOD);
+        for(int i=pre;i<=first;i++) ans += 1;
+        ans %= MOD;
         return;
     } else {
-        ans += pre[sz][first-1] - pre[sz][pri-1];
-        ans += MOD;
-        ans = fast_mod(ans, MOD);
+        for(int i=pre;i<first;i++){
+            ans += dp[sz][i];
+        }
+        ans %= MOD;
         solve(s.substr(1, sz-1), first);
     }
 }
@@ -108,26 +102,15 @@ int main () {
     IOS();
     int n = 1e5 + 5;
     dp.resize(n, vector<ll>(10, 0));
-    pre.resize(n, vector<ll>(10, 0));
     for(int i=1;i<=9;i++){
         dp[1][i] = 1;
-        if(i == 1){
-            pre[1][i] = dp[1][i];
-        } else {
-            pre[1][i] = dp[1][i] + pre[1][i-1];
-        }
     }
     for(int i=2;i<n;i++){
         for(int j=1;j<=9;j++){
-            dp[i][j] += pre[i-1][9] - pre[i-1][(j-1 == 0 ? 0 : j-1)];
-            dp[i][j] += MOD;
-            dp[i][j] = fast_mod(dp[i][j], MOD);
-            if(j == 1){
-                pre[i][j] = dp[i][j];
-            } else {
-                pre[i][j] = dp[i][j] + pre[i][j-1];
+            for(int k=j;k<=9;k++){
+                dp[i][j] += dp[i-1][k];
             }
-            pre[i][j] = fast_mod(pre[i][j], MOD);
+            dp[i][j] %= MOD;
         }
         
     }
@@ -139,17 +122,21 @@ int main () {
         int first = s[0] - '0';
         if(sz == 1){
             ans += first;
+            ans %= MOD;
         } else {
             for(int i=1;i<sz;i++){
-                ans += pre[i][9];
-                ans = fast_mod(ans, MOD);
+                for(int j=1;j<=9;j++){
+                    ans += dp[i][j];
+                }
+                ans %= MOD;
             }
-            ans += pre[sz][(first-1 == 0 ? 0 : first-1)];
-            ans = fast_mod(ans, MOD);
+            for(int i=1;i<first;i++){
+                ans += dp[sz][i];
+            }            
+            ans %= MOD;
             solve(s.substr(1, sz-1), first);
         }
-        ans += MOD;
-        ans = fast_mod(ans, MOD);
+        ans %= MOD;
         cout << ans << endl;
     }
     return 0;

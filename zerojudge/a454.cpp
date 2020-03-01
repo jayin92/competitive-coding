@@ -1,5 +1,3 @@
-// djisktra with priority queue and memory optimize
-
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
@@ -77,32 +75,29 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-
-int n, m;
-vector<vector<pll>> w;
-vector<ll> d;
-vector<int> parent;
-
+int n;
+vector<vector<pii>> w;
+vector<int> d;
 void dijkstra(int src){
-    vector<bool> visit(n+1, false);
-    priority_queue<pll, vector<pll>, greater<pll>> pq;
-    for(int i=1;i<n;i++){
-        pq.push(mp(INF, i));
+    priority_queue<pii, vector<pii>> pq;
+    for(int i=1;i<=n;i++){
+        pq.push(mp(-1, i));
     }
+
     d[src] = 0;
-    parent[src] = src;
+
     while(!pq.empty()){
-        pll u = pq.top();
+        pii u = pq.top();
         pq.pop();
         for(auto i:w[u.second]){
-            ll alt = d[u.second] + i.second;
-            if(alt < d[i.first]){
-                d[i.first] = alt;
-                parent[i.first] = u.second;
-                pq.push(mp(alt, i.first));
+            int alt = d[u.second] + i.first;
+            if(alt > d[i.second]){
+                d[i.second] = alt;
+                pq.push(mp(alt, i.second));
             }
         }
     }
+    
 }
 
 
@@ -110,35 +105,43 @@ void dijkstra(int src){
 int main () {
     TIME(main);
     IOS();
-    cin >> n >> m;
-    w.resize(n+1);
-    d.resize(n+1, INF);
-    parent.resize(n+1, -1);
-    ll a, b, tmp;
-    for(int i=0;i<m;i++){
-        cin >> a >> b >> tmp;
-        w[a].pb(mp(b, tmp));
-        w[b].pb(mp(a, tmp));
-    }
-    dijkstra(1);
-    vector<int> ans;
-    int cur;
-    if(d[n] != INF){
-        cur = n;
-        while(cur != 1){
-            ans.push_back(cur);
-            cur = parent[cur];
+    int t;
+    cin >> t;
+    while(t--){
+        int w_, k, v;
+        cin >> n;
+        w.resize(n+1);
+        d.resize(n+1, -1);
+        vector<pii> end;
+        for(int i=1;i<=n;i++){
+            cin >> w_ >> k;
+            if(k == 0){
+                end.emplace_back(i, w_);
+            }
+            REP(j, k){
+                cin >> v;
+                w[i].emplace_back(w_, v);
+            }
         }
-        ans.push_back(1);
-        int sz = ans.size();
-        for(int i=sz-1;i>=0;i--){
-            cout << ans[i] << " ";
+        debug(w);
+        while(true){
+            bool flag = false;
+            for(int i=1;i<=n;i++){
+                if(d[i] == -1){
+                    dijkstra(i);
+                    flag = true;
+                }
+            }
+            if(!flag) break;
         }
-        cout << endl;
-    } else {
-        cout << -1 << endl;
+        int ans = -1;
+        
+        for(auto i:end){
+            ans = max(ans, d[i.first] + i.second);
+        }
+        cout << ans << endl;
+        debug(d);
     }
-    
-
+   
     return 0;
 }

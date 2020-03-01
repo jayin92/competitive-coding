@@ -1,5 +1,3 @@
-// djisktra with priority queue and memory optimize
-
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
@@ -78,67 +76,29 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 
-int n, m;
-vector<vector<pll>> w;
-vector<ll> d;
-vector<int> parent;
-
-void dijkstra(int src){
-    vector<bool> visit(n+1, false);
-    priority_queue<pll, vector<pll>, greater<pll>> pq;
-    for(int i=1;i<n;i++){
-        pq.push(mp(INF, i));
-    }
-    d[src] = 0;
-    parent[src] = src;
-    while(!pq.empty()){
-        pll u = pq.top();
-        pq.pop();
-        for(auto i:w[u.second]){
-            ll alt = d[u.second] + i.second;
-            if(alt < d[i.first]){
-                d[i.first] = alt;
-                parent[i.first] = u.second;
-                pq.push(mp(alt, i.first));
-            }
-        }
-    }
-}
-
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    cin >> n >> m;
-    w.resize(n+1);
-    d.resize(n+1, INF);
-    parent.resize(n+1, -1);
-    ll a, b, tmp;
-    for(int i=0;i<m;i++){
-        cin >> a >> b >> tmp;
-        w[a].pb(mp(b, tmp));
-        w[b].pb(mp(a, tmp));
-    }
-    dijkstra(1);
-    vector<int> ans;
-    int cur;
-    if(d[n] != INF){
-        cur = n;
-        while(cur != 1){
-            ans.push_back(cur);
-            cur = parent[cur];
+    int t;
+    cin >> t;
+    for(int i=0;i<t;i++){
+        vector<pair<string, int>> a(10);
+        int ma = -1;
+        string s;
+        int n;
+        for(int j=0;j<10;j++){
+            cin >> s >> n;
+            a.eb(s, n);
+            ma = max(ma, n);
         }
-        ans.push_back(1);
-        int sz = ans.size();
-        for(int i=sz-1;i>=0;i--){
-            cout << ans[i] << " ";
+        cout << "Case #" << i+1 << ":" << endl;
+        for(auto j:a){
+            if(j.second == ma){
+                cout  << j.first << endl;
+            }
         }
-        cout << endl;
-    } else {
-        cout << -1 << endl;
     }
-    
-
+   
     return 0;
 }
