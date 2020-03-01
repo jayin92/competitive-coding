@@ -75,33 +75,20 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-vector<vector<ll>> dp;
-ll ans;
-void solve(string s, int pre){
-    debug(s, ans, pre);
-    int sz = s.size();
-    int first = s[0] - '0';
-    if(first < pre){
-        return;
-    }
-    if(sz == 1){
-        for(int i=pre;i<=first;i++) ans += 1;
-        ans %= MOD;
-        return;
-    } else {
-        for(int i=pre;i<first;i++){
-            ans += dp[sz][i];
-        }
-        ans %= MOD;
-        solve(s.substr(1, sz-1), first);
-    }
+inline ll fast_mod(const ll input, const ll ceil) {
+    // apply the modulo operator only when needed
+    // (i.e. when the input is greater than the ceiling)
+    return input >= ceil ? input % ceil : input;
+    // NB: the assumption here is that the numbers are positive
 }
-/********** Good Luck :) **********/
-int main () {
-    TIME(main);
-    IOS();
-    int n = 1e5 + 5;
-    dp.resize(n, vector<ll>(10, 0));
+
+const int n = 1e5 + 5;
+
+vector<vector<ll>> dp(n, vector<ll>(10, 0));
+vector<vector<ll>> pre(n, vector<ll>(10, 0));
+ll ans;
+
+void build(){
     for(int i=1;i<=9;i++){
         dp[1][i] = 1;
     }
@@ -114,6 +101,31 @@ int main () {
         }
         
     }
+}
+
+void solve(string s, int pri){
+    int sz = s.size();
+    int first = s[0] - '0';
+    if(first < pri){
+        return;
+    }
+    if(sz == 1){
+        ans += first - pri + 1;
+        ans = fast_mod(ans, MOD);
+        return;
+    } else {
+        ans += pre[sz][first-1] - pre[sz][pri-1];
+        ans += MOD;
+        ans = fast_mod(ans, MOD);
+        solve(s.substr(1, sz-1), first);
+    }
+}
+
+/********** Good Luck :) **********/
+int main () {
+    TIME(main);
+    IOS();
+    build();
     // debug(dp);
     string s;
     while(!cin.eof() && cin >> s){
