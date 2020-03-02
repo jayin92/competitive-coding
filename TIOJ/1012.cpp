@@ -1,46 +1,29 @@
+#include <algorithm>
 #include <iostream>
-#include <stack>
-#include <queue>
-
+#include <vector>
 using namespace std;
 
-int main(){
-    int m, n, temp;
-    queue<int> train;
-    stack<int> station;
-    stack<int> repairment;
-    cin >> n >> m;
-    queue<int> result;
+int main() {
+    int N, M, x, now = 0;
+    vector<int> station;
+    cin >> N >> M;
+    for (int i = 0; i < N; i++) {
+        cin >> x;
+        // 不斷把新的車廂放進來，直到目標車廂出現為止。
+        while (now < x) station.push_back(++now);
+        // 計算目標車廂的位置。
+        auto it = find(station.begin(), station.end(), x);
+        int dist = station.end() - it;
 
-    for(int i=0;i<n;i++){
-        cin >> temp;
-        result.push(temp);
-    }
-
-    for(int i=0;i<n;i++){
-        queue.pop(i+1);
-    }
-
-    while(1){
-        while(result.front() != train.front() && !train.empty()){
-            if(repairment.top() == result.front()){
-                repairment.pop();
-                result.pop();
-                break;
-            }
-
-            station.push(train.front());
-            train.pop();
-        }
-        result.pop();
-        station.pop();
-        if(result.size() == 0){
-            cout << "yes" << endl;
-            break;
-        }
-        else if(train.size == 0){
+        if (dist > M+1) {
+            // 距離過遠代表得放超過 M 個車廂到上面，做不到。
             cout << "no" << endl;
+            return 0;
+        } else {
+            // 否則就模擬把這節車廂開走。
+            station.erase(it);
         }
     }
-
+    cout << "yes" << endl;
+    return 0;
 }

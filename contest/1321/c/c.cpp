@@ -81,8 +81,53 @@ int main () {
     IOS();
     int n;
     string s;
-    cin >> s;
+    cin >> n >> s;
+    char ma = 'a';
+    int m = n;
+    for(auto i:s){
+        ma = max(ma, i);
+    }
+    char cur = ma;
+    while(cur != 'a'){
+        while(true){
+            bool flag = true;
+            for(int i=0;i<n;i++){
+                debug(s);
+                if(s[i] == cur){
+                    if(i != 0 && s[i-1] == cur - 1){
+                        flag = false;
+                        s.erase(i, 1);
+                        n--;
+                        i--;
+                    } else if(i != n - 1 && s[i+1] == cur - 1){
+                        flag = false;
+                        s.erase(i, 1);
+                        n--;
+                        i--;
+                    }
+                }
+            }
+            for(int i=n;i>=0;i--){
+                if(s[i] == cur){
+                    if(i != 0 && s[i-1] == cur - 1){
+                        flag = false;                        
+                        s.erase(i, 1);
+                        n--;
+                        i--;
+                    } else if(i != n -1 && s[i+1] == cur - 1){
+                        flag = false;
+                        s.erase(i, 1);
+                        n--;
+                        i--;
+                    }
+                }
+            }
+            if(flag) break;
+        }
+        cur --;
+    }
     
+    cout << m - n << endl;
 
     return 0;
 }
