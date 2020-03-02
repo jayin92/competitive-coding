@@ -7,3 +7,9 @@
 
 ## 建立比賽
 `python create_contest.py <contest name> <# of problems>`
+
+## 建立題目
+`python create_problem.py <online judge name> <file name>`
+
+## 移除前綴
+`python rename.py <directory path> <prefix>`
