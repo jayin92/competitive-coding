@@ -71,7 +71,7 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 10000005;
+const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
@@ -79,54 +79,40 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
-    int line = 1;
-    int n, k, tmp, fir, lst;
-    string s;
-
-    vector<int> g(MAXN, 0);
-    vector<int> nxt(MAXN, -1);
-    vector<int> g_lst(1005, -1);
-    while(cin >> n && !cin.eof()){
-        cout << "Line #" << line << endl;
-        line ++;
-        fill(ALL(g), 0);
-        fill(ALL(nxt), -1);
-        fill(ALL(g_lst), -1);
-        fir = lst = -1;
-        for(int i=1;i<=n;i++){
-            cin >> k;
-            for(int j=0;j<k;j++){
-                cin >> tmp;
-                g[tmp] = i;
-            }
-        }
-        while(cin >> s){
-            if(s == "ENQUEUE"){
-                cin >> tmp;
-                if(fir == -1){
-                    fir = lst = tmp;                    
-                    if(g[tmp] != 0) g_lst[g[tmp]] = tmp;
-                    nxt[tmp] = -1;
-                } else if(g_lst[g[tmp]] != -1 && g_lst[g[tmp]] != lst){
-                    nxt[tmp] = nxt[g_lst[g[tmp]]];
-                    nxt[g_lst[g[tmp]]] = tmp;
-                    g_lst[g[tmp]] = tmp;
-                } else {
-                    nxt[lst] = tmp;
-                    lst = tmp;
-                    if(g[tmp] != 0) g_lst[g[tmp]] = tmp;
-                    nxt[tmp] = -1;
-                }
-            } else if (s == "DEQUEUE"){
-                if(fir == g_lst[g[fir]]) g_lst[g[fir]] = -1;
-                cout << fir << endl;
-                fir = nxt[fir];
-            } else if (s == "STOP"){
-                break;
-            }
+    int r, c, n;
+    cin >> r >> c >> n;
+    vector<vector<int>> a(r, vector<int>(c));
+    vector<vector<int>> b(r, vector<int>(c));
+    int tmp = 1;
+    for(int i=0;i<r;i++){
+        for(int j=0;j<c;j++){
+            a[i][j] = tmp;
+            tmp ++;
         }
     }
-
+    for(int k=2;k<=n;k++){
+        if(k % 2 == 0){
+            for(int j=0;j<c;j++){
+                for(int i=0;i<r;i++){
+                    b[i][j] = a[i][(j-1 == -1 ? c - 1 : j-1)];
+                }
+            }
+        } else {
+            for(int i=0;i<r;i++){
+                for(int j=0;j<c;j++){
+                    b[i][j] = a[(i - 1 == -1 ? r - 1 : i - 1)][j];
+                }
+            }
+        }
+        a = b;
+        debug(a);
+    }
+    REP(i, r){
+        REP(j, c){
+            cout << a[i][j] << " ";
+        }
+        cout << endl;
+    }
 
     return 0;
 }

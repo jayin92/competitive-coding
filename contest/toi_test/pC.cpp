@@ -71,62 +71,57 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 10000005;
+const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+ll todec(string a){
+    reverse(ALL(a));
+    ll res = 0;
+    int n = a.size();
+    int pow = 1;
+    for(int i=0;i<n;i++){
+        res += (a[i] - '0') * pow;
+        pow *= 2;
+    }
+
+    return res;
+}
+void solve(){
+    vector<ll> a;
+    ll ans;
+    string s;
+    int n;
+    cin >> n;
+    REP(i, n){
+        cin >> s;
+        a.push_back(todec(s));
+    }
+    cin >> s;
+    ans = todec(s);
+    vector<bool> dp(ans + 1, false);
+    dp[0] = 1;
+    for(int i=0;i<n;i++){
+        for(int j=ans;j>=a[i];j--){
+            if(dp[j - a[i]]) dp[j] = 1;
+            if(dp[ans]){
+                cout << "YES" << endl;
+                return;
+            }
+        }
+    }
+    if(dp[ans]){
+        cout << "YES" << endl;
+        return;
+    }
+
+    cout << "NO" << endl;
+}
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int line = 1;
-    int n, k, tmp, fir, lst;
-    string s;
-
-    vector<int> g(MAXN, 0);
-    vector<int> nxt(MAXN, -1);
-    vector<int> g_lst(1005, -1);
-    while(cin >> n && !cin.eof()){
-        cout << "Line #" << line << endl;
-        line ++;
-        fill(ALL(g), 0);
-        fill(ALL(nxt), -1);
-        fill(ALL(g_lst), -1);
-        fir = lst = -1;
-        for(int i=1;i<=n;i++){
-            cin >> k;
-            for(int j=0;j<k;j++){
-                cin >> tmp;
-                g[tmp] = i;
-            }
-        }
-        while(cin >> s){
-            if(s == "ENQUEUE"){
-                cin >> tmp;
-                if(fir == -1){
-                    fir = lst = tmp;                    
-                    if(g[tmp] != 0) g_lst[g[tmp]] = tmp;
-                    nxt[tmp] = -1;
-                } else if(g_lst[g[tmp]] != -1 && g_lst[g[tmp]] != lst){
-                    nxt[tmp] = nxt[g_lst[g[tmp]]];
-                    nxt[g_lst[g[tmp]]] = tmp;
-                    g_lst[g[tmp]] = tmp;
-                } else {
-                    nxt[lst] = tmp;
-                    lst = tmp;
-                    if(g[tmp] != 0) g_lst[g[tmp]] = tmp;
-                    nxt[tmp] = -1;
-                }
-            } else if (s == "DEQUEUE"){
-                if(fir == g_lst[g[fir]]) g_lst[g[fir]] = -1;
-                cout << fir << endl;
-                fir = nxt[fir];
-            } else if (s == "STOP"){
-                break;
-            }
-        }
-    }
-
+    solve();
 
     return 0;
 }

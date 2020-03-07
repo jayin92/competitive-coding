@@ -1,7 +1,8 @@
 /* Chocobo Racing by jayinnn
    Sprout Online Judge Problem 99
    
-   Using linked-list liked array to solve this problem*/
+   Using array liked linked-list to solve this problem
+*/
    
 #include <bits/stdc++.h>
 
