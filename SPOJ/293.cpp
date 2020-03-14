@@ -75,13 +75,30 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-struct Box{
-    int id;
-    Box* parent = nullptr;
-    vector<Box*> child;
-    int size = 0;
-};
 
+vector<vector<int>> adj;
+vector<int> size_;
+int balance_size;
+int ans;
+int n;
+void dfs(int u, int parent){
+    size_[u] = 1;
+    debug(size_);
+    int max_size = 0;
+    for(auto i:adj[u]){
+        if(i != parent){
+            dfs(i, u);
+            size_[u] += size_[i];
+            max_size = max(max_size, size_[i]);
+        }
+    }
+    max_size = max(max_size, n - size_[u]);
+    if(balance_size > max_size || (u < ans && balance_size==max_size)){
+        balance_size = max_size;
+        ans = u;
+    }
+    
+}
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
@@ -89,37 +106,20 @@ int main () {
     int t;
     cin >> t;
     while(t--){
-        int n, m;
-        cin >> n >> m;
-        vector<Box*> box(n+1);
-        for(int i=1;i<=n;i++){
-            box[i] = new Box;
-            box[i] -> id = i;
-            box[i] -> size = 1;
-            box[i] -> parent = nullptr;
-        }
-        debug("test");
-        for(int i=0;i<m;i++){
+        cin >> n;
+        adj.resize(n);
+        size_.resize(n);
+        fill(ALL(adj), vector<int>());
+        for(int i=0;i<n-1;i++){
             int x, y;
             cin >> x >> y;
-            debug(x, y);
-            box[x] -> child.push_back(box[y]);
-            box[y] -> parent = box[x];
-            Box* cur = box[x];
-            while(cur != nullptr){
-                cur -> size += box[y] -> size;
-                cur = cur -> parent;
-                // debug(cur -> id);
-            }
+            adj[x].pb(y);
+            adj[y].pb(x);
         }
-        int q;
-        cin >> q;
-        while(q--){
-            int x;
-            cin >> x;
-            cout << box[x] -> size << endl;
-        }
-
+        balance_size = iNF;
+        ans = iNF;
+        dfs(0, -1);
+        cout << ans << endl;
     }
 
     return 0;
