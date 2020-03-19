@@ -39,14 +39,14 @@
         \item% 
             $$\textrm{(1) 先證明}f(n)\in O(2^n)\Rightarrow f(n)\in O(2^{n+1})$$    
             $$\because f(n) \in O(2^n)$$
-            $$\therefore \forall k \geq 0, \lim_{n\to\infty}\frac{f(n)}{2^n}=k$$
+            $$\therefore \exists k \geq 0, \lim_{n\to\infty}\frac{f(n)}{2^n}=k$$
             $$\therefore \lim_{n\to\infty}\frac{f(n)}{2^{n+1}}=\lim_{n\to\infty}\frac{f(n)}{2^n}\cdot\lim_{n\to\infty}\frac{2^n}{2^{n+1}}=k\cdot \frac{1}{2}=\frac{1}{2}k \textrm{(仍為常數)}$$
             \begin{equation}
                 \therefore f(n) \in O(2^{n+1})
             \end{equation}
             $$\textrm{(2) 再證明}f(n)\in O(2^{n+1})\Rightarrow O(2^n)$$
             $$\because f(n) \in O(2^{n+1})$$
-            $$\therefore \forall k \geq 0, \lim_{n\to\infty}\frac{f(n)}{2^{n+1}}=k$$
+            $$\therefore \exists k \geq 0, \lim_{n\to\infty}\frac{f(n)}{2^{n+1}}=k$$
             $$\therefore \lim_{n\to\infty}\frac{f(n)}{2^n}=\lim_{n\to\infty}\frac{f(n)}{2^n}\cdot\lim_{n\to\infty}\frac{2^{n+1}}{2^n}=2k\textrm{(仍為常數)}$$
             \begin{equation}
                 \therefore f(n) \in O(2^{n})
@@ -57,8 +57,22 @@
             $$\therefore \lim_{n\to\infty}\frac{f(n)}{n!}=\lim_{n\to\infty}\frac{(n+1)!}{n!}=\lim_{n\to\infty}n+1$$
             並非收斂為常數，故$f(n)\in O((n+1)!)\Rightarrow f(n) \in O(n!)$不成立。\\
             故原命題不成立。
-        \item
+        \item%
+        $\because f(n) \in O(n)$，我們不妨令$f(n)=2n$，則：
+        $$\lim_{n\to\infty}\frac{2^{f(n)}}{2^n}=\lim_{n\to\infty}\frac{2^{2n}}{2^n}=\lim_{n\to\infty}2^n$$
+        並非收斂為常數，故$2^{f(n)} \in O(2^n)$不成立。\\
+        故原命題不成立。
     \end{enumerate}
-    
+    \item 考慮：
+    $$\lim_{m \to \infty}\frac{f(2^m)}{2^m\log_2 2^m}$$
+    $$=\lim_{m \to \infty}\frac{2f(2^{m-1})+2^{m+1}}{m \cdot 2^m}$$
+    $$=\lim_{m \to \infty}\frac{4 \cdot f(2^{m-2})+2\cdot 2^{m+1}}{m \cdot 2^m}$$
+    $$=\lim_{m \to \infty}\frac{2^{m-1}+(m-1)\cdot 2^{m+1}}{m \cdot 2^m}$$
+    $$=\lim_{m \to \infty}\frac{2^{m-1}(1+4m-4)}{2 \cdot m \cdot 2^{m-1}}$$
+    $$=\lim_{m \to \infty}\frac{4m-3}{2m}=\frac{4}{2}=2\textrm{(為一常數)}$$
+    $$\therefore \forall m \in \mathbb{N}, n=2^m, f(n) \in O(n\log_2 n)$$
+    $$\because f(n)\in O(n\log_2 n) \Longleftrightarrow f(n) \leq 3n\log_2$$
+    $$\therefore \textrm{原命題成立}$$
+     
 \end{enumerate}
 \end{document}
