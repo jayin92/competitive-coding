@@ -79,11 +79,30 @@ struct Node{
     Node* parent = nullptr;
     Node* left = nullptr;
     Node* right = nullptr;
-    int val;
+    ll val;
     
 };
 
-void find_(Node* cur, int n, int &Min, int &min_idx){
+Node* del(Node* root, int key){
+    if(!root) return nullptr;
+    if(root -> val > key){
+        root -> left = del(root -> left, key);
+    } else if (root -> val < key){
+        root -> right = del(root -> right, key);
+    } else {
+        if(!root -> left || !root -> right){
+            root = (root -> left) ? root -> left : root -> right;
+        } else {
+            Node* cur = root -> right;
+            while(cur -> left) cur = cur -> left;
+            root -> val = cur -> val;
+            root -> right = del(root -> right, cur -> val);
+        }
+    }
+    return root;
+}
+
+void find_(Node* cur, ll n, ll &Min, ll &min_idx){
     if(cur == nullptr){
         return;
     }
@@ -102,7 +121,7 @@ void find_(Node* cur, int n, int &Min, int &min_idx){
         find_(cur -> right, n, Min, min_idx);
     } else {
         find_(cur -> left, n, Min, min_idx);
-    }
+    }       
 }
 
 
@@ -116,7 +135,7 @@ int main () {
     bool flag =  true;
     while(t--){
         string a;
-        int n;
+        ll n;
         cin >> a >> n;
         if(a == "insert"){
             if(flag){
@@ -147,97 +166,38 @@ int main () {
                 }
             }
         } else if(a == "delete"){
+            del(root, n);
+        } else if(a == "query"){
+            ll min_diff = INF;
+            ll ans1 = 0;
+            ll ans2 = 0;
             Node* cur = root;
-            while(true){
-                if(cur -> val > n){
+            while(cur != nullptr){
+                ll diff = abs(n - cur -> val);
+                if(diff < min_diff){
+                    min_diff = diff;
+                    ans1 = ans2 = cur -> val;
+                } else if(diff == min_diff){
+                    ans2 = cur -> val;
+                }
+
+                if(n < cur -> val){
                     cur = cur -> left;
-                } else if(cur -> val < n){
+                } else if(n > cur -> val){
                     cur = cur -> right;
                 } else {
+                    min_diff = 0;
+                    ans1 = ans2 = cur -> val;
                     break;
                 }
             }
-            if(cur -> right == nullptr){
-                if(cur -> parent -> val < cur -> val){
-                    cur -> parent -> right = cur -> left;
-                } else {
-                    cur -> parent -> left = cur -> left;
-                }
-            } else if(cur -> left == nullptr){
-                if(cur -> parent -> val < cur -> val){
-                    cur -> parent -> right = cur -> right;
-                } else {
-                    cur -> parent -> left = cur -> right;
-                }
+            if(ans1 == ans2){
+                cout << ans1 << endl;
             } else {
-                Node* tmp = cur -> right;
-                while(tmp -> left != nullptr){
-                    tmp = tmp -> left;
-                }
-                if(tmp -> right != nullptr){
-                    tmp -> parent -> left = tmp -> right;
-                    tmp -> right -> parent = tmp -> parent;
-                }
-                if(cur -> parent -> right == cur){
-                    cur -> parent -> right = tmp;
-                    tmp -> left = cur -> left;
-                    tmp -> right = cur -> right;
-                    tmp -> parent = cur -> parent;
-                } else {
-                    cur -> parent -> left = tmp;
-                    tmp -> left = cur -> left;
-                    tmp -> right = cur -> right;
-                    tmp -> parent = cur -> parent;
-                }
-                
+                cout << min(ans1, ans2) << " " << max(ans1, ans2) << endl;
             }
-        } else if(a == "query"){
-            int Min = iNF;
-            int min_idx = 0;
-            find_(root, n, Min, min_idx);
-            Node* cur = root;
-            flag = false;
-            if(min_idx < n){
-                int target = n + Min;
-                flag = false;
-                while(cur != nullptr){
-                    if(cur -> val < target){
-                        cur = cur -> right;
-                    } else if (cur -> val > target){
-                        cur = cur -> left;
-                    } else {
-                        flag = true;
-                        break;
-                    }
-                }
-                if(flag){
-                    cout << min_idx << " " << target << endl;
-                } else {
-                    cout << min_idx << endl;
-                }
-            } else if(min_idx > n){
-                int target = n - Min;
-                flag = false;
-                flag = false;
-                while(cur != nullptr){
-                    if(cur -> val < target){
-                        cur = cur -> right;
-                    } else if (cur -> val > target){
-                        cur = cur -> left;
-                    } else {
-                        flag = true;
-                        break;
-                    }
-                }
-                if(flag){
-                    cout << target << " " << min_idx << endl;
-                } else {
-                    cout << min_idx << endl;
-                }
-            } else {
-                cout << min_idx << endl;
-            }
-        }
+        }        
+            
     }
 
     return 0;
