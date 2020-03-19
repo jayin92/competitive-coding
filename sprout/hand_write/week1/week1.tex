@@ -1,0 +1,61 @@
+\documentclass[12pt,a4paper]{article}
+%加這個就可以設定字體
+\usepackage{fontspec}
+%使用xeCJK，其他的還有CJK或是xCJK
+\usepackage{xeCJK}
+\usepackage{enumerate}
+\usepackage{amssymb}
+\usepackage[margin=2cm]{geometry}
+
+%設定英文字型，不設的話就會使用預設的字型
+
+%設定中英文的字型
+%字型的設定可以使用系統內的字型，而不用像以前一樣另外安裝
+\setCJKmainfont{Noto Sans CJK TC}
+
+%中文自動換行
+\XeTeXlinebreaklocale "zh"
+
+%文字的彈性間距
+\XeTeXlinebreakskip = 0pt plus 1pt
+
+%設定段落之間的距離
+\setlength{\parskip}{0.3cm}
+
+%設定行距
+\linespread{1.5}\selectfont
+
+\title{資訊之芽手寫作業\\第一周}
+\author{李杰穎}
+\date{}
+
+\begin{document}
+\maketitle
+\section{第一題}
+我們首先假設$n$個人中沒有人不認識其他人，否則其可以視為$n-1$的情況。\\
+已知一人最多認識$n-1$個人，但現在總共有$n$個人。\\
+故根據鴿籠原理可知至少有兩個人的認識人數相同。\\
+\section{第二題}
+\begin{enumerate}
+    \item  當$n=3$時，$3^3 + 4^3 < 5^3$成立
+    \item 令$n=k$時，$3^k + 4^k < 5^k$成立
+    \item 當$n=k+1$時：
+        $$
+        3^{k+1} + 4^{k+1} = 3 \cdot 3^k + 4 \cdot 4^k < 4 \cdot 3^k + 4 \cdot 4^k = 4 \cdot (3^k+4^k) < 4 \cdot 5^k <5 \cdot 5^k = 5^{k+1}
+        $$
+    故得證當$n \geq 3，3^n + 4^n < 5^n$
+\end{enumerate}
+\section{第四題}
+\begin{enumerate}
+    
+    \item 當$n=1$時，序列$s=\{1\}$，得分總和為$0$，故$\frac{n(n-1)}{2}=0$成立
+    \item 令$n=k$時，得分總和=$\frac{k(k-1)}{2}$成立
+    \item 當$n=k+1$時：
+        序列$s=\{k+1\}$，我們可以將$k+1$分成$k$及$1$，此分數為$k \cdot 1 = k$。\\
+        已知$k$的操作總和=$\frac{k(k-1)}{2}$，故當$n=k+1$時，其得分總和為：\\
+        $$\frac{k(k-1)}{2}+k=\frac{k^2-k+2k}{2} = \frac{k^2+k}{2} = \frac{k(k+1)}{2} = \frac{(k+1)(k+1-1)}{2}$$
+        故得證。
+        
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,64 @@
+\documentclass[12pt,a4paper]{article}
+%加這個就可以設定字體
+\usepackage{fontspec}
+%使用xeCJK，其他的還有CJK或是xCJK
+\usepackage{xeCJK}
+\usepackage{enumerate}
+\usepackage{amssymb}
+\usepackage[margin=2cm]{geometry}
+
+%設定英文字型，不設的話就會使用預設的字型
+
+%設定中英文的字型
+%字型的設定可以使用系統內的字型，而不用像以前一樣另外安裝
+\setCJKmainfont{Noto Sans CJK TC}
+
+%中文自動換行
+\XeTeXlinebreaklocale "zh"
+
+%文字的彈性間距
+\XeTeXlinebreakskip = 0pt plus 1pt
+
+%設定段落之間的距離
+\setlength{\parskip}{0.3cm}
+
+%設定行距
+\linespread{1.5}\selectfont
+
+\title{資訊之芽手寫作業\\第二周}
+\author{李杰穎}
+\date{}
+
+\begin{document}
+\maketitle
+\begin{enumerate}
+\item 請回答以下問題：
+    \begin{enumerate}
+        \item $$\lim_{n\to\infty}\frac{3n+1}{n-1} = \lim_{n\to\infty}\frac{3+\frac{1}{n}}{1-\frac{1}{n}} = \frac{3}{1} = 3 $$
+        \item $$\lim_{n\to\infty}\frac{n}{n^2+1}=\lim_{n\to\infty}\frac{\frac{1}{n}}{1+\frac{1}{n^2}}=\frac{0}{1+0}=0$$
+        \item% 
+            $$\textrm{(1) 先證明}f(n)\in O(2^n)\Rightarrow f(n)\in O(2^{n+1})$$    
+            $$\because f(n) \in O(2^n)$$
+            $$\therefore \forall k \geq 0, \lim_{n\to\infty}\frac{f(n)}{2^n}=k$$
+            $$\therefore \lim_{n\to\infty}\frac{f(n)}{2^{n+1}}=\lim_{n\to\infty}\frac{f(n)}{2^n}\cdot\lim_{n\to\infty}\frac{2^n}{2^{n+1}}=k\cdot \frac{1}{2}=\frac{1}{2}k \textrm{(仍為常數)}$$
+            \begin{equation}
+                \therefore f(n) \in O(2^{n+1})
+            \end{equation}
+            $$\textrm{(2) 再證明}f(n)\in O(2^{n+1})\Rightarrow O(2^n)$$
+            $$\because f(n) \in O(2^{n+1})$$
+            $$\therefore \forall k \geq 0, \lim_{n\to\infty}\frac{f(n)}{2^{n+1}}=k$$
+            $$\therefore \lim_{n\to\infty}\frac{f(n)}{2^n}=\lim_{n\to\infty}\frac{f(n)}{2^n}\cdot\lim_{n\to\infty}\frac{2^{n+1}}{2^n}=2k\textrm{(仍為常數)}$$
+            \begin{equation}
+                \therefore f(n) \in O(2^{n})
+            \end{equation}
+            $$\therefore \textrm{由}(1), (2)\textrm{得證}$$
+        \item%
+            令$f(n)=(n+1)!$，則：
+            $$\therefore \lim_{n\to\infty}\frac{f(n)}{n!}=\lim_{n\to\infty}\frac{(n+1)!}{n!}=\lim_{n\to\infty}n+1$$
+            並非收斂為常數，故$f(n)\in O((n+1)!)\Rightarrow f(n) \in O(n!)$不成立。\\
+            故原命題不成立。
+        \item
+    \end{enumerate}
+    
+\end{enumerate}
+\end{document}
