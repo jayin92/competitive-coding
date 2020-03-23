@@ -76,26 +76,18 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 vector<int> a;
+ll ans = INF;
+ll allsum;
 int n, m;
 
-struct Node {
-    Node* parent;
-    vector<Node*> child;
-    
-    int remain;
-    int start;
-    int end;
-};
-
-void build(Node* root){
-    for(int i=0;i<=root -> remain;i++){
-        Node* tmp = new Node;
-        tmp -> parent = root;
-        tmp -> remain = root -> remain - i;
-        tmp -> start = 
+bool check(int k){
+    int idx = 0;
+    for(int i=0;i<m;i++){
+        ll tmp = 0;
+        while(idx < n && tmp + a[idx] <= k) tmp += a[idx++];
     }
+    return idx == n;
 }
-
 
 /********** Good Luck :) **********/
 int main () {
@@ -103,17 +95,24 @@ int main () {
     IOS();
     int t;
     cin >> t;
-    Node* root = new Node;
     while(t--){
         cin >> n >> m;
         a.resize(n);
+        ans = INF;
+        allsum = 0;
         for(int i=0;i<n;i++){
             cin >> a[i];
+            allsum += a[i];
         }
-        root -> parent = nullptr;
-        root -> remain = n;
-        root -> start = root -> num = 0;
-        build(root)
+        ll l = 0;
+        ll r = allsum;
+        while(r - l > 1){
+            ll mid = (r + l) >> 1;
+            if(check(mid)) r = mid; // bigger is easier
+            else l = mid;
+        }
+
+        cout << r << endl;
     }
 
     return 0;

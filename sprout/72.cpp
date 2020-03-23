@@ -75,10 +75,59 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<double> a, b, c;
+int n;
+
+
+
+double max_(double t){
+    double ans = 0;
+    for(int i=0;i<n;i++){
+        ans = max(ans, a[i] * (t - b[i]) * (t - b[i]) + c[i]);
+    }
+    debug(ans);
+    
+    return ans;
+}
+
+double solve(){
+    double l, r;
+    l = 0;
+    r = 300;
+
+    while(r - l > 1e-10){
+        // double x = max_(l);
+        double y = max_((r-l)/3 + l);
+        double z = max_(r - (r-l)/3);
+        // double w = max_(r);
+
+        if (y < z) r = r - (r-l)/3;
+        else if (y > z) l = (r-l)/3 + l;
+    }
+
+    return min(max_(l), max_(r));
+
+
+}
+
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
+    int t;
+    cin >> t;
+    cout << fixed << setprecision(5);
+    while(t--){
+        cin >> n;
+        a.resize(n);
+        b.resize(n);
+        c.resize(n);
+        REP(i, n) cin >> a[i] >> b[i] >> c[i];
+        double ans = solve();
+        cout << ans << endl;
+
+    }
 
     return 0;
 }

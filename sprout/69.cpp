@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -76,113 +75,58 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<ll> a, b, c, d;
+ll n, k;
 
-int sz;
-bool flag = false;
-vector<pii> em;
-
-
-void print(vector<vector<int>>& b){
-    for(int i=0;i<9;i++){
-        for(int j=0;j<9;j++){
-            cout << b[i][j] << " ";
+bool check(int m){
+    for(int i=0;i<n;i++) d[i] = a[i] + m * b[i];
+    sort(ALL(d));
+    bool flag = true;
+    for(int i=0;i<k;i++){
+        if(c[i] >= d[n-k+i]){
+            flag = false;
+            break;
         }
-        cout << endl;
     }
+
+    return flag;
 }
 
-bool check(pii pos, int val, vector<vector<int>>& b){ 
-    if(val == 0) return true;
-    // print(b);
-    // debug(pos, val);
-    for(int i=0;i<9;i++){
-        if((b[pos.X][i] == val) && (i != pos.Y)){
-            return false;
-        }
-    }
-    for(int i=0;i<9;i++){
-        if(b[i][pos.Y] == val && (i != pos.X)){
-            return false;
-        }
-    }
-    int x = (pos.X/3)*3;
-    int y = (pos.Y/3)*3;
-    for(int i=x;i<x+3;i++){
-        for(int j=y;j<y+3;j++){
-            if(b[i][j] == val && (i != pos.X || j != pos.Y)){
-                return false;
-            }
-        }
-    }
 
-    return true;
-}
-
-bool solve(vector<vector<int>>& b){
-    // debug(dep);
-
-    // debug(ori);
-    // print(b);
-    for(auto z:em){
-        int i = z.X;
-        int j = z.Y;
-        if(b[i][j] == 0){
-            for(int num=1;num<=9;num++){
-                // debug(i, j, num);
-                if(check(mp(i, j), num, b)){      
-                    // debug(i, j);              
-                    b[i][j] = num;
-                    if(solve(b)){
-                        return true;
-                    }
-                    b[i][j] = 0;
-                }
-            }
-            return false;
-        }
+int solve(){
+    ll l = 0;
+    ll r = iNF;
+    ll mid;
+    if(check(0)) return 0;
+    while(r - l > 1){
+        mid = (l + r) >> 1;
+        if(check(mid)) r = mid;
+        else l = mid;
     }
-    return true;
+    debug(l, r);
+    return r;
 }
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    string s;
-    vector<vector<int>> ori(9, vector<int>(9));
-    while(true){
-        cin >> s;
-        if(s == "end") break;
-        sz = 0;
-        REP(i, 9){
-            REP(j, 9){
-                int idx = i*9 + j;
-                ori[i][j] = (s[idx] == '.' ? 0 : s[idx] - '0');
-                if(ori[i][j] == 0){
-                    sz ++;
-                    em.eb(i, j);
-                }
-            }
+    int t;
+    cin >> t;
+    while(t--){
+        cin >> n >> k;
+        a.resize(n);
+        b.resize(n);
+        c.resize(n);
+        d.resize(n);
+        REP(i, n){
+            cin >> a[i] >> b[i];
         }
-        flag = false;
-        for(int i=0;i<9;i++){
-            for(int j=0;j<9;j++){
-                if(check(mp(i, j), ori[i][j], ori) == false){
-                    cout << "No solution." << endl;
-                    flag = true;
-                    break;
-                }   
-            }
-            if(flag) break;
-        }
-        if(flag) continue;
-        if(solve(ori)){
-            for(int i=0;i<9;i++) for(int j=0;j<9;j++) cout << ori[i][j];
-            cout << endl;
-        } else {
-            cout << "No solution." << endl;
-        }
-
+        REP(i, n) cin >> c[i];
+        sort(ALL(c));
+        ll ans = solve();
+        if(ans >= iNF - 100) cout << -1 << endl;
+        else cout << ans << endl; 
     }
 
     return 0;
