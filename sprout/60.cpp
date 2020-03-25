@@ -75,39 +75,58 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int a, b, c, d, m, s, t;
-int m_;
-int avg_s, speed;   
+int nor_v, boo_v, pps, rps;
+int init, dis, t;
+double avg;
 
-bool check(int t_){
-    if(speed == a)
-        return speed * t_ >= s;
-    else{
-        int tmp = 0;
-        debug(t_);
-        while(t_ > 0){
-            if(m_ >= c){
-                tmp += b;
-                m_ -= c;
-            }
-            else if (s - tmp <= a) tmp += a;
-            else m_ += d;
-            t_ --;
+pair<bool, ll> check(ll k){
+    ll t_tmp = 0;
+    ll dis_tmp = 0;
+    ll point_tmp = init;
+    bool flag1 = false;
+    // bool flag2 = false;
+    
+    // use boost
+    while(t_tmp < k){
+        debug(t_tmp, dis_tmp);
+        if(dis_tmp + nor_v >= dis){
+            dis_tmp += nor_v;
+            break;
         }
-        debug(tmp, s);
-        return tmp >= s;
+
+        if(point_tmp >= pps){
+            point_tmp -= pps;
+            dis_tmp += boo_v;
+        } else {
+            debug(ceil(double((pps - point_tmp)) / double(rps)));
+            if(k - t_tmp <= ceil(double((pps - point_tmp)) / double(rps))){
+                debug(dis_tmp);
+                dis_tmp += nor_v * (k - t_tmp);
+                debug(dis_tmp);
+                break;
+            }
+            else 
+                point_tmp += rps;
+        }
+
+        t_tmp ++;
     }
+
+    if(dis_tmp >= dis) flag1 = true;
+
+    return mp(flag1, dis_tmp);
+    // if((init / pps) * max(nor_v, boo_v) + (k - init / pps) * nor_v >= dis) flag2 = true;
+    // return mp((flag1 || flag2), max((init / pps) * max(nor_v, boo_v) + (k - init / pps) * nor_v, dis_tmp));
 }
 
-int solve(){
-    int l, r;
-    l = 0;
-    r = t;
+
+
+ll solve(){
+    ll l = 0;
+    ll r = t;
     while(r - l > 1){
-        m_ = m % c;
-        debug(m_);
-        int mid = (l + r) >> 1;
-        if(check(mid)){
+        ll mid = (l + r) >> 1;
+        if(check(mid).first){
             r = mid;
         } else {
             l = mid;
@@ -116,33 +135,24 @@ int solve(){
 
     return r;
 }
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    
-    cin >> a >> b >> c >> d >> m >> s >> t;
-    avg_s = b * d / c;
-    s -= b * (m / c);
-    t -= m / c;
-    m_ = m % c;
-    debug(avg_s);
-    speed = max(avg_s, a);
-    debug(speed);
-    
-    int t1 = solve();
-    debug(s, t1);
-    if(t1 == t){
+    cin >> nor_v >> boo_v >> pps >> rps;
+    cin >> init >> dis >> t;
+
+    ll ans = solve();
+    if(ans == t && t != 1){
         cout << "No" << endl;
-        if(t1 == 1){
-            cout << b * (m / c) + t1 * a << endl;
-        } else {
-            cout << b * (m / c) + t1 * speed << endl;
-        }
+        cout << check(t).second << endl;        
     } else {
         cout << "Yes" << endl;
-        cout << t1  + m / c << endl;
+        cout << ans << endl;
     }
+
+
 
     return 0;
 }
