@@ -98,7 +98,7 @@ pair<bool, ll> check(ll k){
             point_tmp -= pps;
             dis_tmp += boo_v;
         } else {
-            debug(ceil(double((pps - point_tmp)) / double(rps)));
+            debug(double((pps - point_tmp)) / double(rps));
             if(k - t_tmp <= ceil(double((pps - point_tmp)) / double(rps))){
                 debug(dis_tmp);
                 dis_tmp += nor_v * (k - t_tmp);
@@ -115,8 +115,10 @@ pair<bool, ll> check(ll k){
     if(dis_tmp >= dis) flag1 = true;
 
     return mp(flag1, dis_tmp);
-    // if((init / pps) * max(nor_v, boo_v) + (k - init / pps) * nor_v >= dis) flag2 = true;
-    // return mp((flag1 || flag2), max((init / pps) * max(nor_v, boo_v) + (k - init / pps) * nor_v, dis_tmp));
+    // ll nor_dis = (init / pps) * boo_v + (k - init / pps) * nor_v;
+    
+    // if(nor_dis >= dis) flag2 = true;
+    // return mp((flag1 || flag2), max(nor_dis, dis_tmp));
 }
 
 
@@ -144,7 +146,7 @@ int main () {
     cin >> init >> dis >> t;
 
     ll ans = solve();
-    if(ans == t && t != 1){
+    if(check(t).second < dis){
         cout << "No" << endl;
         cout << check(t).second << endl;        
     } else {
