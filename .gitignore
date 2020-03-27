@@ -8,6 +8,7 @@
 *.gcno
 .vscode
 *.out
+tmp.cpp
 
 
 # latex

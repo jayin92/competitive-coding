@@ -75,58 +75,26 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-
-int nor_v, boo_v, pps, rps;
-
-
-int dis_time(int init, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-    
-    if(init/pps >= t){
-        return t * boo_v;
-    } else {
-        return init / pps * boo_v + (t - init / pps) * nor_v;  
-    }
-}
-
-int win_time(int init, int dis, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-
-    if((init / pps) * boo_v >= dis){
-        return ceil(double(dis)/boo_v) + boost;
-    } else {
-        return ceil(double(dis-(init/pps)*boo_v)/nor_v) + boost + init / pps;
-    }
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int init, dis, t;
-    cin >> nor_v >> boo_v >> pps >> rps;
-    cin >> init >> dis >> t;
-    int max_dis = 0;
-    int min_time = iNF;
-    for(int i=0;i<t;i++){
-        int dis_ = dis_time(init, t, i);
-        if(dis_ >= dis){
-            min_time = min(min_time, win_time(init, dis, t, i));
+    string a, ans;
+    string s;
+    int n, t;
+    cin >> n;
+    while(n --){
+        cin >> s >> t;
+        if(s == "up"){
+            for(*   )
+        } else if (s == "down"){
+
+        } else if (s == "right"){
+
         } else {
-            max_dis = max(max_dis, dis_);
+
         }
     }
-    if(min_time == iNF){
-        cout << "No" << endl;
-        cout << max_dis << endl;
-    } else {
-        cout << "Yes" << endl;
-        cout << min_time << endl;
-    }
-
-        
-
     return 0;
+
 }
