@@ -75,60 +75,100 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+pii dir[4] = {mp(1, 0), mp(-1, 0), mp(0, 1), mp(0, -1)};
+char ma[100][100];
+bool vis[100][100];
+int n, m;
+// int ans = iNF;
+queue<pii> q;
 
-int nor_v, boo_v, pps, rps;
+// void dfs(pii cur, pii par, int step){
+//     // vis[cur.X][cur.Y] = true;
+//     if(step >= ans) return;
+//     debug(cur, par, step);
+//     int i, j;
+//     for(int k=0;k<4;k++){
+//         i = cur.X + dir[k].X;
+//         j = cur.Y + dir[k].Y;
+//         if(0 <= i && i < n && 0 <= j && j < m && ma[i][j] != '#' && i != par.X && j != par.Y){
+//             if(ma[i][j] == '@'){
+//                 ans = min(ans, step+1);
+//             } else if(ma[i][j] == '.'){
+//                 if(step >= ans) return;
+//                 dfs(mp(i, j), cur, step+1);
+//             }
+//         }
+//     } 
+// }
 
-// 枚舉蓄氣的時間
-int dis_time(int init, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-    
-    if(init/pps >= t){
-        return t * boo_v;
-    } else {
-        return init / pps * boo_v + (t - init / pps) * nor_v;  
+
+int bfs(pii pos){
+    int step = 0;
+    q.push(pos);
+    q.push(mp(-1, -1));
+
+    while(q.size() != 1){
+        
+        pii cur = q.front();
+        debug(cur, step);
+        q.pop();
+        if(cur.X == -1){
+            step++;
+            q.push(mp(-1, -1));
+            continue;
+        }
+        vis[cur.X][cur.Y] = true;
+        int i, j;
+        for(int k=0;k<4;k++){
+            i = cur.X + dir[k].X;
+            j = cur.Y + dir[k].Y;
+            if(0 <= i && i < n && 0 <= j && j < m && ma[i][j] != '#'){
+                if(ma[i][j] == '@'){
+                    return step + 1;
+                } else if(ma[i][j] == '.' && vis[i][j] == false){
+                    q.push(mp(i, j));
+                }
+            }
+        }
     }
+
+    return iNF;
 }
 
-int win_time(int init, int dis, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-
-    if((init / pps) * boo_v >= dis){
-        return ceil(double(dis)/boo_v) + boost;
-    } else {
-        return ceil(double(dis-(init/pps)*boo_v)/nor_v) + boost + init / pps;
-    }
-}
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int init, dis, t;
-    cin >> nor_v >> boo_v >> pps >> rps;
-    cin >> init >> dis >> t;
-    int max_dis = 0;
-    int min_time = iNF;
-    for(int i=0;i<=t;i++){
-        int dis_ = dis_time(init, t, i);
-        // cout << dis_ << " ";
-        if(dis_ >= dis){
-            min_time = min(min_time, win_time(init, dis, t, i));
-        } else {
-            max_dis = max(max_dis, dis_);
+    while(true){
+        cin >> n;
+        if(n == 0) break;
+        string s;
+        cin >> s;
+        m = s.size();
+        pii cat;
+        for(int j=0;j<m;j++) ma[0][j] = s[j];
+        REP(i, n) REP(j, m) vis[i][j] = false;
+        for(int i=1;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(i == 0) break;
+                cin >> ma[i][j];
+                if(ma[i][j] == 'K'){
+                    cat.X = i;
+                    cat.Y = j;
+                } 
+            }
         }
-    }
-    // cout << endl;
-    if(min_time == iNF){
-        cout << "No" << endl;
-        cout << max_dis << endl;
-    } else {
-        cout << "Yes" << endl;
-        cout << min_time << endl;
-    }
+        while(!q.empty()) q.pop();
+        int ans = bfs(cat);
+        // dfs(cat, mp(-1, -1), 0);
+        if(ans == iNF){
+            cout << "= =\"" << endl;
+        } else {
+            cout << ans << endl;
+        }
 
-        
+    }
 
     return 0;
 }

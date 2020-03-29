@@ -71,30 +71,72 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 200005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<int> adj[MAXN];
+vector<bool> vis(MAXN, false);
+vector<int> col(MAXN, 0);
+bool bfs(int src, int par){
+    queue<pii> q;
+    q.push(mp(src, par));
+    int s, p;
+    while(!q.empty()){
+        s = q.front().X;
+        p = q.front().Y;
+        q.pop();
+
+        if(p == -1) col[s] = 1;
+        else col[s] = col[p] * -1;
+        
+        for(auto i:adj[s]){
+            if(col[i] == 0) q.push(mp(i, s));
+            else if(col[i] != col[s] * -1) return true;
+        }
+
+
+    }
+
+    return false;
+}
+
 /********** Good Luck :) **********/
-int main () {
+int main() {
     TIME(main);
     IOS();
-    string a, ans;
-    string s;
-    int n, t;
-    cin >> n;
-    while(n --){
-        cin >> s >> t;
-        if(s == "up"){
-            for(*   )
-        } else if (s == "down"){
-
-        } else if (s == "right"){
-
-        } else {
-
+    while(true){
+        int n, m;
+        cin >> n;
+        if(n == 0) break;
+        cin >> m;
+        int a, b;
+        for(int i=0;i<n;i++){
+            adj[i].clear();
+            col[i] = 0;
         }
+        for(int i=0;i<m;i++){
+            cin >> a >> b;
+            adj[a].push_back(b);
+            adj[b].push_back(a);
+        }
+        bool ans = false;
+        for(int i=0;i<n;i++){
+            if(col[i] != 0) continue;
+            if(bfs(i, -1)){
+                ans = true;
+                break;
+            }
+        }
+        if(ans){
+            cout << "RAINBOW." << endl;
+        } else {
+            cout << "NORMAL." << endl;
+        }
+        
     }
-    return 0;
 
+
+
+    return 0;
 }

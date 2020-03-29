@@ -76,59 +76,112 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 
-int nor_v, boo_v, pps, rps;
 
-// 枚舉蓄氣的時間
-int dis_time(int init, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-    
-    if(init/pps >= t){
-        return t * boo_v;
-    } else {
-        return init / pps * boo_v + (t - init / pps) * nor_v;  
+char ma[1000][1000];
+int n;
+int ans = -1;
+char x;
+queue<pii> q;
+
+pii dir[8] = {mp(1, 0), mp(-1, 0), mp(0, 1), mp(0, -1), mp(1, 1), mp(1, -1), mp(-1, 1), mp(-1, -1)};
+
+// TODO:parent
+
+char mix(char a, char b){
+    if(a == 'E') return b;
+    if(a == 'R' && b == 'Y') return 'O';
+    if(a == 'R' && b == 'B') return 'P';
+    if(a == 'Y' && b == 'B') return 'G';
+    if(a == 'O' || a == 'P' || a == 'G' || a == 'D') return 'D';
+
+    swap(a, b);
+
+    if(a == 'E') return b;
+    if(a == 'R' && b == 'Y') return 'O';
+    if(a == 'R' && b == 'B') return 'P';
+    if(a == 'Y' && b == 'B') return 'G';
+    if(a == 'O' || a == 'P' || a == 'G' || a == 'D') return 'D';    
+
+    return 'E';
+}
+
+int count(){
+    int res = 0;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(ma[i][j] == x) res ++;
+        }
+    }
+    return res;
+}
+
+void print(){
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(ma[i][j] == 'E') cout << "  "; 
+            else cout << ma[i][j] << " ";
+        }
+        cout << endl;
     }
 }
 
-int win_time(int init, int dis, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-
-    if((init / pps) * boo_v >= dis){
-        return ceil(double(dis)/boo_v) + boost;
-    } else {
-        return ceil(double(dis-(init/pps)*boo_v)/nor_v) + boost + init / pps;
+void bfs(){
+    while(q.size() != 1){
+        pii pos = q.front();
+        char col = ma[pos.X][pos.Y];
+        // debug(pos);
+        q.pop();
+        if(pos.X == -1){
+            q.push(mp(-1, -1));
+            ans = max(ans, count());
+            cout << endl;
+            print();
+            continue;
+        }
+        for(int k=0;k<8;k++){
+            int i, j;
+            i = pos.X + dir[k].X;
+            j = pos.Y + dir[k].Y;
+            // debug(i, j);
+            if(0 <= i && i < n && 0 <= j && j < n && ma[i][j] != 'D'){
+                ma[i][j] = mix(col, ma[i][j]);
+                q.push(mp(i, j));
+            }
+        }
+        
     }
+
 }
+
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int init, dis, t;
-    cin >> nor_v >> boo_v >> pps >> rps;
-    cin >> init >> dis >> t;
-    int max_dis = 0;
-    int min_time = iNF;
-    for(int i=0;i<=t;i++){
-        int dis_ = dis_time(init, t, i);
-        // cout << dis_ << " ";
-        if(dis_ >= dis){
-            min_time = min(min_time, win_time(init, dis, t, i));
-        } else {
-            max_dis = max(max_dis, dis_);
+    int t;
+    cin >> t;
+    while(t--){
+        cin >> n;
+        REP(i, n){
+            REP(j, n){
+                ma[i][j] = 'E';
+            }
         }
-    }
-    // cout << endl;
-    if(min_time == iNF){
-        cout << "No" << endl;
-        cout << max_dis << endl;
-    } else {
-        cout << "Yes" << endl;
-        cout << min_time << endl;
-    }
+        for(int i=0;i<3;i++){
+            char c;
+            int a, b;
+            cin >> c >> a >> b;
+            ma[a][b] = c;
+            q.push(mp(a, b));
+        }
+        cin >> x;
+        q.push(mp(-1, -1));
+        bfs();
+        cout << ans << endl;
+
 
         
+    }
 
     return 0;
 }

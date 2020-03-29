@@ -75,29 +75,29 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<vector<char>> ma(1005, vector<char>(1005));
+int n, m;
 
-int nor_v, boo_v, pps, rps;
+pii dir[4] = {mp(1, 0), mp(-1, 0), mp(0, 1), mp(0, -1)};
 
-// 枚舉蓄氣的時間
-int dis_time(int init, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-    
-    if(init/pps >= t){
-        return t * boo_v;
-    } else {
-        return init / pps * boo_v + (t - init / pps) * nor_v;  
-    }
-}
-
-int win_time(int init, int dis, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-
-    if((init / pps) * boo_v >= dis){
-        return ceil(double(dis)/boo_v) + boost;
-    } else {
-        return ceil(double(dis-(init/pps)*boo_v)/nor_v) + boost + init / pps;
+void bfs(pii src){
+    queue<pii> q;
+    q.push(src);
+    while(!q.empty()){
+        pii cur = q.front();
+        q.pop();
+        ma[cur.X][cur.Y] = '#';
+        for(int k=0;k<4;k++){
+            int i, j;
+            i = cur.X + dir[k].X;
+            j = cur.Y + dir[k].Y;
+            if(0 <= i && i < n && 0 <= j && j < m){
+                if(ma[i][j] == '.'){
+                    ma[i][j] = '#';
+                    q.push(mp(i, j));
+                }
+            }
+        }
     }
 }
 
@@ -105,30 +105,26 @@ int win_time(int init, int dis, int t, int boost){
 int main () {
     TIME(main);
     IOS();
-    int init, dis, t;
-    cin >> nor_v >> boo_v >> pps >> rps;
-    cin >> init >> dis >> t;
-    int max_dis = 0;
-    int min_time = iNF;
-    for(int i=0;i<=t;i++){
-        int dis_ = dis_time(init, t, i);
-        // cout << dis_ << " ";
-        if(dis_ >= dis){
-            min_time = min(min_time, win_time(init, dis, t, i));
-        } else {
-            max_dis = max(max_dis, dis_);
+    int t;
+    cin >> t;
+    while(t--){
+        cin >> n >> m;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                cin >> ma[i][j];
+            }
         }
+        int ans = 0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(ma[i][j] == '.'){
+                    ans ++;
+                    bfs(mp(i, j));
+                }
+            }
+        }
+        cout << ans << endl;
     }
-    // cout << endl;
-    if(min_time == iNF){
-        cout << "No" << endl;
-        cout << max_dis << endl;
-    } else {
-        cout << "Yes" << endl;
-        cout << min_time << endl;
-    }
-
-        
 
     return 0;
 }
