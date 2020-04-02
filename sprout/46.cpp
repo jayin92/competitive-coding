@@ -71,45 +71,60 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 1005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 
+struct block{
+    pii pos;
+    pii par;
+    char color;
 
-char ma[1000][1000];
+    block(pii pos_, pii par_, char color_){
+        pos = pos_;
+        par = par_;
+        color = color_;
+    }
+};
+
+
+bool my[MAXN][MAXN];
+bool mb[MAXN][MAXN];
+bool mr[MAXN][MAXN];
 int n;
-int ans = -1;
+int ans = 0;
+int tmp = 0;
 char x;
-queue<pii> q;
+queue<block> q;
 
 pii dir[8] = {mp(1, 0), mp(-1, 0), mp(0, 1), mp(0, -1), mp(1, 1), mp(1, -1), mp(-1, 1), mp(-1, -1)};
 
 // TODO:parent
 
-char mix(char a, char b){
-    if(a == 'E') return b;
-    if(a == 'R' && b == 'Y') return 'O';
-    if(a == 'R' && b == 'B') return 'P';
-    if(a == 'Y' && b == 'B') return 'G';
-    if(a == 'O' || a == 'P' || a == 'G' || a == 'D') return 'D';
-
-    swap(a, b);
-
-    if(a == 'E') return b;
-    if(a == 'R' && b == 'Y') return 'O';
-    if(a == 'R' && b == 'B') return 'P';
-    if(a == 'Y' && b == 'B') return 'G';
-    if(a == 'O' || a == 'P' || a == 'G' || a == 'D') return 'D';    
+char check(int i, int j){
+    bool y, b, r;
+    y = my[i][j];
+    b = mb[i][j];
+    r = mr[i][j];
+    if(y && b && r) return 'D';
+    if(y && b) return 'G';
+    if(y && r) return 'O';
+    if(b && r) return 'P';
+    if(y) return 'Y';
+    if(b) return 'B';
+    if(r) return 'R';
 
     return 'E';
 }
 
+
 int count(){
     int res = 0;
+    // debug(x);
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            if(ma[i][j] == x) res ++;
+            if(check(i, j) == x) res ++;
         }
     }
     return res;
@@ -118,24 +133,28 @@ int count(){
 void print(){
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            if(ma[i][j] == 'E') cout << "  "; 
-            else cout << ma[i][j] << " ";
+            if(check(i, j) == 'E') cout << "  "; 
+            else cout << check(i, j) << " ";
         }
         cout << endl;
     }
 }
 
 void bfs(){
-    while(q.size() != 1){
-        pii pos = q.front();
-        char col = ma[pos.X][pos.Y];
+    while(q.size() > 2){
+        pii pos = q.front().pos;
+        pii par = q.front().par;
+        char col = q.front().color;
         // debug(pos);
+        // debug(ans);
         q.pop();
         if(pos.X == -1){
-            q.push(mp(-1, -1));
-            ans = max(ans, count());
-            cout << endl;
-            print();
+            q.push(block(mp(-1, -1), mp(-1, -1), 'E'));
+            debug(ans, tmp);
+            ans = max(ans, tmp);
+            // tmp = 0;
+            // cout << endl;
+            // print();
             continue;
         }
         for(int k=0;k<8;k++){
@@ -143,9 +162,24 @@ void bfs(){
             i = pos.X + dir[k].X;
             j = pos.Y + dir[k].Y;
             // debug(i, j);
-            if(0 <= i && i < n && 0 <= j && j < n && ma[i][j] != 'D'){
-                ma[i][j] = mix(col, ma[i][j]);
-                q.push(mp(i, j));
+            if(0 <= i && i < n && 0 <= j && j < n && check(i, j) != 'D' && mp(i, j) != par){
+                if(col == 'Y' && my[i][j] == false){
+                    if(check(i, j) == x) tmp --;
+                    my[i][j] = true;
+                    if(check(i, j) == x) tmp ++;
+                    q.push(block(mp(i, j), pos, col));
+                } else if(col == 'B' && mb[i][j] == false){
+                    if(check(i, j) == x) tmp --;
+                    mb[i][j] = true;
+                    if(check(i, j) == x) tmp ++;
+                    q.push(block(mp(i, j), pos, col));
+                } else if(col == 'R' && mr[i][j] == false){
+                    if(check(i, j) == x) tmp --;
+                    mr[i][j] = true;
+                    if(check(i, j) == x) tmp ++;
+                    q.push(block(mp(i, j), pos, col));
+                }
+                
             }
         }
         
@@ -161,21 +195,28 @@ int main () {
     int t;
     cin >> t;
     while(t--){
+        while(!q.empty()) q.pop();
+        ans = 0;
+        tmp = 0;
         cin >> n;
         REP(i, n){
             REP(j, n){
-                ma[i][j] = 'E';
+                my[i][j] = mb[i][j] = mr[i][j] = false;
             }
         }
+        q.push(block(mp(-1, -1), mp(-1, -1), 'E'));
         for(int i=0;i<3;i++){
             char c;
             int a, b;
             cin >> c >> a >> b;
-            ma[a][b] = c;
-            q.push(mp(a, b));
+            if(c == 'Y') my[a][b] = true;
+            else if(c == 'B') mb[a][b] = true;
+            else if(c == 'R') mr[a][b] = true;
+            q.push(block(mp(a, b), mp(-1, -1), c));
         }
         cin >> x;
-        q.push(mp(-1, -1));
+        for(int i=0;i<n;i++) for(int j=0;j<n;j++) if(check(i, j) == x) tmp ++;
+        q.push(block(mp(-1, -1), mp(-1, -1), 'E'));
         bfs();
         cout << ans << endl;
 
