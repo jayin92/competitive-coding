@@ -79,6 +79,66 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
+    while(true){
+        bool flag = true;
+        int n = 6;
+        vector<int> a(7);
+        for(int i=1;i<=n;i++){
+            cin >> a[i];
+            if(a[i] != 0) flag = false;
+        }
+        if(flag) break;
+
+        ll ans = 0;
+        ans += a[6];
+        a[6] = 0;
+        ans += a[3] / 4;
+        a[3] %= 4;
+        ans += a[5];
+        a[1] -= min(a[1], a[5] * 11);
+        a[5] = 0;
+        debug(a[1]);
+        ans += a[4];
+        if(a[2] < a[4] * 5) a[1] -= min(a[1], ((a[4] * 5) - a[2]) * 4);
+        a[2] -= min(a[2], a[4] * 5);
+        a[4] = 0;
+        debug(a[2]);
+        debug(a[1]);
+        debug(ans);
+        if(a[3] == 1){
+            ans ++;
+            if(a[2] < 5){
+                a[1] -= min(a[1], 27 - a[2] * 4);
+            } else {
+                a[1] -= min(a[1], 7);                
+            }
+            a[2] -= min(a[2], 5);
+        } else if(a[3] == 2){
+            ans ++;
+            if(a[2] < 3){
+                a[1] -= min(a[1], 18 - a[2] * 4);
+            } else {
+                a[1] -= min(a[1], 6);
+            }
+            a[2] -= min(a[2], 3);
+        } else if(a[3] == 3){
+            ans ++;
+            if(a[2] < 1){
+                a[1] -= min(a[1], 9);
+            } else {
+                a[1] -= min(a[1], 5);
+            }
+            a[2] -= min(a[2], 1);
+        }
+        debug(a);
+        ans += a[2] / 9;
+        a[2] %= 9;
+        ans += a[1] / 36;
+        a[1] %= 36;
+        debug(((double(a[2] * 4) + double(a[1]))/36.0));
+        ans += ceil(((double(a[2] * 4) + double(a[1]))/36.0));
+        cout << ans << endl;
+    }
 
     return 0;
 }
