@@ -75,60 +75,13 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-
-int nor_v, boo_v, pps, rps;
-
-// 枚舉蓄氣的時間
-int dis_time(int init, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-    
-    if(init/pps >= t){
-        return t * boo_v;
-    } else {
-        return init / pps * boo_v + (t - init / pps) * nor_v;  
-    }
-}
-
-int win_time(int init, int dis, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-
-    if((init / pps) * boo_v >= dis){
-        return ceil(double(dis)/boo_v) + boost;
-    } else {
-        return ceil(double(dis-(init/pps)*boo_v)/nor_v) + boost + init / pps;
-    }
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int init, dis, t;
-    cin >> nor_v >> boo_v >> pps >> rps;
-    cin >> init >> dis >> t;
-    int max_dis = 0;
-    int min_time = iNF;
-    for(int i=0;i<=t;i++){
-        int dis_ = dis_time(init, t, i);
-        // cout << dis_ << " ";
-        if(dis_ >= dis){
-            min_time = min(min_time, win_time(init, dis, t, i));
-        } else {
-            max_dis = max(max_dis, dis_);
-        }
-    }
-    // cout << endl;
-    if(min_time == iNF){
-        cout << "No" << endl;
-        cout << max_dis << endl;
-    } else {
-        cout << "Yes" << endl;
-        cout << min_time << endl;
-    }
-
-        
+    string s;
+    cin >> s;
+    cout << (s[6] - '0') % 2 << endl;
 
     return 0;
 }

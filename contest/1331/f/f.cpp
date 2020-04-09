@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -75,26 +76,60 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+string ele[118] = {"H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm","Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og"};
+bool check(string s){
+    for(int i=0;i<118;i++) if(s == ele[i]) return true;
+
+    return false;
+}
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    string a, ans;
+
     string s;
-    int n, t;
-    cin >> n;
-    while(n --){
-        cin >> s >> t;
-        if(s == "up"){
-            for(*   )
-        } else if (s == "down"){
-
-        } else if (s == "right"){
-
-        } else {
-
+    int n = 118;
+    cin >> s;
+    int sz = s.size();
+    string tmp = "";
+    bool flag = false;
+    for(int i=0;i<n;i++) transform(ele[i].begin(), ele[i].end(), ele[i].begin(), ::toupper);
+    
+    for(int i=0;i <= pow(2, sz+1);i++){
+        flag = false;
+        int idx = 0;
+        int cnt = i;
+        debug(cnt);
+        while(idx < sz){
+            tmp = "";
+            if(cnt % 2 == 0){
+                tmp += s[idx];
+                tmp += s[idx+1];
+                debug(tmp);
+                if(!check(tmp)){
+                    flag = true;
+                    break;
+                } else {
+                    idx += 2;
+                }
+            } else {
+                tmp += s[idx];
+                if(!check(tmp)){
+                    flag = true;
+                    break;
+                } else {
+                    idx += 1;
+                }
+            }
+            cnt /= 2;
+        }
+        if(!flag){
+            break;
         }
     }
-    return 0;
 
+    if(!flag) cout << "YES" << endl;
+    else cout << "NO" << endl;
+    return 0;
 }

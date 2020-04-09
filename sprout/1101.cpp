@@ -71,64 +71,72 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 200005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<int> adj[MAXN];
+vector<bool> vis(MAXN, false);
+vector<int> col(MAXN, 0);
+bool bfs(int src, int par){
+    queue<pii> q;
+    q.push(mp(src, par));
+    int s, p;
+    while(!q.empty()){
+        s = q.front().X;
+        p = q.front().Y;
+        q.pop();
 
-int nor_v, boo_v, pps, rps;
+        if(p == -1) col[s] = 1;
+        else col[s] = col[p] * -1;
+        
+        for(auto i:adj[s]){
+            if(col[i] == 0) q.push(mp(i, s));
+            else if(col[i] != col[s] * -1) return true;
+        }
 
-// 枚舉蓄氣的時間
-int dis_time(int init, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-    
-    if(init/pps >= t){
-        return t * boo_v;
-    } else {
-        return init / pps * boo_v + (t - init / pps) * nor_v;  
+
     }
-}
 
-int win_time(int init, int dis, int t, int boost){
-    init += boost * rps;
-    t -= boost;
-
-    if((init / pps) * boo_v >= dis){
-        return ceil(double(dis)/boo_v) + boost;
-    } else {
-        return ceil(double(dis-(init/pps)*boo_v)/nor_v) + boost + init / pps;
-    }
+    return false;
 }
 
 /********** Good Luck :) **********/
-int main () {
+int main() {
     TIME(main);
     IOS();
-    int init, dis, t;
-    cin >> nor_v >> boo_v >> pps >> rps;
-    cin >> init >> dis >> t;
-    int max_dis = 0;
-    int min_time = iNF;
-    for(int i=0;i<=t;i++){
-        int dis_ = dis_time(init, t, i);
-        // cout << dis_ << " ";
-        if(dis_ >= dis){
-            min_time = min(min_time, win_time(init, dis, t, i));
-        } else {
-            max_dis = max(max_dis, dis_);
+    while(true){
+        int n, m;
+        cin >> n;
+        if(n == 0) break;
+        cin >> m;
+        int a, b;
+        for(int i=0;i<n;i++){
+            adj[i].clear();
+            col[i] = 0;
         }
-    }
-    // cout << endl;
-    if(min_time == iNF){
-        cout << "No" << endl;
-        cout << max_dis << endl;
-    } else {
-        cout << "Yes" << endl;
-        cout << min_time << endl;
+        for(int i=0;i<m;i++){
+            cin >> a >> b;
+            adj[a].push_back(b);
+            adj[b].push_back(a);
+        }
+        bool ans = false;
+        for(int i=0;i<n;i++){
+            if(col[i] != 0) continue;
+            if(bfs(i, -1)){
+                ans = true;
+                break;
+            }
+        }
+        if(ans){
+            cout << "RAINBOW." << endl;
+        } else {
+            cout << "NORMAL." << endl;
+        }
+        
     }
 
-        
+
 
     return 0;
 }
