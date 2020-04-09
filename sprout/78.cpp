@@ -77,51 +77,8 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 /********** Good Luck :) **********/
 int main () {
-    // TIME(main);
-    // IOS();
-    int t;
-    cin >> t;
-    while(t--){
-        ll n;
-        cin >> n;
-        vector<int> p(10);
-        for(int i=2;i<10;i++) p[i] = 0;
-        if(n == 1){
-            cout << 1 << endl;
-            continue;
-        }
-        for(int i=2;i<10;i++){
-            while(n % i == 0){
-                p[i] ++;
-                n /= i;
-            }
-        }
-
-        if(n != 1){
-            cout << -1 << endl;
-            continue;
-        }
-        string ans = "";
-        for(int i=0;i<p[3]/2;i++) ans += "9";
-        p[3] %= 2;
-        for(int i=0;i<p[2]/3;i++) ans += "8";
-        p[2] %= 3;
-        for(int i=0;i<p[7];i++) ans += "7";
-        int tmp = min(p[2], p[3]);
-        for(int i=0;i<tmp;i++) ans += "6";
-        p[2] -= tmp;
-        p[3] -= tmp;
-        for(int i=0;i<p[5];i++) ans += "5";
-        for(int i=0;i<p[2]/2;i++) ans += "4";
-        p[2] %= 2;
-        for(int i=0;i<p[3];i++) ans += "3";
-        for(int i=0;i<p[2];i++) ans += "2";
-
-        
-        reverse(ALL(ans));
-        cout << ans << endl;
-        
-    }
+    TIME(main);
+    IOS();
 
     return 0;
 }
