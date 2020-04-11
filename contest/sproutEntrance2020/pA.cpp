@@ -8,7 +8,7 @@ int main(){
 	
 	cin >> n;
 	ll a[n];
-	ll b[n];
+	// ll b[n];
 	ll ans[n+1];
 	for(int i=0;i<n;i++){
 		cin >> a[i];
@@ -29,7 +29,8 @@ int main(){
 		}
 	}
 	for(int i=1;i<=n;i++){
-		cout << ans[i] << " ";
+		cout << ans[i];
+		if(i != n) cout << " ";
 	}
 	cout << endl;
 	

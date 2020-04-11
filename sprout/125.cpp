@@ -68,34 +68,64 @@ public:
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
 
-const ll MOD = 1000000007;
+const ll MOD = 10000019;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 1000000;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+vector<int> a;
+vector<int> b(MAXN);
+long long count(int l, int r){
+    // debug(a);
+    if(l + 1 == r) return 0;
+    int m = (l + r) >> 1;
+    long long cnt = count(l, m);
+    cnt += count(m, r);
+    int rr = m;
+    ll tmp = 0;
+    int cnt_ = 0;
+    for(int ll_ = l;ll_<m;ll_++){
+        while(rr < r && a[rr]<a[ll_]){
+            tmp += a[rr++];
+            cnt_ ++;
+        }
+        debug(l,r , ll_, tmp);
+        cnt += (a[ll_] * cnt_) + tmp;
+        cnt %= MOD;
+    }
+    int p1, p2;
+    p1 = l;
+    p2 = m;
+    for(int i=0;i<r-l;i++){
+        if(p2 == r){
+            b[i] = a[p1++];
+        } else if(p1 == m){
+            b[i] = a[p2++];
+        } else if(a[p1] < a[p2]){
+            b[i] = a[p1++];
+        } else {
+            b[i] = a[p2++];
+        }
+    }
+    for(int i=0;i<r-l;i++){
+        a[i+l] = b[i];
+    }
+    // debug(a);
 
+    return cnt;
+}
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-    while(t--){
-        int n, m;
-        cin >> n >> m;
-        vector<int> a(n);
-        vector<int> b(m);
-        REP(i, n) cin >> a[i];
-        REP(i, m) cin >> b[i];
+    int n;
+    cin >> n;
+    a.resize(n);
+    REP(i, n) cin >> a[i];
+    ll ans = count(0, n);
+    cout << ans % MOD << endl;
 
-        sort(ALL(b));
-        int ans = 0;
-        int idx = 0;
-        while(true){
-            
-        }
-    }
 
     return 0;
 }

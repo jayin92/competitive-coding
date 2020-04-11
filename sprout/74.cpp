@@ -82,19 +82,45 @@ int main () {
     int t;
     cin >> t;
     while(t--){
-        int n, m;
-        cin >> n >> m;
+        int n;
+        cin >> n;
         vector<int> a(n);
-        vector<int> b(m);
         REP(i, n) cin >> a[i];
-        REP(i, m) cin >> b[i];
-
-        sort(ALL(b));
+        int status = 1; // 1 : high, 0 : low
         int ans = 0;
-        int idx = 0;
-        while(true){
-            
+        int pre_h = -1;
+        for(int i=0;i<n-1;i++){
+            if(status == 1){
+                if(i + 1 == n - 1){
+                    if(a[i] > pre_h){
+                        ans ++;
+                        status = 0;
+                        pre_h = a[i];
+                    }
+                }
+                if(a[i+1] >= a[i]){
+                    continue;
+                } else if(pre_h < a[i]){
+                    ans ++;
+                    status = 0;
+                    pre_h = a[i];
+                }
+            } else {
+                if(a[i+1] <= a[i]){
+                    continue;
+                } else if(pre_h > a[i]){
+                    ans ++;
+                    status = 1;
+                    pre_h = a[i];
+                }
+            }
         }
+        debug(ans);
+        if(status == 1){
+            if(pre_h < a[n-1]) ans ++;
+            else ans --;
+        }
+        cout << ans << endl;
     }
 
     return 0;

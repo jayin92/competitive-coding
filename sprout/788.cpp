@@ -82,20 +82,11 @@ int main () {
     int t;
     cin >> t;
     while(t--){
-        int n, m;
-        cin >> n >> m;
+        int n;
+        cin >> n;
         vector<int> a(n);
-        vector<int> b(m);
         REP(i, n) cin >> a[i];
-        REP(i, m) cin >> b[i];
-
-        sort(ALL(b));
-        int ans = 0;
-        int idx = 0;
-        while(true){
-            
-        }
+        
     }
-
     return 0;
 }
