@@ -68,68 +68,42 @@ public:
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
 
-const ll MOD = 10000019;
+const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 1000005;
+const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-vector<ll> a(MAXN);
-vector<ll> b(MAXN);
-ll count(int l, int r){
-    if(l + 1 == r) return 0;
-    int m = (l + r) >> 1;
-    ll cnt = count(l, m);
-    cnt += count(m, r);
-    cnt %= MOD;
-    int rr = m;
-    ll tmp = 0;
-    int cnt_ = 0;
-    for(int ll_ = l;ll_<m;ll_++){
-        while(rr < r && a[rr]<a[ll_]){
-            tmp += a[rr++];
-            tmp %= MOD;
-            cnt_ ++;
-        }
-        // debug(l,r , ll_, tmp);
-        cnt %= MOD;
-        cnt += (a[ll_] * cnt_);
-        cnt %= MOD;
-        cnt += tmp;
-        cnt %= MOD;
-    }
-    int p1, p2;
-    p1 = l;
-    p2 = m;
-    for(int i=0;i<r-l;i++){
-        if(p2 == r){
-            b[i] = a[p1++];
-        } else if(p1 == m){
-            b[i] = a[p2++];
-        } else if(a[p1] < a[p2]){
-            b[i] = a[p1++];
-        } else {
-            b[i] = a[p2++];
-        }
-    }
-    for(int i=0;i<r-l;i++){
-        a[i+l] = b[i];
-    }
-    // debug(a);
 
-    return cnt % MOD;
-}
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n;
-    cin >> n;
-    REP(i, n) cin >> a[i];
-    ll ans = count(0, n);
-    ans %= MOD;
-    cout << ans << endl;
+    while(true){
+        ll n;
+        cin >> n;
+        if(n == 0) break;
+        priority_queue<ll, vector<ll>, greater<ll>> pq;
+        ll tmp;
+        ll sum = 0;
+        for(int i=0;i<n;i++){
+            cin >> tmp;
+            sum += tmp;
+            pq.push(tmp);
+        }
+        ll ans = 0;
+        while(!pq.empty()){
+            ll a, b;
+            a = pq.top();pq.pop();
+            if(a == sum) break;
+            b = pq.top();pq.pop();
+            debug(a, b);
+            ans += (a + b);
+            pq.push(a+b);
+        }
+        cout << ans << endl;
 
+    }
 
     return 0;
 }
