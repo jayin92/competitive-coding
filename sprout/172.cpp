@@ -75,17 +75,26 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+void solve(){
+    int n, m;
+    cin >> n >> m;
+    vector<int> a(n);
+    ll cnt = 0;
+    for(auto &i:a){
+        cin >> i;
+    }
+}
+
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n, m ,r;
-    cin >> n;
-    vector<int> p(n);
-    vector<int> c(n);
-    for(auto &i:p) cin >> i;
-    for(auto &i:c) cin >> i;
-    // binary search for answer
+    int t;
+    cin >> t;
+    while(t--){
+        solve();
+    }
 
     return 0;
-}   
+}
