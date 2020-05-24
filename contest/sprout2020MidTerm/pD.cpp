@@ -79,30 +79,28 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-    while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
+    int n, l;
+    cin >> n >> l;
+    vector<int> a(n);
+    vector<int> b(n);
+    vector<pii> c(n);
+    vector<int> d(n, iNF);
+    REP(i, n) cin >> a[i];
+    REP(i, n) cin >> b[i];
+    for(int i=0;i<n;i++){
+        c[i].X = 0;
+        c[i].Y = i;
+        for(int j=0;j<n;j++){
+            int tmp = min(abs(b[j] - a[i]), l - abs(b[j] - a[i]));
+            c[i].X += tmp;
+            d[i] = min(d[i], tmp); 
         }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
     }
+    sort(ALL(c));
+    reverse(ALL(c));
+    debug(c);
+    
+
 
     return 0;
 }

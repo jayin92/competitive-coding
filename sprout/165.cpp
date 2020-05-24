@@ -75,6 +75,50 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+void solve(){
+    int n, m, a, b;
+    priority_queue<int, vector<int>, greater<int>> pq;
+    cin >> n >> m;
+    vector<vector<int>> adj(n);
+    vector<int> in(n, 0);
+    vector<bool> vis(n, false);
+    stringstream ss;
+    REP(i, m){
+        cin >> a >> b;
+        adj[a].pb(b);
+        in[b] ++;
+    }
+
+    REP(i, n){
+        if(in[i] == 0){
+            pq.push(i);
+            vis[i] = true;
+        }
+    }
+
+    while(!pq.empty()){
+        int cur = pq.top();
+        pq.pop();
+        debug(cur);
+        ss << cur << " ";
+        for(auto v:adj[cur]){
+            if(--in[v] == 0 && !vis[v]){
+                pq.push(v);
+                vis[v] = true;
+            }
+        }
+    }
+    for(int i=0;i<n;i++){
+        if(vis[i] == false){
+            cout << "QAQ" << endl;
+            return;
+        }
+    }
+
+    string ans = ss.str();
+    cout << ans.substr(0, ans.size()-1) << endl;
+}
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
@@ -82,26 +126,7 @@ int main () {
     int t;
     cin >> t;
     while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
-        }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
+        solve();
     }
 
     return 0;

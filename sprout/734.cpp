@@ -79,30 +79,41 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-    while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
-        }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
+    int n, m;
+    cin >> n >> m;
+    vector<vector<pii>> adj(n+1);
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
+    vector<bool> vis(n+1, false);
+    ll ans = 0;
+    REP(i, m){
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj[u].eb(w, v);
+        adj[v].eb(w, u);
     }
+    debug(adj);
+    vis[1] = true;
+    for(auto v:adj[1]){
+        pq.push(v);
+        // vis[v.second] = true;
+    }
+    while(!pq.empty()){
+        pii cur = pq.top();
+        debug(cur);
+        pq.pop();
+        if(vis[cur.second]) continue;
+        vis[cur.second] = true;
+        ans += cur.first;
+        for(auto v:adj[cur.second]){
+            if(!vis[v.second]){
+                pq.push(v);
+                // vis[v.second] = true;
+            }
+        }
+    }
+
+    cout << ans << endl;
+    
 
     return 0;
 }

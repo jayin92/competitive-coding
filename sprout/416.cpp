@@ -71,38 +71,52 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 2005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-    while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
-        }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
+    int n, a, b, k;
+    int dp[2][MAXN];
+    memset(dp, 0, sizeof(dp));
+    cin >> n >> a >> b >> k;
+    if(a > b){
+        int a_ = a;
+        int b_ = b;
+        a = n - a_ + 1;
+        b = n - b_ + 1;
     }
+    bool idx = 0;
+    dp[0][a] = 1;
+    for(int i=0;i<k;i++){
+        int sum = 0;
+        int tmp = 0;
+        idx = !idx;
+        for(int j=1;j<b;j++){
+            int r = ceil((b + j) / 2.0);
+            for(int l=tmp;l<r;l++){
+                sum += dp[!idx][l];
+                sum %= MOD;
+            }
+            tmp = r;
+            int t_sum = sum - dp[!idx][j];
+            t_sum %= MOD;
+            if(t_sum < 0) t_sum += MOD;
+            dp[idx][j] = t_sum;
+        }
+    }
+
+    int ans = 0;
+    for(int i=1;i<MAXN;i++){
+        ans += dp[idx][i];
+        ans %= MOD;
+    }
+    cout << ans << endl;
+
 
     return 0;
 }

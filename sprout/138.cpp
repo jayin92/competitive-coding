@@ -1,3 +1,6 @@
+
+// TODO: I dont know
+
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
@@ -68,12 +71,29 @@ public:
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
 
-const ll MOD = 1000000007;
+const ll MOD = 1000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+ll dp[MAXN];
+
+int solve(int n){
+    if(n % 2 == 1) return 0;
+    if(dp[n]){
+        return dp[n];
+    }
+    ll res = (solve(n - 2) * 4 - solve(n - 4)) % MOD;
+    res += MOD;
+    res %= MOD;
+    dp[n] = res;
+    return res;
+    
+
+}
+
 
 /********** Good Luck :) **********/
 int main () {
@@ -81,27 +101,12 @@ int main () {
     IOS();
     int t;
     cin >> t;
+    dp[0] = 1;
+    dp[2] = 3;
     while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
-        }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
+        int n;
+        cin >> n;
+        cout << solve(n) << endl;
     }
 
     return 0;

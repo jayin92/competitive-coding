@@ -82,25 +82,23 @@ int main () {
     int t;
     cin >> t;
     while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
+        int n;
+        cin >> n;
+        vector<ll> a(n);
+        for(int i=0;i<n;i++) cin >> a[i];
+        ll ans = -iNF;
+        for(int l=0;l<n;l++){
+            for(int r=l;r<n;r++){
+                ll tmp = -iNF;
+                ll res = 0;
+                for(int i=l;i<=r;i++){
+                    tmp = max(tmp, a[i]);
+                    if((i - l) % 2 == 1) res += a[i] * a[i-1];
+                }
+                ans = max(ans, tmp * tmp + res);
+                debug(l, r, tmp + res);
+            }
         }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
         cout << ans << endl;
     }
 

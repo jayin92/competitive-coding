@@ -75,6 +75,21 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+deque<pll> d;
+vector<ll> dp;
+vector<ll> a;
+ll n, k, c;
+void push_(pll p){
+    while(!(d.empty()) && d.back().first < p.first) d.pop_back();
+    d.push_back(p);
+}
+
+ll pop_(ll i){
+    while(!(d.empty()) && d.front().second + k < i) d.pop_front();
+    if(d.empty()) return -1;
+    else return d.front().first;
+}
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
@@ -82,25 +97,22 @@ int main () {
     int t;
     cin >> t;
     while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
+        d.clear();
+        cin >> n >> k >> c;
+        a.resize(n);
+        dp.resize(n);
+        for(int i=0;i<n;i++) cin >> a[i];
+        for(int i=0;i<n;i++){
+            ll tmp = c * i;
+            if(!d.empty()){
+                tmp = max(tmp, pop_(i));
+            }
+            tmp += a[i] - c * i;
+            dp[i] = tmp;
+            push_(mp(tmp + c * i, i));
         }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
+        ll ans = -1;
         for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
         cout << ans << endl;
     }
 

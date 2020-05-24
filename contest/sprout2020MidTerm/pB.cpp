@@ -81,27 +81,57 @@ int main () {
     IOS();
     int t;
     cin >> t;
+    deque<int> d;
     while(t--){
-        int n, k;
-        cin >> n >> k;
-
+        int n, x, y, z;
+        cin >> n >> x >> y >> z;
         vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
+        vector<int> b(n);
+        d.clear();
+        REP(i, n) cin >> a[i];
+        REP(i, n) cin >> b[i];
+        int idx = 0;
+        int x_ = 0;
+        int y_ = 0;
+        for(int i=0;i<n;i++){
+            d.push_back(a[i]);
+            while(!d.empty() && idx != n){
+                if(x - x_ > y - y_){
+                    if(d.front() == b[idx]){
+                        d.pop_front();
+                        idx ++;
+                        x_ ++;
+                        continue;
+                    }
+                    if(d.back() == b[idx]){
+                        d.pop_back();
+                        idx ++;
+                        y_ ++;
+                        continue;
+                    }
+                } else {
+                    if(d.back() == b[idx]){
+                        d.pop_back();
+                        idx ++;
+                        y_ ++;
+                        continue;
+                    }
+                    if(d.front() == b[idx]){
+                        d.pop_front();
+                        idx ++;
+                        x_ ++;
+                        continue;
+                    }
+                }
+                break;
+            }            
+        }
+        if(idx == n && x_ == x && y_ == y){
+            cout << "Yes" << endl;
+        } else {
+            cout << "No" << endl;
         }
 
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
     }
 
     return 0;

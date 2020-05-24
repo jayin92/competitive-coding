@@ -79,30 +79,13 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-    while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
-        }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
-    }
+    int n, m ,r;
+    cin >> n;
+    vector<int> p(n);
+    vector<int> c(n);
+    for(auto &i:p) cin >> i;
+    for(auto &i:c) cin >> i;
+    // binary search for answer
 
     return 0;
-}
+}   

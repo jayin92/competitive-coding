@@ -70,10 +70,47 @@ public:
 
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
-const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const int iNF = 2000000005;
+const ll MAXN = 500005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+vector<int> dp(MAXN, iNF);
+
+int find(int a){
+    int l = 0;
+    int r = MAXN - 1;
+    while(r - l > 1){
+        int mid = (l + r) >> 1;
+        if(a >= dp[mid]) l = mid;
+        else r = mid;
+    }
+
+    return l+1;
+}
+
+void solve(){
+    int n, m;
+    cin >> n >> m;
+    fill(ALL(dp), iNF);
+    vector<int> a(n);
+    REP(i, n) cin >> a[i];
+    dp[0] = 0;
+    for(int i=0;i<n;i++){
+        int b = find(a[i]);
+        int c = find(a[i] * 2);
+
+        if(a[i] >= m) dp[b] = min(dp[b], a[i]);
+        if(2 * a[i] >= m) dp[c] = min(dp[c], a[i] * 2);
+        debug(b, c);
+    }
+
+    int ans = 0;
+    for(int i=0;i<MAXN;i++) if(dp[i] < iNF) ans = i;
+    
+    cout << ans << endl;
+
+}
 
 /********** Good Luck :) **********/
 int main () {
@@ -82,26 +119,7 @@ int main () {
     int t;
     cin >> t;
     while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
-        }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
+        solve();
     }
 
     return 0;

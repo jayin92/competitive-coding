@@ -75,6 +75,40 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<int> a, pre;
+int dp[105][105];
+int cnt(int l, int r){
+    return pre[r] - (l == 0 ? 0 : pre[l-1]);
+}
+
+int sol(int l, int r){
+    if(l == r) return 0;
+    if(dp[l][r]) return dp[l][r];
+    int res = iNF;
+    for(int i=l;i<r;i++){
+        res = min(res,  cnt(l, r) + sol(l, i) + sol(i+1, r));
+    }
+    dp[l][r] = res;
+
+    return res;
+}
+
+void solve(){
+    int n;
+    cin >> n;
+    REP(i, n) REP(j ,n) dp[i][j] = 0;
+    a.resize(n, 0);
+    pre.resize(n, 0);
+    
+    cin >> a[0];
+    pre[0] = a[0];
+    for(int i=1;i<n;i++){
+        cin >> a[i];
+        pre[i] = pre[i-1] + a[i];
+    }
+    cout << sol(0, n-1) << endl;
+
+}
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
@@ -82,26 +116,7 @@ int main () {
     int t;
     cin >> t;
     while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
-        }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
+        solve();
     }
 
     return 0;

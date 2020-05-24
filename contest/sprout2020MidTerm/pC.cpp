@@ -75,34 +75,67 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<int> adj[MAXN];
+vector<int> g;
+int n, m, y;
+int bfs(int a, int b){
+    vector<bool> vis(n, false);
+    queue<int> s;
+    s.push(a);
+    s.push(-1);
+    int cur = a;
+    int dis = 0;
+    while(true){
+        cur = s.front();
+        s.pop();
+        if(cur == -1){
+            dis ++;
+            s.push(-1);
+            continue;
+        } else if(cur == b){
+            break;
+        }
+        vis[cur] = true;
+        for(auto i:adj[cur]){
+            if(!vis[i]){
+                s.push(i);
+            }
+        }
+    }
+
+    return dis;
+}
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-    while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
-        }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
+    cin >> n >> m;
+    for(int i=0;i<n-1;i++){
+        int a, b;
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
     }
+    g.resize(m);
+    REP(i, m) cin >> g[i];
+    cin >> y;
+    int x1_idx, x2_idx;
+    int x1_dis, x2_dis;
+    x1_dis = x2_dis = iNF;
+    for(int i=0;i<m;i++){
+        int val = bfs(y, g[i]);
+        if(val < x1_dis){
+            x1_idx = g[i];
+            x1_dis = val;
+        } else if(val <= x2_dis){
+            x2_idx = g[i];
+            x2_dis = val;
+        }
+        
+    }
+    
+
 
     return 0;
 }

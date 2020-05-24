@@ -75,34 +75,47 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+struct seg{
+    int l;
+    int r;
+    int d;
+
+    seg(int l_, int r_, int d_){
+        l = l_;
+        r = r_;
+        d = d_;
+    }
+};
+
+bool cmp(seg a, seg b){
+    return a.d > b.d;
+}  
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-    while(t--){
-        int n, k;
-        cin >> n >> k;
-
-        vector<int> a(n);
-        vector<int> dp(n);
-        for(auto &i:a) cin >> i;
-        for(int i=0;i<k;i++){
-            dp[i] = a[i];
-        }
-
-        int tmp = 0;
-        for(int i=k;i<n;i++){
-            tmp = max(tmp, dp[i-k]);
-            dp[i] = tmp + a[i];
-        }
-
-        int ans = 0;
-        for(int i=0;i<n;i++) ans = max(ans, dp[i]);
-
-        cout << ans << endl;
+    int n, k;
+    cin >> n >> k;
+    vector<pll> a(n);
+    for(int i=0;i<n;i++){
+        cin >> a[i].X >> a[i].Y;
     }
+    sort(ALL(a));
+    ll ans = -INF;
+    do{
+        ll l = -1e9-5;
+        ll r = 1e9+5;
+        // debug(l);
+        for(int i=0;i<k;i++){
+            l = max(l, a[i].X);
+            r = min(r, a[i].Y);
+        }
+        ans = max(ans, r - l);
+    } while(next_permutation(ALL(a)));
+    cout << ans << endl;
+    debug(a);
+
 
     return 0;
 }
