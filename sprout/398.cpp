@@ -72,20 +72,33 @@ const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
+const long double eps = 1e-11;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+
+inline bool eq(const long double& a, const long double& b){
+    return b - eps <= a && a <= b + eps;
+}
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n, q;
-    cin >> n >> q;
-    vector<int> a(n);
-    for(auto &i:a) cin >> i;
-
-    while(q--){
-        
+    int n;
+    cin >> n;
+    vector<long double> a(n);
+    for(int i=0;i<n;i++){
+        cin >> a[i];
     }
+    int ans = 0;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            for(int k=0;k<n;k++){
+                if(eq(a[i] + a[j], a[k])) ans ++;
+            }
+        }
+    }
+    cout << ans << endl;
     return 0;
 }

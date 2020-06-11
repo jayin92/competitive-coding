@@ -75,16 +75,64 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-void dfs()
+int map_[2005][2005];
+int dis[2005][2005];
+int dx[4] = {1, -1, 0, 0};
+int dy[4] = {0, 0, 1, -1};
+
+int n, m;
+
+bool check(int x, int y){
+    if(x < 1 || y < 1 || x > n || y > m) return false;
+    
+    return true;
+}
+
+void bfs(pii src){
+    deque<pii> q;
+    q.push_back(src);
+    while(!q.empty()){
+        pii cur = q.front();
+        q.pop_front();
+        debug(cur);
+        for(int i=0;i<4;i++){
+            int x_ = cur.X + dx[i];
+            int y_ = cur.Y + dy[i];
+            if(check(x_, y_)){
+                if(dis[x_][y_] > dis[cur.X][cur.Y] + map_[cur.X][cur.Y]){
+                    dis[x_][y_] = dis[cur.X][cur.Y] + map_[cur.X][cur.Y];
+                    if(map_[cur.X][cur.Y] == 1){
+                        q.push_back(mp(x_, y_));
+                    } else {
+                        q.push_front(mp(x_, y_));
+                    }
+                }
+            }
+        }
+    }
+}
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n, m;
-    cin >> n >> m;
-    
     vector<pii> pos;
+    pii beg, end;
+    memset(dis, iNF, sizeof(dis));
+    cin >> n >> m;
+    char tmp;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            cin >> tmp;
+            map_[i+1][j+1] = (tmp == '#' ? 0 : 1);
+        }
+    }
+    cin >> beg.X >> beg.Y >> end.X >> end.Y;
+    dis[beg.X][beg.Y] = 0;
+    bfs(beg);
+    cout << dis[end.X][end.Y] << endl;
+
+    
 
 
     return 0;

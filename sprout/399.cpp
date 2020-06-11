@@ -75,17 +75,41 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+pll operator-(const pll& a, const pll& b){
+    return pll(a.X - b.X, a.Y - b.Y);
+}
+
+ll operator*(const pll& a, const pll& b){
+    return a.X * b.X + a.Y * b.Y;
+}
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n, q;
-    cin >> n >> q;
-    vector<int> a(n);
-    for(auto &i:a) cin >> i;
-
-    while(q--){
-        
+    int n;
+    cin >> n;
+    vector<pll> a(n);
+    map<ll, ll> m;
+    REP(i, n){
+        cin >> a[i].X >> a[i].Y;
     }
+    for(int i=0;i<n;i++){
+        for(int j=i+1;j<n;j++){
+            pll tmp = a[i] - a[j];
+            ll len = tmp * tmp;
+            m[len] ++;
+        }
+    }
+
+    ll ans = 0;
+    for(auto i:m){
+        debug(i);
+        ans += i.Y * (i.Y - 1) / 2;
+    }
+
+    cout << ans << endl;
+
+
     return 0;
 }

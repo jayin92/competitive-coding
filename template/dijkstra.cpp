@@ -16,7 +16,7 @@ vector<ll> d;
 vector<int> parent;
 
 void dijkstra(int src){
-    vector<bool> visit(n+1, false);
+    // vector<bool> visit(n+1, false);
     priority_queue<pll, vector<pll>, greater<pll>> pq; // first: weight, second: vertex
     for(int i=1;i<n;i++){
         pq.push(mp(INF, i));
