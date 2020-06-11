@@ -75,65 +75,58 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int map_[2005][2005];
-int dis[2005][2005];
-int dx[4] = {1, -1, 0, 0};
-int dy[4] = {0, 0, 1, -1};
-
-int n, m;
-
-bool check(int x, int y){
-    if(x < 1 || y < 1 || x > n || y > m) return false;
-    
-    return true;
+pii operator-(const pll& p1, const pll& p2){
+    return pll(p1.X - p2.X, p1.Y - p2.Y);
 }
 
-void bfs(pii src){
-    deque<pii> q;
-    q.push_back(src);
-    while(!q.empty()){
-        pii cur = q.front();
-        q.pop_front();
-        debug(cur);
-        for(int i=0;i<4;i++){
-            int x_ = cur.X + dx[i];
-            int y_ = cur.Y + dy[i];
-            if(check(x_, y_)){
-                if(dis[x_][y_] > dis[cur.X][cur.Y] + map_[cur.X][cur.Y]){
-                    dis[x_][y_] = dis[cur.X][cur.Y] + map_[cur.X][cur.Y];
-                    if(map_[cur.X][cur.Y] == 1){
-                        q.push_back(mp(x_, y_));
-                    } else {
-                        q.push_front(mp(x_, y_));
-                    }
-                }
-            }
-        }
+ll operator*(const pll& p1, const pll& p2){
+    return p1.X * p2.X + p1.Y * p2.Y;
+}
+
+ll operator^(const pll& p1, const pll& p2){
+    return p1.X * p2.Y - p1.Y * p2.X;
+}
+
+bool in_seg(pll p1, pll p2, pll q){
+    return ((p1 - q) ^ (p2 - q)) == 0 && (p1 - q) * (p2 - q) <= 0;
+}
+
+int ori(ll x){
+    return (x > 0) - (x < 0);
+}
+
+bool banana(pll p1, pll p2, pll q1, pll q2){
+    if(in_seg(p1, p2, q1) || in_seg(p1, p2, q2) || in_seg(q1, q2, p1) || in_seg(q1, q2, p2)){
+        debug(in_seg(p1, p2, q1));
+        debug(in_seg(p1, p2, q2));
+        debug(in_seg(q1, q2, p1));
+        debug(in_seg(q1, q2, p2));
+        debug("in_seg");
+        return true;
+    } else if(ori((q1 - p1) ^ (q2 - p1)) * ori((q1 - p2) ^ (q2 - p2)) == -1 && ori((p1 - q1) ^ (p2 - q1)) * ori((p1 - q2) ^ (p2 - q2)) == -1){
+        debug("other");
+        return true;
     }
+
+    return false;
 }
+
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    vector<pii> pos;
-    pii beg, end;
-    memset(dis, iNF, sizeof(dis));
-    cin >> n >> m;
-    char tmp;
-    for(int i=0;i<n;i++){
-        for(int j=0;j<m;j++){
-            cin >> tmp;
-            map_[i+1][j+1] = (tmp == '#' ? 0 : 1);
+    int t;
+    cin >> t;
+    while(t--){
+        pll p1, p2, p3, p4;
+        cin >> p1.X >> p1.Y >> p2.X >> p2.Y >> p3.X >> p3.Y >> p4.X >> p4.Y;
+        if(banana(p1, p2, p3, p4)){
+            cout << "Yes" << endl;
+        } else {
+            cout << "No" << endl;
         }
     }
-    cin >> beg.X >> beg.Y >> end.X >> end.Y;
-    dis[beg.X][beg.Y] = 0;
-    bfs(beg);
-    cout << dis[end.X][end.Y] << endl;
-
-    
-
 
     return 0;
 }
