@@ -72,19 +72,13 @@ const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
+const long double eps = 1e-11;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-ll operator*(const pll& a, const pll& b){
-    return a.X * b.X + a.Y * b.Y;
-}
 
-ll operator/(const pll& p1, const pll& p2){
-    return p1.X * p2.Y - p1.Y * p2.X;
-}
-
-pll operator-(const pll& a, const pll& b){
-    return mp(a.X - b.X, a.Y - b.Y);
+inline bool eq(const long double& a, const long double& b){
+    return b - eps <= a && a <= b + eps;
 }
 
 /********** Good Luck :) **********/
@@ -93,42 +87,18 @@ int main () {
     IOS();
     int n;
     cin >> n;
-    vector<pll> a(n);
-    REP(i, n) cin >> a[i].X >> a[i].Y;
-    
-    pll cur = mp(1, 0);
-
-    int l, r, b;
-    l = r = b = 0;
-
-    pll tmp;
-    for(int i=1;i<n;i++){
-        if(i == 1){
-            cur = a[i] - a[i-1];
-        }
-        tmp = a[i] - a[i-1];
-        debug(a[i], tmp, cur);
-        if(tmp * tmp == 0){
-            debug("test");
-            continue;
-        }
-
-        if(tmp / cur == 0 && tmp * cur <= 0){
-            b ++;
-            debug("b");
-        } else if(cur / tmp > 0){
-            l ++;
-            debug("l");
-
-        } else if(cur / tmp < 0){
-            r ++;
-            debug("r");
-        }
-        cur = tmp;
+    vector<long double> a(n);
+    for(int i=0;i<n;i++){
+        cin >> a[i];
     }
-
-    cout << l << " " << r << " " << b << endl;
-    
-
+    int ans = 0;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            for(int k=0;k<n;k++){
+                if(eq(a[i] + a[j], a[k])) ans ++;
+            }
+        }
+    }
+    cout << ans << endl;
     return 0;
 }

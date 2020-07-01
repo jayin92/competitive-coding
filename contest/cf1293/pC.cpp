@@ -75,60 +75,31 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-ll operator*(const pll& a, const pll& b){
-    return a.X * b.X + a.Y * b.Y;
-}
-
-ll operator/(const pll& p1, const pll& p2){
-    return p1.X * p2.Y - p1.Y * p2.X;
-}
-
-pll operator-(const pll& a, const pll& b){
-    return mp(a.X - b.X, a.Y - b.Y);
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n;
-    cin >> n;
-    vector<pll> a(n);
-    REP(i, n) cin >> a[i].X >> a[i].Y;
-    
-    pll cur = mp(1, 0);
-
-    int l, r, b;
-    l = r = b = 0;
-
-    pll tmp;
-    for(int i=1;i<n;i++){
-        if(i == 1){
-            cur = a[i] - a[i-1];
-        }
-        tmp = a[i] - a[i-1];
-        debug(a[i], tmp, cur);
-        if(tmp * tmp == 0){
-            debug("test");
+    int n, q;
+    cin >> n >> q;
+    bool map[4][n+2];
+    for(int i=0;i<4;i++) for(int j=0;j<n+2;j++) map[i][j] = 1;
+    int a, b;
+    int bar = 0;
+    while(q--){
+        cin >> a >> b;
+        map[a][b] = !map[a][b];
+        if(map[1][1] == 0 || map[2][n] == 0){
+            cout << "No" << endl;
             continue;
         }
-
-        if(tmp / cur == 0 && tmp * cur <= 0){
-            b ++;
-            debug("b");
-        } else if(cur / tmp > 0){
-            l ++;
-            debug("l");
-
-        } else if(cur / tmp < 0){
-            r ++;
-            debug("r");
+        int delta = (map[a][b] == 0) ? -1 : +1;
+        for(int i=-1;i<=1;i++){
+            if(b + i < 1 || b + i > n) continue;
+            else{
+                if(map[(a == 1) ? 2 : 1][b + i] == 0) bar += delta;
+            }
         }
-        cur = tmp;
+        cout << ((bar == 0) ? "Yes" : "No") << endl;
     }
-
-    cout << l << " " << r << " " << b << endl;
-    
-
     return 0;
 }

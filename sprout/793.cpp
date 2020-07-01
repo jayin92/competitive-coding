@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#pragma GCC optimize("O3","unroll-loops")
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -20,14 +21,14 @@ typedef pair<double,double> pdd;
 #define eb emplace_back
 #define X first
 #define Y second
-#ifdef jayinnn
+#ifdef tmd
 #define TIME(i) Timer i(#i)
 #define debug(...) do{\
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
     _do(__VA_ARGS__);\
 }while(0)
 template<typename T>void _do(T &&_x){cerr<<_x<<endl;}
-template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<", ";_do(_t...);}
+template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<" ,";_do(_t...);}
 template<typename _a,typename _b> ostream& operator << (ostream &_s,const pair<_a,_b> &_p){return _s<<"("<<_p.X<<","<<_p.Y<<")";}
 template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
 {
@@ -71,64 +72,63 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 500005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-ll operator*(const pll& a, const pll& b){
-    return a.X * b.X + a.Y * b.Y;
-}
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
 
-ll operator/(const pll& p1, const pll& p2){
-    return p1.X * p2.Y - p1.Y * p2.X;
-}
-
-pll operator-(const pll& a, const pll& b){
-    return mp(a.X - b.X, a.Y - b.Y);
-}
-
+ll a[MAXN], p[MAXN];
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n;
-    cin >> n;
-    vector<pll> a(n);
-    REP(i, n) cin >> a[i].X >> a[i].Y;
-    
-    pll cur = mp(1, 0);
-
-    int l, r, b;
-    l = r = b = 0;
-
-    pll tmp;
-    for(int i=1;i<n;i++){
-        if(i == 1){
-            cur = a[i] - a[i-1];
+    srand(time(NULL));
+    const ll mod = 1e9 + rand() % 600;
+    random_device rd;
+    default_random_engine gen = default_random_engine(rd());
+    uniform_int_distribution<ll> dis(1, 1e10-1);
+    ll n, k, q;
+    cin >> n >> k >> q;
+    ll tmp;
+    gp_hash_table<ll, ll> m;
+    vector<ll> idx[MAXN];
+    for(int i=0;i<n;i++){
+        cin >> tmp;
+        idx[tmp].pb(i);
+        if(m.find(tmp) == m.end()){
+            m.insert(make_pair(tmp, dis(gen)));        
         }
-        tmp = a[i] - a[i-1];
-        debug(a[i], tmp, cur);
-        if(tmp * tmp == 0){
-            debug("test");
-            continue;
-        }
-
-        if(tmp / cur == 0 && tmp * cur <= 0){
-            b ++;
-            debug("b");
-        } else if(cur / tmp > 0){
-            l ++;
-            debug("l");
-
-        } else if(cur / tmp < 0){
-            r ++;
-            debug("r");
-        }
-        cur = tmp;
+        
     }
+    for(const auto &mm:m){
+        int cnt = 0;
+        for(auto id:idx[mm.first]){
+            cnt ++;
+            if(cnt == k){
+                a[id] =  mod - ((k-1) * mm.second) % mod;
+                cnt = 0;
+            } else {
+                a[id] = mm.second;
+            }
+        }
+    }
+    p[0] = a[0] % mod;
+    for(int i=1;i<n;i++){
+        p[i] = (p[i-1] + a[i]) % mod; 
+        // cout << p[i] << " ";
+    }
+    // cout << endl;
 
-    cout << l << " " << r << " " << b << endl;
+    int l, r;
+    while(q--){
+        cin >> l >> r;        
+        if(p[r-1] - (l == 1 ? 0 : p[l-2]) == 0) cout << 1;
+        else cout << 0;
+    }
+    cout << endl;
     
 
     return 0;
-}
+} 

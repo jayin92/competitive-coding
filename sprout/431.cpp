@@ -75,60 +75,67 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-ll operator*(const pll& a, const pll& b){
-    return a.X * b.X + a.Y * b.Y;
-}
+int n, m, q;
 
-ll operator/(const pll& p1, const pll& p2){
-    return p1.X * p2.Y - p1.Y * p2.X;
-}
 
-pll operator-(const pll& a, const pll& b){
-    return mp(a.X - b.X, a.Y - b.Y);
+
+vector<ll> dijkstra(int src, vector<vector<pii>> adj){
+    vector<ll> dis(n+1, INF);
+    vector<bool> vis(n+1, false);
+    dis[src] = 0;
+    // vis[src] = 1;
+    priority_queue<pll, vector<pll>, greater<pll>> pq;
+    pq.push(mp(0, src));
+
+
+    for(int i=0;i<n;i++){
+        while(!pq.empty() && vis[pq.top().Y]) pq.pop();
+        if(pq.empty()) break;
+        pll cur = pq.top();
+        vis[cur.Y] = true;
+        // pq.pop();
+
+        for(auto v:adj[cur.Y]){
+            if(dis[v.Y] > dis[cur.Y] + v.X){
+                dis[v.Y] = dis[cur.Y] + v.X;
+                pq.push(mp(dis[v.Y], v.Y));
+            }
+        }
+    }
+
+    return dis;
 }
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n;
-    cin >> n;
-    vector<pll> a(n);
-    REP(i, n) cin >> a[i].X >> a[i].Y;
+    cin >> n >> m >> q;
+    vector<vector<pii>> adj1(n+1); // graph
+    vector<vector<pii>> adj2(n+1); // anti-graph
+
     
-    pll cur = mp(1, 0);
-
-    int l, r, b;
-    l = r = b = 0;
-
-    pll tmp;
-    for(int i=1;i<n;i++){
-        if(i == 1){
-            cur = a[i] - a[i-1];
-        }
-        tmp = a[i] - a[i-1];
-        debug(a[i], tmp, cur);
-        if(tmp * tmp == 0){
-            debug("test");
-            continue;
-        }
-
-        if(tmp / cur == 0 && tmp * cur <= 0){
-            b ++;
-            debug("b");
-        } else if(cur / tmp > 0){
-            l ++;
-            debug("l");
-
-        } else if(cur / tmp < 0){
-            r ++;
-            debug("r");
-        }
-        cur = tmp;
+    REP(i, m){
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj1[u].eb(w, v);
+        adj2[v].eb(w, u);
     }
 
-    cout << l << " " << r << " " << b << endl;
-    
+    auto dis1 = dijkstra(1, adj1);
+    auto dis2 = dijkstra(n, adj2);
+    debug(dis1);
+    debug(dis2);
+    ll ori_dis = dis1[n];
+    debug(ori_dis);
+    while(q--){
+        int a, b;
+        cin >> a >> b;
+        ll new_dis = dis1[a] + 1 + dis2[b];
+        debug(dis1[a], dis2[b]);
+        cout << min(new_dis, ori_dis) << endl;
+    }
+
 
     return 0;
 }

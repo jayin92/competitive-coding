@@ -71,64 +71,49 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 1005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-ll operator*(const pll& a, const pll& b){
-    return a.X * b.X + a.Y * b.Y;
-}
 
-ll operator/(const pll& p1, const pll& p2){
-    return p1.X * p2.Y - p1.Y * p2.X;
+inline bool cmp(pii l, pii r){
+    return (l.first >= r.first) && l.second >= r.second; 
 }
-
-pll operator-(const pll& a, const pll& b){
-    return mp(a.X - b.X, a.Y - b.Y);
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n;
-    cin >> n;
-    vector<pll> a(n);
-    REP(i, n) cin >> a[i].X >> a[i].Y;
-    
-    pll cur = mp(1, 0);
-
-    int l, r, b;
-    l = r = b = 0;
-
-    pll tmp;
-    for(int i=1;i<n;i++){
-        if(i == 1){
-            cur = a[i] - a[i-1];
+    int t, n, a, b, dx, dy;
+    cin >> t;
+    while(t--){
+        vector<pii> box;
+        cin >> n;
+        REP(i, n){
+            cin >> a >> b;
+            box.pb(mp(a, b));
         }
-        tmp = a[i] - a[i-1];
-        debug(a[i], tmp, cur);
-        if(tmp * tmp == 0){
-            debug("test");
-            continue;
+        sort(ALL(box));
+        debug(box);
+        pii cur = mp(0, 0);
+        string ans = "";
+        bool flag = false;
+        for(auto bb:box){
+            if(cmp(bb, cur)){
+                dx = bb.X - cur.X;
+                dy = bb.Y - cur.Y;
+                REP(i, dx) ans += "R";
+                REP(i, dy) ans += "U";
+                cur = bb;
+            } else {
+                cout << "NO" << endl;
+                flag = true;
+                break; 
+            }
         }
-
-        if(tmp / cur == 0 && tmp * cur <= 0){
-            b ++;
-            debug("b");
-        } else if(cur / tmp > 0){
-            l ++;
-            debug("l");
-
-        } else if(cur / tmp < 0){
-            r ++;
-            debug("r");
-        }
-        cur = tmp;
+        if(flag) continue;
+        cout << "YES" << endl;
+        cout << ans << endl;
     }
-
-    cout << l << " " << r << " " << b << endl;
-    
 
     return 0;
 }

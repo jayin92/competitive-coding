@@ -75,60 +75,46 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-ll operator*(const pll& a, const pll& b){
-    return a.X * b.X + a.Y * b.Y;
-}
+pii dxy[4] = {mp(0, -1), mp(-1, 0), mp(0, 1), mp(1, 0)};
 
-ll operator/(const pll& p1, const pll& p2){
-    return p1.X * p2.Y - p1.Y * p2.X;
-}
-
-pll operator-(const pll& a, const pll& b){
-    return mp(a.X - b.X, a.Y - b.Y);
+pii operator+(const pii &a, const pii &b){
+    return mp(a.X + b.X, a.Y + b.Y);
 }
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n;
-    cin >> n;
-    vector<pll> a(n);
-    REP(i, n) cin >> a[i].X >> a[i].Y;
-    
-    pll cur = mp(1, 0);
-
-    int l, r, b;
-    l = r = b = 0;
-
-    pll tmp;
-    for(int i=1;i<n;i++){
-        if(i == 1){
-            cur = a[i] - a[i-1];
+    int n, dir;
+    cin >> n >> dir;
+    int a[n+1][n+1];
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
+            cin >> a[i][j];
         }
-        tmp = a[i] - a[i-1];
-        debug(a[i], tmp, cur);
-        if(tmp * tmp == 0){
-            debug("test");
-            continue;
-        }
-
-        if(tmp / cur == 0 && tmp * cur <= 0){
-            b ++;
-            debug("b");
-        } else if(cur / tmp > 0){
-            l ++;
-            debug("l");
-
-        } else if(cur / tmp < 0){
-            r ++;
-            debug("r");
-        }
-        cur = tmp;
     }
-
-    cout << l << " " << r << " " << b << endl;
-    
-
+    pii cur = mp((n+1)/2, (n+1)/2);
+    int step = 1;
+    int cnt = 0;
+    int cnt_ = 0;
+    string ans;
+    while(true){
+        ans += to_string(a[cur.X][cur.Y]);
+        cur = cur + dxy[dir];
+        // debug(cur);
+        cnt ++;
+        cnt_++;
+        debug(cnt_);
+        if(cnt_ == n * n) break;
+        if(cnt % step == 0){
+            dir ++;
+            dir %= 4;
+        }
+        if(cnt == 2 * step){
+            step ++;
+            cnt = 0;
+        }
+    }
+    cout << ans << endl;
     return 0;
 }

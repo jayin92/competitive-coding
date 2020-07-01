@@ -75,60 +75,58 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-ll operator*(const pll& a, const pll& b){
-    return a.X * b.X + a.Y * b.Y;
+pii operator-(const pll& p1, const pll& p2){
+    return pll(p1.X - p2.X, p1.Y - p2.Y);
 }
 
-ll operator/(const pll& p1, const pll& p2){
+ll operator*(const pll& p1, const pll& p2){
+    return p1.X * p2.X + p1.Y * p2.Y;
+}
+
+ll operator^(const pll& p1, const pll& p2){
     return p1.X * p2.Y - p1.Y * p2.X;
 }
 
-pll operator-(const pll& a, const pll& b){
-    return mp(a.X - b.X, a.Y - b.Y);
+bool in_seg(pll p1, pll p2, pll q){
+    return ((p1 - q) ^ (p2 - q)) == 0 && (p1 - q) * (p2 - q) <= 0;
 }
+
+int ori(ll x){
+    return (x > 0) - (x < 0);
+}
+
+bool banana(pll p1, pll p2, pll q1, pll q2){
+    if(in_seg(p1, p2, q1) || in_seg(p1, p2, q2) || in_seg(q1, q2, p1) || in_seg(q1, q2, p2)){
+        debug(in_seg(p1, p2, q1));
+        debug(in_seg(p1, p2, q2));
+        debug(in_seg(q1, q2, p1));
+        debug(in_seg(q1, q2, p2));
+        debug("in_seg");
+        return true;
+    } else if(ori((q1 - p1) ^ (q2 - p1)) * ori((q1 - p2) ^ (q2 - p2)) == -1 && ori((p1 - q1) ^ (p2 - q1)) * ori((p1 - q2) ^ (p2 - q2)) == -1){
+        debug("other");
+        return true;
+    }
+
+    return false;
+}
+
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n;
-    cin >> n;
-    vector<pll> a(n);
-    REP(i, n) cin >> a[i].X >> a[i].Y;
-    
-    pll cur = mp(1, 0);
-
-    int l, r, b;
-    l = r = b = 0;
-
-    pll tmp;
-    for(int i=1;i<n;i++){
-        if(i == 1){
-            cur = a[i] - a[i-1];
+    int t;
+    cin >> t;
+    while(t--){
+        pll p1, p2, p3, p4;
+        cin >> p1.X >> p1.Y >> p2.X >> p2.Y >> p3.X >> p3.Y >> p4.X >> p4.Y;
+        if(banana(p1, p2, p3, p4)){
+            cout << "Yes" << endl;
+        } else {
+            cout << "No" << endl;
         }
-        tmp = a[i] - a[i-1];
-        debug(a[i], tmp, cur);
-        if(tmp * tmp == 0){
-            debug("test");
-            continue;
-        }
-
-        if(tmp / cur == 0 && tmp * cur <= 0){
-            b ++;
-            debug("b");
-        } else if(cur / tmp > 0){
-            l ++;
-            debug("l");
-
-        } else if(cur / tmp < 0){
-            r ++;
-            debug("r");
-        }
-        cur = tmp;
     }
-
-    cout << l << " " << r << " " << b << endl;
-    
 
     return 0;
 }

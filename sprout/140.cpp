@@ -71,15 +71,30 @@ public:
 const ll MOD = 1000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 100010;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int dp[MAXN];
+ll dp[MAXN][3][3]; // 0: r, 1: g, 2: b
 
-int solve(int n){
-    if(dp[n]){
-        return dp[n];
+void build(){
+    memset(dp, 0, MAXN * 3 * 3 * sizeof(int));
+    dp[1][0][0] = dp[1][1][1] = dp[1][2][2] = 1;
+    
+    for(int i=2;i<MAXN;i++){
+        dp[i][0][0] = dp[i-1][0][0] + dp[i-1][0][1] + dp[i-1][0][2];
+        dp[i][0][1] = dp[i-1][0][0] + dp[i-1][0][1];
+        dp[i][0][2] = dp[i-1][0][0] + dp[i-1][0][2];
+
+        dp[i][1][0] = dp[i-1][1][0] + dp[i-1][1][1] + dp[i-1][1][2];
+        dp[i][1][1] = dp[i-1][1][0] + dp[i-1][1][1];
+        dp[i][1][2] = dp[i-1][1][0] + dp[i-1][1][2];
+
+        dp[i][2][0] = dp[i-1][2][0] + dp[i-1][2][1] + dp[i-1][2][2];
+        dp[i][2][1] = dp[i-1][2][0] + dp[i-1][2][1];
+        dp[i][2][2] = dp[i-1][2][0] + dp[i-1][2][2];
+
+        REP(j, 3) REP(k, 3) dp[i][j][k] %= MOD;
     }
     
 }
@@ -88,14 +103,25 @@ int solve(int n){
 int main () {
     TIME(main);
     IOS();
+    build();
     int t;
     cin >> t;
-    while (t--) {
+    while(t--){
         int n;
         cin >> n;
+        ll ans = 0;
+        REP(i, 3){
+            REP(j, 3){
+                ans += dp[n][i][j];
+                ans %= MOD;
+            }
+        }
+        ans -= (dp[n][1][2] + dp[n][2][1]);
+        if(ans < 0) ans += MOD;
+        if(ans < 0) ans += MOD;
+        cout << ans % MOD << endl;
 
     }
-    
 
     return 0;
 }

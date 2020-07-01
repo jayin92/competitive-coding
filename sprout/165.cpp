@@ -75,20 +75,48 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-
 void solve(){
     int n, m, a, b;
+    priority_queue<int, vector<int>, greater<int>> pq;
     cin >> n >> m;
     vector<vector<int>> adj(n);
-    vector<bool> out(n, true);
-    vector<bool> in(n, true);
+    vector<int> in(n, 0);
+    vector<bool> vis(n, false);
+    stringstream ss;
     REP(i, m){
         cin >> a >> b;
-        adj[a].push_back(b);
-        out[a] = false;
-        in[b] = false;
+        adj[a].pb(b);
+        in[b] ++;
     }
-    
+
+    REP(i, n){
+        if(in[i] == 0){
+            pq.push(i);
+            vis[i] = true;
+        }
+    }
+
+    while(!pq.empty()){
+        int cur = pq.top();
+        pq.pop();
+        debug(cur);
+        ss << cur << " ";
+        for(auto v:adj[cur]){
+            if(--in[v] == 0 && !vis[v]){
+                pq.push(v);
+                vis[v] = true;
+            }
+        }
+    }
+    for(int i=0;i<n;i++){
+        if(vis[i] == false){
+            cout << "QAQ" << endl;
+            return;
+        }
+    }
+
+    string ans = ss.str();
+    cout << ans.substr(0, ans.size()-1) << endl;
 }
 
 /********** Good Luck :) **********/

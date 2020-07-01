@@ -76,57 +76,43 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 
-
-
-vector<int> p = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269};
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-
     int n, m;
     cin >> m >> n;
-    vector<unsigned long long> a;
+    vector<ll> a;
+    ll mask = pow(2, m) - 1;
+    ll tmp = 0;
+    string s;
     for(int i=0;i<n;i++){
-        vector<bool> che(m, false);
-        set<char> ss;
-        string s;
         cin >> s;
-        unsigned long long tmp = 1;
+        tmp = 0;
         for(auto j:s){
-            if('A' <= j && j <= 'Z'){
-                if(che[j - 'A'] == false){
-                    tmp *= 2;
-                    che[j - 'A'] = true;
-                }
+            if(j <= 'Z'){
+                tmp |= ((ll)1 << (j - 'A'));
             } else {
-                if(che[j - 'a' + 26] == false){
-                    tmp *= 2;
-                    che[j - 'a' + 26] = true;
-                }
+                tmp |= ((ll)1 <<(j - 'a' + 26));
             }
             
         }
-
         a.pb(tmp);
     }
-    unsigned long long uni = 1;
-    for(int i=0;i<m;i++) uni *= 2;
-    unsigned long long ans = 0;
-    map<unsigned long long, unsigned long long> ma;
+    // for(int i=0;i<m;i++) uni *= 2;
+    ll ans = 0;
+    map<ll, ll> ma;
     for(auto i:a){
         ma[i] ++;
     }
-    // cout << ma[-1] << endl;
-    debug(uni);
     for(auto i:ma){
-        if(ma.count(uni / i.first) > 0){
+        if(ma.count(i.first ^ mask) > 0){
             debug(i);
-            ans += i.second * ma[uni / i.first];
+            ans += i.second * ma[i.first ^ mask];
+            ma.erase(i.first ^ mask);
         }
-        // ma.erase(uni / i.first);
     }
-    cout << ans / 2 << endl;
+    cout << ans << endl;
 
 
 

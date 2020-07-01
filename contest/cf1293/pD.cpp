@@ -75,60 +75,31 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-ll operator*(const pll& a, const pll& b){
-    return a.X * b.X + a.Y * b.Y;
-}
-
-ll operator/(const pll& p1, const pll& p2){
-    return p1.X * p2.Y - p1.Y * p2.X;
-}
-
-pll operator-(const pll& a, const pll& b){
-    return mp(a.X - b.X, a.Y - b.Y);
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n;
-    cin >> n;
-    vector<pll> a(n);
-    REP(i, n) cin >> a[i].X >> a[i].Y;
-    
-    pll cur = mp(1, 0);
-
-    int l, r, b;
-    l = r = b = 0;
-
-    pll tmp;
-    for(int i=1;i<n;i++){
-        if(i == 1){
-            cur = a[i] - a[i-1];
+    ll x0, y0, ax, ay, bx, by, xs, ys, t;
+    cin >> x0 >> y0 >> ax >> ay >> bx >> by;
+    cin >> xs >> ys >> t;
+    vector<pll> node(1, make_pair(x0, y0));
+    ll limit = (1LL << 62) - 1;
+    while((limit - bx) / ax >= node.back().X && (limit - by) / ay >= node.back().Y){
+        node.push_back(make_pair(ax * node.back().X + bx, ay * node.back().Y + by));
+        // debug(node);
+    }
+    int sz = node.size();
+    int ans = 0;
+    for(int i=0;i<sz;i++){
+        for(int j=i;j<sz;j++){
+            ll len = node[j].X - node[i].X + node[j].Y - node[i].Y;
+            ll dis2Left = abs(xs - node[i].X) + abs(ys - node[i].Y);
+            ll dis2Right = abs(node[j].X - xs) + abs(node[j].Y - ys);
+            if(len <= t - dis2Left || len <= t - dis2Right) ans = max(ans, j-i+1);
         }
-        tmp = a[i] - a[i-1];
-        debug(a[i], tmp, cur);
-        if(tmp * tmp == 0){
-            debug("test");
-            continue;
-        }
-
-        if(tmp / cur == 0 && tmp * cur <= 0){
-            b ++;
-            debug("b");
-        } else if(cur / tmp > 0){
-            l ++;
-            debug("l");
-
-        } else if(cur / tmp < 0){
-            r ++;
-            debug("r");
-        }
-        cur = tmp;
     }
 
-    cout << l << " " << r << " " << b << endl;
-    
+    cout << ans << endl;
 
     return 0;
 }

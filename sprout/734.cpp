@@ -75,59 +75,44 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-ll operator*(const pll& a, const pll& b){
-    return a.X * b.X + a.Y * b.Y;
-}
-
-ll operator/(const pll& p1, const pll& p2){
-    return p1.X * p2.Y - p1.Y * p2.X;
-}
-
-pll operator-(const pll& a, const pll& b){
-    return mp(a.X - b.X, a.Y - b.Y);
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n;
-    cin >> n;
-    vector<pll> a(n);
-    REP(i, n) cin >> a[i].X >> a[i].Y;
-    
-    pll cur = mp(1, 0);
-
-    int l, r, b;
-    l = r = b = 0;
-
-    pll tmp;
-    for(int i=1;i<n;i++){
-        if(i == 1){
-            cur = a[i] - a[i-1];
+    int n, m;
+    cin >> n >> m;
+    vector<vector<pii>> adj(n+1);
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
+    vector<bool> vis(n+1, false);
+    ll ans = 0;
+    REP(i, m){
+        int u, v, w;
+        cin >> u >> v >> w;
+        adj[u].eb(w, v);
+        adj[v].eb(w, u);
+    }
+    debug(adj);
+    vis[1] = true;
+    for(auto v:adj[1]){
+        pq.push(v);
+        // vis[v.second] = true;
+    }
+    while(!pq.empty()){
+        pii cur = pq.top();
+        debug(cur);
+        pq.pop();
+        if(vis[cur.second]) continue;
+        vis[cur.second] = true;
+        ans += cur.first;
+        for(auto v:adj[cur.second]){
+            if(!vis[v.second]){
+                pq.push(v);
+                // vis[v.second] = true;
+            }
         }
-        tmp = a[i] - a[i-1];
-        debug(a[i], tmp, cur);
-        if(tmp * tmp == 0){
-            debug("test");
-            continue;
-        }
-
-        if(tmp / cur == 0 && tmp * cur <= 0){
-            b ++;
-            debug("b");
-        } else if(cur / tmp > 0){
-            l ++;
-            debug("l");
-
-        } else if(cur / tmp < 0){
-            r ++;
-            debug("r");
-        }
-        cur = tmp;
     }
 
-    cout << l << " " << r << " " << b << endl;
+    cout << ans << endl;
     
 
     return 0;
