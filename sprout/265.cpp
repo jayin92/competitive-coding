@@ -30,14 +30,12 @@ long long hash_(string s){
 	long long tmp = 0;
 	long long n = s.size();
 	for(long long i=0;i<n;i++){
-		tmp += (s[i] - 'a' + 1) * (pow_(c, n-i-1, M));
-		tmp += M;
+		tmp += (s[i] - 'a') * (pow_(c, n-i-1, M));
 		tmp %= M;
 	}
 	
 	return tmp % M;
 }
-
 
 
 int main(){
@@ -53,17 +51,16 @@ int main(){
 	if(ha == hb) ans.push_back(0);
 	
 	for(long long i=1;i<=n-k;i++){
-		hb = (hb - ((b[i-1] - 'a' + 1) * ck)) * c + ((b[i+k-1] - 'a' + 1));
-		hb += M;
+		hb = (hb - ((b[i-1] - 'a') * ck)) * c + ((b[i+k-1] - 'a'));
+		while(hb <= 0) hb += M;
 		hb %= M;
 		if(ha == hb) ans.push_back(i);
 	}
 	
 	long long tmp = ans.size();
 	for(long long i=0;i<tmp;i++){
-		cout << ans[i];
-		if(i != tmp - 1) cout << " ";
-		else cout << endl;
+		cout << ans[i] << (i != tmp - 1 ? " " : "");
 	}
+	cout << endl;
 	
 }

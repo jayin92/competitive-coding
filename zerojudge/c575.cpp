@@ -72,80 +72,48 @@ const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
-
+    
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int n, m, k;
-
-
-
-vector<ll> dijkstra(int src, vector<vector<pll>> adj){
-    vector<ll> dis(n+1, INF);
-    vector<bool> vis(n+1, false);
-    dis[src] = 0;
-    // vis[src] = 1;
-    priority_queue<pll, vector<pll>, greater<pll>> pq;
-    pq.push(mp(0, src));
-
-
-    for(int i=0;i<n;i++){
-        while(!pq.empty() && vis[pq.top().Y]) pq.pop();
-        if(pq.empty()) break;
-        pll cur = pq.top();
-        vis[cur.Y] = true;
-        // pq.pop();
-
-        for(auto v:adj[cur.Y]){
-            if(dis[v.Y] > dis[cur.Y] + v.X){
-                dis[v.Y] = dis[cur.Y] + v.X;
-                pq.push(mp(dis[v.Y], v.Y));
-            }
+bool check(vector<ll> a, int r, int k){
+    int n = a.size();
+    ll cur = a[0] + r;
+    int cnt = 1;
+    for(int i=1;i<n;i++){
+        if(a[i] > cur){
+            cnt ++;
+            cur = a[i] + r;
+            if(cnt > k) return false;
         }
     }
 
-    return dis;
+    return true;
 }
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    cin >> n >> m >> k;
-    vector<vector<pll>> adj1(n+1); // graph
-    vector<vector<pll>> adj2(n+1); // anti-graph
+    int n, k;
+    cin >> n >> k;
+    vector<ll> a(n);
+    for(int i=0;i<n;i++) cin >> a[i];
+    sort(ALL(a));
+    int l = 1;
+    int r = a[n-1] - a[0] + 1;
+    while(l != r){
+        debug(l, r); 
+        int mid = (l + r) >> 1;
 
-    
-    REP(i, m){
-        int u, v, w;
-        cin >> u >> v >> w;
-        adj1[u].eb(w, v);
-        adj1[v].eb(w, u);
-        adj2[u].eb(w, v);
-        adj2[v].eb(w, u);
-
+        debug(a, mid, k, check(a, mid, k));
+        if(check(a, mid, k)){
+            r = mid;
+        } else {
+            l = mid + 1;
+        }
     }
 
-    auto dis1 = dijkstra(1, adj1);
-    auto dis2 = dijkstra(n, adj2);
-    debug(dis1);
-    debug(dis2);
-    ll ori_dis = dis1[n];
-    debug(ori_dis);
-    while(k--){
-        int a, b, w;
-        cin >> a >> b >> w;
-        ll new_dis;
-        // if(a > b) swap(a, b);
-        // if(a == n || b == n) new_dis = dis1[a] + w;
-        // else if(a == 1 || b == 1) new_dis = w + dis2[b];
-        new_dis = min(dis1[a] + w + dis2[b], dis1[b] + w + dis2[a]);
-        debug(k, a, b);
-        debug(dis1[a], dis2[b]);
-        ori_dis = min(new_dis, ori_dis);
-    }
-
-    cout << (ori_dis == INF ? -1 : ori_dis)<< endl;
-
+    cout << r << endl;
 
     return 0;
 }
