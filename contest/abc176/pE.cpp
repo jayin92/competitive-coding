@@ -71,80 +71,98 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 1005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int n, m, k;
+pii d[4] = {mp(1, 0), mp(0, 1), mp(-1, 0), mp(0, -1)};
 
+ll ans = INF;
 
+int n, m;
+pii st;
+pii en;
+bool a[MAXN][MAXN];
 
-vector<ll> dijkstra(int src, vector<vector<pll>> adj){
-    vector<ll> dis(n+1, INF);
-    vector<bool> vis(n+1, false);
-    dis[src] = 0;
-    // vis[src] = 1;
-    priority_queue<pll, vector<pll>, greater<pll>> pq;
-    pq.push(mp(0, src));
+void print(bool vis[MAXN][MAXN]){
+    REP(i, n){
+        REP(j, m){
+            cout << vis[i][j];
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
 
+int check(pii pos){
+    if(pos.X < 0 || pos.X >= n || pos.Y < 0 || pos.Y >= m) return -1;
 
-    for(int i=0;i<n;i++){
-        while(!pq.empty() && vis[pq.top().Y]) pq.pop();
-        if(pq.empty()) break;
-        pll cur = pq.top();
-        vis[cur.Y] = true;
-        // pq.pop();
+    if(a[pos.X][pos.Y] == false) return 0;
+    
+    return 1;
+}
 
-        for(auto v:adj[cur.Y]){
-            if(dis[v.Y] > dis[cur.Y] + v.X){
-                dis[v.Y] = dis[cur.Y] + v.X;
-                pq.push(mp(dis[v.Y], v.Y));
+void dfs(pii fa, pii cur, ll mag, bool vis[MAXN][MAXN]){
+    // debug(fa, cur, mag);
+    debug(ans);
+    vis[cur.X][cur.Y] = true;
+    if(ans <= mag) return;
+    if(cur == en){
+        ans = min(ans, mag);
+        return;
+    }
+    bool flag = true;
+    for(int i=0;i<4;i++){
+        pii nxt = mp(cur.X + d[i].X, cur.Y + d[i].Y);
+        debug(cur, nxt, check(nxt));
+        if(check(nxt) == 1 && nxt != fa){
+            flag = false;
+            dfs(cur, nxt, mag, vis);
+        }
+    }
+    if(flag){
+        for(int i=-2;i<=2;i++){
+            for(int j=-2;j<=2;j++){
+                pii nxt = mp(cur.X + i, cur.Y + j);
+                // debug(nxt);
+                print(vis);
+                flag = false;
+                if(check(nxt) == 1 && vis[nxt.X][nxt.Y] == false && nxt != cur){
+                    dfs(cur, nxt, mag+1, vis);
+                }
             }
         }
     }
-
-    return dis;
 }
+
+
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    cin >> n >> m >> k;
-    vector<vector<pll>> adj1(n+1); // graph
-    vector<vector<pll>> adj2(n+1); // anti-graph
 
-    
-    REP(i, m){
-        int u, v, w;
-        cin >> u >> v >> w;
-        adj1[u].eb(w, v);
-        adj1[v].eb(w, u);
-        adj2[u].eb(w, v);
-        adj2[v].eb(w, u);
-
+    cin >> n >> m;
+    cin >> st.X >> st.Y;
+    cin >> en.X >> en.Y;
+    st.X --;
+    st.Y --;
+    en.X --;
+    en.Y --;
+    bool vis[MAXN][MAXN];
+    char tmp;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            cin >> tmp;
+            if(tmp == '.') a[i][j] = true, vis[i][j] = false;
+            else a[i][j] = false, vis[i][j] = true;
+            
+        }
     }
+    dfs(mp(-1, -1), st, 0, vis);
+    cout << (ans == INF ? -1 : ans) << endl;
 
-    auto dis1 = dijkstra(1, adj1);
-    auto dis2 = dijkstra(n, adj2);
-    debug(dis1);
-    debug(dis2);
-    ll ori_dis = dis1[n];
-    debug(ori_dis);
-    while(k--){
-        int a, b, w;
-        cin >> a >> b >> w;
-        ll new_dis;
-        // if(a > b) swap(a, b);
-        // if(a == n || b == n) new_dis = dis1[a] + w;
-        // else if(a == 1 || b == 1) new_dis = w + dis2[b];
-        new_dis = min(dis1[a] + w + dis2[b], dis1[b] + w + dis2[a]);
-        debug(k, a, b);
-        debug(dis1[a], dis2[b]);
-        ori_dis = min(new_dis, ori_dis);
-    }
 
-    cout << (ori_dis == INF ? -1 : ori_dis)<< endl;
 
 
     return 0;

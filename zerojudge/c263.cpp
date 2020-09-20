@@ -71,81 +71,73 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 40;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int n, m, k;
 
+ll a[MAXN][MAXN];
+ll r[MAXN][MAXN];
+ll c[MAXN][MAXN];
+ll dp[MAXN][MAXN][MAXN][MAXN];
+int n, m;
 
-
-vector<ll> dijkstra(int src, vector<vector<pll>> adj){
-    vector<ll> dis(n+1, INF);
-    vector<bool> vis(n+1, false);
-    dis[src] = 0;
-    // vis[src] = 1;
-    priority_queue<pll, vector<pll>, greater<pll>> pq;
-    pq.push(mp(0, src));
-
-
-    for(int i=0;i<n;i++){
-        while(!pq.empty() && vis[pq.top().Y]) pq.pop();
-        if(pq.empty()) break;
-        pll cur = pq.top();
-        vis[cur.Y] = true;
-        // pq.pop();
-
-        for(auto v:adj[cur.Y]){
-            if(dis[v.Y] > dis[cur.Y] + v.X){
-                dis[v.Y] = dis[cur.Y] + v.X;
-                pq.push(mp(dis[v.Y], v.Y));
-            }
+ll solve(int x1, int y1, int x2, int y2){
+    if(x1 == x2 || y1 == y2 || x1 == n || y1 == m || x2 == 0 || y2 == 0) return 0;
+    if(dp[x1][y1][x2][y2] != -1) return dp[x1][y1][x2][y2];
+    ll res = INF;
+    debug(x1, y1, x2, y2);
+    for(int i=x1;i<x2;i++){
+        for(int j=y1;j<y2;j++){
+            ll tmp = a[i][j] * (c[i][y2-1] - (y1 == 0 ? 0 : c[i][y1 - 1]) + r[x2-1][j] - (x1 == 0 ? 0 : r[x1 - 1][j]) - a[i][j]);
+            if(tmp >= res) continue;
+            tmp += solve(x1, y1, i, j);
+            if(tmp >= res) continue;
+            tmp += solve(i+1, y1, x2, j);
+            if(tmp >= res) continue; 
+            tmp += solve(x1, j+1, i, y2);
+            if(tmp >= res) continue;
+            tmp += solve(i+1, j+1, x2, y2);
+            if(tmp >= res) continue;
+            res = min(res, tmp);
+            debug(x1, y1, x2, y2, res);
         }
     }
-
-    return dis;
+    if(res == INF){
+        return 0;
+    } else {        
+        return dp[x1][y1][x2][y2] = res;
+    }
 }
+
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    cin >> n >> m >> k;
-    vector<vector<pll>> adj1(n+1); // graph
-    vector<vector<pll>> adj2(n+1); // anti-graph
+    cin >> n >> m;
+    memset(dp, -1, sizeof(dp));
+    REP(i, n){
+        REP(j, m){
+            cin >> a[i][j];
+        }
+    }
 
+    for(int i=0;i<n;i++){
+        c[i][0] = a[i][0];
+        for(int j=1;j<m;j++){
+            c[i][j] = c[i][j-1] + a[i][j];
+        }
+    }
+    for(int j=0;j<m;j++){
+        r[0][j] = a[0][j];
+        for(int i=1;i<n;i++){
+            r[i][j] = r[i-1][j] + a[i][j];
+        }
+    }
+
+    cout << solve(0, 0, n, m) << endl;
     
-    REP(i, m){
-        int u, v, w;
-        cin >> u >> v >> w;
-        adj1[u].eb(w, v);
-        adj1[v].eb(w, u);
-        adj2[u].eb(w, v);
-        adj2[v].eb(w, u);
-
-    }
-
-    auto dis1 = dijkstra(1, adj1);
-    auto dis2 = dijkstra(n, adj2);
-    debug(dis1);
-    debug(dis2);
-    ll ori_dis = dis1[n];
-    debug(ori_dis);
-    while(k--){
-        int a, b, w;
-        cin >> a >> b >> w;
-        ll new_dis;
-        // if(a > b) swap(a, b);
-        // if(a == n || b == n) new_dis = dis1[a] + w;
-        // else if(a == 1 || b == 1) new_dis = w + dis2[b];
-        new_dis = min(dis1[a] + w + dis2[b], dis1[b] + w + dis2[a]);
-        debug(k, a, b);
-        debug(dis1[a], dis2[b]);
-        ori_dis = min(new_dis, ori_dis);
-    }
-
-    cout << (ori_dis == INF ? -1 : ori_dis)<< endl;
-
 
     return 0;
 }
