@@ -72,45 +72,123 @@ const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
+const int N = 50;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+pii d[4] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+char con[4] = {'D', 'U', 'R', 'L'};
 
-class Solution {
-public:
-    int lengthOfLongestSubstring(string s) {
-        int sz = s.size();
-        set<char> se;
-        
-        int right, left;
-        right = left = 0;
-        
-        int ans = 0;
-        
-        for(;right<sz;right++){
-            if(se.find(s[right]) == se.end()){
-                se.insert(s [right]);
-                ans = max(ans, right-left+1);
-            } else {
-                while(left <= right && s[left] != s[right]){
-                    se.erase(s[left]);
-                    left++;
-                }
-                se.insert(s[right]);
-                left ++;
-                ans = max(ans, right-left+1);
+
+string ans;
+int max_score = 0;
+int cnt = 0;
+vector<vector<int>> ti, sc;
+int n_tile = 0;
+
+struct Info {
+    pii cur;
+    vector<bool> vis;
+    int score;
+    string path;
+};
+
+bool check(pii pre, pii nxt, vector<bool> vis){
+    if(nxt.X >= N || nxt.Y >= N || nxt.X < 0 || nxt.Y < 0) return false;
+    if(vis[ti[nxt.X][nxt.Y]] == true) return false;
+    if(ti[pre.X][pre.Y] == ti[nxt.X][nxt.Y]) return false;
+
+    return true;
+}
+
+pii add(pii a, pii b){
+    return make_pair(a.X + b.X, a.Y + b.Y);
+}
+
+void walk(pii s){
+    queue<Info> q;
+    Info st;
+    vector<bool> vis(n_tile + 5, false);
+    st.cur = s;
+    st.path = "";
+    st.score = sc[s.X][s.Y];
+    st.vis = vis;
+    q.push(st);
+
+    while(!q.empty()){
+        Info cur = q.front();
+        q.pop();
+        // if(cur.score < max_score) continue;
+        // debug(cur.cur, cur.score);
+        if(cnt >= 500000) break;
+        cur.score += sc[cur.cur.X][cur.cur.Y];
+        cur.vis[ti[cur.cur.X][cur.cur.Y]] = true;
+
+        bool flag = true;
+        for(int i=0;i<4;i++){
+            pii nxt = add(cur.cur, d[i]);
+            if(check(cur.cur, nxt, cur.vis)){
+                flag = false;
+                Info tmp;
+                tmp.cur = nxt;
+                tmp.path = cur.path + con[i];
+                tmp.score = cur.score;
+                tmp.vis = cur.vis;
+                q.push(tmp);
             }
         }
         
-        return ans;
-        
-        
+        if(flag){
+            cnt ++;
+            if(cur.score > max_score){
+                max_score = cur.score;
+                ans = cur.path;
+            }
+        }
     }
-};
+}
+
+// void walk(pii s, vector<bool> vis, int score, string path){
+//     if(cnt >= 500000) return;
+//     vis[ti[s.X][s.Y]] = true;
+//     score += sc[s.X][s.Y];
+//     bool flag = true;
+//     for(int i=0;i<4;i++){
+//         pii nxt = add(s, d[i]);
+//         if(check(s, nxt, vis)){
+//             flag = false;
+//             walk(nxt, vis, score, path+con[i]);           
+//         }
+//     }
+
+//     if(flag){
+//         cnt ++;
+//         if(score > max_score){
+//             max_score = score;
+//             ans = path;
+//         }
+//         return;
+//     }
+    
+// }
 
 /********** Good Luck :) **********/
 int main () {
-    string s;
-    cin >> s;
-    cout << Solution().lengthOfLongestSubstring(s) << endl;
+    TIME(main);
+    IOS();
+    pii s;
+    cin >> s.X >> s.Y;
+    ti.resize(50, vector<int>(50));
+    sc.resize(50, vector<int>(50));
+    REP(i, 50) REP(j, 50) cin >> ti[i][j], n_tile = max(n_tile, ti[i][j]);
+    REP(i, 50) REP(j, 50) cin >> sc[i][j];
+
+    vector<bool> vis(n_tile+5, false);
+
+    walk(s);
+
+    cout << ans << endl;
+
+
+    return 0;
 }

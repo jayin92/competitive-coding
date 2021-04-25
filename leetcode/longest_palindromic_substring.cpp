@@ -78,39 +78,48 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
+    string longestPalindrome(string s) {
         int sz = s.size();
-        set<char> se;
-        
-        int right, left;
-        right = left = 0;
-        
-        int ans = 0;
-        
-        for(;right<sz;right++){
-            if(se.find(s[right]) == se.end()){
-                se.insert(s [right]);
-                ans = max(ans, right-left+1);
-            } else {
-                while(left <= right && s[left] != s[right]){
-                    se.erase(s[left]);
-                    left++;
+        string ans = "";
+        string tmp = "";
+        for(int i=0;i<sz;i++){
+            tmp = s[i];
+            for(int j=1;j<=min(i, sz-i);j++){
+                if(s[i-j] != s[i+j]){
+                    break;
+                } else {
+                    tmp.insert(tmp.begin(), s[i-j]);
+                    tmp += s[i-j];
                 }
-                se.insert(s[right]);
-                left ++;
-                ans = max(ans, right-left+1);
             }
         }
-        
+
+        for(int i=0;i<sz;i++){
+            tmp = "";
+            for(int j=0;j<=min(i, sz-i+1);j++){
+                if(s[i-j] != s[i+j+1]){
+                    break;
+                } else {
+                    tmp.insert(tmp.begin(), s[i-j]);
+                    tmp += s[i-j];
+                }
+            }
+            if(tmp.size() > ans.size()) ans = tmp;
+        }
+
         return ans;
-        
-        
     }
 };
 
+
 /********** Good Luck :) **********/
 int main () {
+    TIME(main);
+    IOS();
     string s;
     cin >> s;
-    cout << Solution().lengthOfLongestSubstring(s) << endl;
+    cout << Solution().longestPalindrome(s) << endl;
+
+
+    return 0;
 }

@@ -75,42 +75,34 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
-        int sz = s.size();
-        set<char> se;
-        
-        int right, left;
-        right = left = 0;
-        
-        int ans = 0;
-        
-        for(;right<sz;right++){
-            if(se.find(s[right]) == se.end()){
-                se.insert(s [right]);
-                ans = max(ans, right-left+1);
-            } else {
-                while(left <= right && s[left] != s[right]){
-                    se.erase(s[left]);
-                    left++;
-                }
-                se.insert(s[right]);
-                left ++;
-                ans = max(ans, right-left+1);
-            }
+    int maxSubArray(vector<int>& nums) {
+        int tmp = nums[0];
+        int ans = nums[0];
+        int sz = nums.size();
+        for(int i=1;i<sz;i++){
+            if(tmp < 0) tmp = nums[i];
+            else tmp += nums[i];
+            ans = max(ans, tmp);
         }
-        
+
         return ans;
-        
-        
     }
+
 };
 
 /********** Good Luck :) **********/
 int main () {
-    string s;
-    cin >> s;
-    cout << Solution().lengthOfLongestSubstring(s) << endl;
+    TIME(main);
+    IOS();
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for(int i=0;i<n;i++) cin >> a[i];
+
+    cout << Solution().maxSubArray(a) << endl;
+
+
+    return 0;
 }

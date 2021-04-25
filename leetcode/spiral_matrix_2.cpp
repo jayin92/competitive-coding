@@ -75,42 +75,59 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
-        int sz = s.size();
-        set<char> se;
-        
-        int right, left;
-        right = left = 0;
-        
-        int ans = 0;
-        
-        for(;right<sz;right++){
-            if(se.find(s[right]) == se.end()){
-                se.insert(s [right]);
-                ans = max(ans, right-left+1);
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> ans(n, vector<int>(n));
+        vector<vector<bool>> vis(n, vector<bool>(n, false));
+        pair<int, int> d[4] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        pair<int, int> cur = {0, 0};
+
+        int dir = 0;
+
+        for(int i=1;i<=n*n;i++){
+            vis[cur.first][cur.second] = true;
+            ans[cur.first][cur.second] = i;
+            if(check(vis, add(cur, d[dir]), n, n) == true){
+                cur = add(cur, d[dir]);
             } else {
-                while(left <= right && s[left] != s[right]){
-                    se.erase(s[left]);
-                    left++;
-                }
-                se.insert(s[right]);
-                left ++;
-                ans = max(ans, right-left+1);
+                dir ++;
+                dir %= 4;
+                cur = add(cur, d[dir]);
             }
         }
-        
+
         return ans;
-        
-        
+    }
+
+private:
+    pair<int, int> add(pair<int, int> a, pair<int, int> b){
+        return make_pair(a.first + b.first, a.second + b.second);
+    }
+
+    bool check(vector<vector<bool>> vis, pair<int, int> cur, int n, int m){
+        int i = cur.first;
+        int j = cur.second;
+        if(i >= n || j >= m || i < 0 || j < 0) return false;
+        return !vis[i][j];
     }
 };
 
+
 /********** Good Luck :) **********/
 int main () {
-    string s;
-    cin >> s;
-    cout << Solution().lengthOfLongestSubstring(s) << endl;
+    TIME(main);
+    IOS();
+    int n;
+    cin >> n;
+    auto ans = Solution().generateMatrix(n);
+    for(auto i: ans){
+        for(auto j: i){
+            cout << j << " ";
+        }
+        cout << endl;
+    }
+
+
+    return 0;
 }

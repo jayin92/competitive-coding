@@ -78,39 +78,39 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
-        int sz = s.size();
-        set<char> se;
-        
-        int right, left;
-        right = left = 0;
-        
-        int ans = 0;
-        
-        for(;right<sz;right++){
-            if(se.find(s[right]) == se.end()){
-                se.insert(s [right]);
-                ans = max(ans, right-left+1);
+    vector<int> plusOne(vector<int>& digits) {
+        int sz = digits.size();
+        digits[sz-1] ++;
+        for(int i=sz-1;i>=1;i--){
+            if(digits[i] == 10){
+                digits[i] = 0;
+                digits[i-1] ++;
             } else {
-                while(left <= right && s[left] != s[right]){
-                    se.erase(s[left]);
-                    left++;
-                }
-                se.insert(s[right]);
-                left ++;
-                ans = max(ans, right-left+1);
+                break;
             }
         }
         
-        return ans;
-        
-        
+        if(digits[0] == 10){
+            digits[0] = 0;
+            digits.insert(digits.begin(), 1);
+        }
+
+        return digits;
     }
 };
 
 /********** Good Luck :) **********/
 int main () {
-    string s;
-    cin >> s;
-    cout << Solution().lengthOfLongestSubstring(s) << endl;
+    TIME(main);
+    IOS();
+
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for(int i=0;i<n;i++) cin >> a[i];
+    
+    auto ans = Solution().plusOne(a);
+    for(auto i: ans) cout << i << " ";
+    cout << endl;
+    return 0;
 }

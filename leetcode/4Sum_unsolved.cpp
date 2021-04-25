@@ -78,39 +78,57 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
-        int sz = s.size();
-        set<char> se;
-        
-        int right, left;
-        right = left = 0;
-        
-        int ans = 0;
-        
-        for(;right<sz;right++){
-            if(se.find(s[right]) == se.end()){
-                se.insert(s [right]);
-                ans = max(ans, right-left+1);
+    set<vector<int>> ans;
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<int> pre;
+        int sz = nums.size();
+        for(int i=0;i<sz;i++){
+            find(nums, i, 1, pre, t arget);
+        }
+
+        vector<vector<int>> real_ans;
+        for(auto i: ans) real_ans.push_back(i);
+
+        return real_ans;
+    }
+
+    void find(vector<int>& nums, int idx, int q, vector<int> pre, int remain){
+        int sz = nums.size();
+        debug(pre, remain);
+        if(q == 4){
+            if(nums[idx] == remain){
+                pre.push_back(nums[idx]);
+                ans.insert(pre);
+                return;
             } else {
-                while(left <= right && s[left] != s[right]){
-                    se.erase(s[left]);
-                    left++;
-                }
-                se.insert(s[right]);
-                left ++;
-                ans = max(ans, right-left+1);
+                return;
             }
         }
-        
-        return ans;
-        
-        
+        pre.push_back(nums[idx]);
+        for(int i=idx+1;i<sz;i++){
+            find(nums, i, q+1, pre, remain-nums[idx]);
+        }
     }
 };
 
+
 /********** Good Luck :) **********/
 int main () {
-    string s;
-    cin >> s;
-    cout << Solution().lengthOfLongestSubstring(s) << endl;
+    TIME(main);
+    IOS();
+    int n, tar;
+    cin >> n >> tar;
+    vector<int> a(n);
+    for(int i=0;i<n;i++) cin >> a[i];
+
+    auto ans = Solution().fourSum(a, tar);
+    
+    for(auto i: ans){
+        for(auto j: i){
+            cout << j << " ";
+        }
+        cout << endl;
+    }
+
+    return 0;
 }

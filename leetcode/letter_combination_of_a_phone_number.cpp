@@ -75,42 +75,51 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
-        int sz = s.size();
-        set<char> se;
-        
-        int right, left;
-        right = left = 0;
-        
-        int ans = 0;
-        
-        for(;right<sz;right++){
-            if(se.find(s[right]) == se.end()){
-                se.insert(s [right]);
-                ans = max(ans, right-left+1);
-            } else {
-                while(left <= right && s[left] != s[right]){
-                    se.erase(s[left]);
-                    left++;
-                }
-                se.insert(s[right]);
-                left ++;
-                ans = max(ans, right-left+1);
-            }
-        }
+    vector<string> ans;
+    vector<string> con;
+    vector<string> letterCombinations(string digits) {
+        if(digits.size() == 0) return ans;
+        con.resize(10);
+        con[2] = "abc", con[3] = "def", con[4] = "ghi", con[5] = "jkl";
+        con[6] = "mno", con[7] = "pqrs", con[8] = "tuv", con[9] = "wxyz";
+        find("", digits, 0, digits.size() - 1);
         
         return ans;
-        
-        
+    }
+
+private:
+    void find(string pre, string digits, int idx, int len){
+        int di = digits[idx] - '0';
+        if(len == 0){
+            for(auto i: con[di]){
+                string tmp = pre;
+                tmp += i;
+                ans.push_back(tmp);
+            }
+        } else {
+            for(auto i: con[di]){
+                string tmp = pre;
+                tmp += i;
+                find(tmp, digits, idx + 1, len - 1);
+            }
+        }
     }
 };
 
 /********** Good Luck :) **********/
 int main () {
+    TIME(main);
+    IOS();
     string s;
     cin >> s;
-    cout << Solution().lengthOfLongestSubstring(s) << endl;
+    
+    auto ans = Solution().letterCombinations(s);
+
+    for(auto i: ans) cout << i << " ";
+
+    cout << endl;
+
+    return 0;
 }
