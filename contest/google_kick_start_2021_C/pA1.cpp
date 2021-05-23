@@ -1,6 +1,4 @@
 #include <bits/stdc++.h>
-#include <sys/time.h>
-
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -74,104 +72,117 @@ const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
-const int N = 50;
-const double TL = 1.95;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-pii d[4] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-// pii d[4] = {{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
-char con[4] = {'D', 'U', 'R', 'L'};
-// char con[4] = {'U', 'L', 'R', 'D'};
-int order[4] = {1, 3, 2, 0};
 
-string ans;
-int max_score = 0;
-int cnt = 0;
-vector<vector<int>> ti, sc;
-int n_tile = 0;
-
-
-double start_time = -1;
-bool first_time = true;
-
-double limit = 0;
-
-double get_time() {
-    timeval tv;
-    gettimeofday(&tv, 0);
-    auto ret = tv.tv_sec + tv.tv_usec * 1e-6;
-
-    if(first_time) {
-        start_time = ret;
-        first_time = false;
+string minus_1(string s, int k){
+    int sz = s.size();
+    if(sz % 2 == 1){
+        int i = sz / 2;
+        s[i] --;
+        if(s[i] >= 'a') return s;
+        
+        s[i] = 'a' + k - 1;
+        for(i--;i>=0;i--){
+            s[i] = s[sz - i - 1] = s[i] - 1;
+            if(s[i] >= 'a') return s;            
+            s[i] = s[sz - i - 1] = 'a' + k - 1;
+        }
+    } else {
+        for(int i=sz/2-1;i>=0;i--){
+            s[i] = s[sz - i - 1] = s[i] - 1;
+            if(s[i] >= 'a') return s;            
+            s[i] = s[sz - i - 1] = 'a' + k - 1;        
+        }
     }
 
-    return ret - start_time;
+    return "-1";
 }
 
-inline bool check(pii nxt, vector<bool> vis){
-    if(nxt.X >= N || nxt.Y >= N || nxt.X < 0 || nxt.Y < 0) return false;
-    if(vis[ti[nxt.X][nxt.Y]] == true) return false;
+string add_1(string s, int k){
+    int sz = s.size();
+    if(sz % 2 == 1){
+        int i = sz / 2;
+        s[i] ++;
+        if(s[i] - 'a' + 1 <= k) return s;
+        
+        s[i] = 'a';        
+        for(i--;i>=0;i--){
+            s[i] = s[sz - i - 1] = s[i] + 1;
+            if(s[i] - 'a' + 1 <= k) return s;            
+            s[i] = s[sz - i - 1] = 'a';        
+        }
+    } else {
+        for(int i=sz/2-1;i>=0;i--){
+            s[i] = s[sz - i - 1] = s[i] + 1;
+            if(s[i] - 'a' + 1 <= k) return s;            
+            s[i] = s[sz - i - 1] = 'a';        
+        }
+    }
 
+    return "-1";
+}
+
+bool check(string s){
+    int sz = s.size();
+    for(int i=0;i<sz/2;i++){
+        if(s[i] != s[sz-i-1]) return false;
+    }
     return true;
 }
-
-inline pii add(pii a, pii b){
-    return make_pair(a.X + b.X, a.Y + b.Y);
-}
-
-void walk(pii s, vector<bool> vis, int score, string path){
-    if(get_time() >= TL) return;
-
-    vis[ti[s.X][s.Y]] = true;
-    score += sc[s.X][s.Y];
-    bool flag = true;
-
-    // int k = rand() % 4;
-    // int k= 2 * (rand() % 2) + 1;
-    int i;
-    // vector<int> shu = {0, 1, 2, 3};
-    // random_shuffle(ALL(shu));
-    for(int j=0;j<4;j++){
-        // int i = shu[j];
-        i = order[j];
-        pii nxt = add(s, d[i]);
-        if(check(nxt, vis)){
-            flag = false;
-            walk(nxt, vis, score, path+con[i]);           
-        }
-    }
-
-    if(flag){
-        cnt ++;
-        if(score > max_score){
-            max_score = score;
-            ans = path;
-        }
-    }
-
-    return;
-    
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    pii s;
-    cin >> s.X >> s.Y;
-    ti.resize(50, vector<int>(50));
-    sc.resize(50, vector<int>(50));
-    REP(i, 50) REP(j, 50) cin >> ti[i][j], n_tile = max(n_tile, ti[i][j]);
-    REP(i, 50) REP(j, 50) cin >> sc[i][j];
-
-    vector<bool> vis(n_tile+5, false);
-
-    walk(s, vis, 0, "");
-
-    cout << ans << endl;
-
+    int t;
+    cin >> t;
+    int case_ = 1;
+    while(t--){
+        ll ans = 1;
+        ll n, k;
+        cin >> n >> k;
+        string s;
+        cin >> s;
+        cout << "Case #" << case_++ << ": ";
+        int sz = s.size();
+        string ss(s);
+        for(int i=0;i<sz/2;i++){
+            ss[sz - i - 1] = ss[i];
+        }
+        bool flag = false;
+        while(ss >= s){
+            ss = minus_1(ss, k);
+            if(ss == "-1"){
+                flag = true;
+                break;
+            }
+        }
+        if(flag){
+            cout << 0 << endl;
+            continue;
+        }
+        int szz = 0;
+        if(sz % 2 == 0){
+            szz = sz / 2 - 1;
+        } else {
+            szz = sz / 2;
+        }
+        ll tmp = 1;
+        debug(ss, szz);
+        for(int i=szz;i>=0;i--){
+            ans += (ss[i] - 'a') * tmp;
+            ans %= MOD;
+            tmp *= k;
+            tmp %= MOD;
+            while(tmp <= 0) tmp += MOD;
+            while(ans <= 0) ans += MOD;
+            ans %= MOD;
+            tmp %= MOD;
+        }
+        while(ans <= 0) ans += MOD;
+        cout << ans % MOD << endl;
+    }
 
     return 0;
 }
