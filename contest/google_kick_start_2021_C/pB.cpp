@@ -80,6 +80,32 @@ int check(ll n){
     return tmp * tmp == n;
 }
 
+/*
+int n1, n2;
+sum1 = (1+n1)*n1/2
+sum2 = (1+n2)*n2/2
+
+sum2 - sum1 = G
+
+n2^2 - n1^2 + (n2-n1) = 2G
+
+(n2-n1)(n2+n1) + (n2-n1) = 2G
+
+(n2-n1)(n2+n1+1) = 2G
+
+a * b = 2G
+
+n2 - n1 = a
+n2 + n1 + 1 = b
+
+n1 = (b-a-1) / 2
+n2 = (a+b-1) / 2
+
+*/
+
+inline ll sum(ll n){
+    return (1+n)*n/2;
+}
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
@@ -91,14 +117,22 @@ int main () {
         ll g;
         cin >> g;
         cout << "Case #" << case_++ << ": ";
-        ll tmp = (8*g - 4) / 4;
-        if(tmp % 2 == 0) tmp --;
-        for(int i=1;i<=tmp;i+=2){
-            if(check(i * i + 8*g)){
-                
+	    g *= 2;
+        ll ans = 0;
+    	for(int i=1;i*i<=g;i++){
+            if(g % i == 0){
+                ll a = i;
+                ll b = g / i;
+                if((b <= a) || (a%2)^(b%2) == 0) continue;
+                ll n2 = (a+b-1)/2;
+                ll n1 = (b-a-1)/2;
+
+                ll sum2 = sum(n2);
+                ll sum1 = sum(n1);
+
+                if(sum2 - sum1 == g/2) ans ++;
             }
         }
-        ll ans = (tmp - 1) / 2 + 1;
         cout << ans << endl;
     }
 
