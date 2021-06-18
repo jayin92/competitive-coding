@@ -75,59 +75,34 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
-        
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    }
-
-    return "-1";
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
     int t;
     cin >> t;
-    int case_ = 1;
     while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        bool flag = true;
+        for(int i=0;i<n;i++){
+            cin >> a[i];
+            if(a[i] != i + 1) flag = false;
+        }
+        if(flag){
+            cout << 0 << endl;
+            continue;
+        } else {
+            if(a[0] == 1 || a[n-1] == n){
+                cout << 1 << endl;
+            } else if(a[0] == n && a[n-1] == 1){
+                cout << 3 << endl;
+            } else {
+                cout << 2 << endl;
             }
         }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
+
     }
 
     return 0;

@@ -76,28 +76,15 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
-        
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
+bool check(vector<ll> a){
+    int n = a.size();
+    for(int i=0;i<n;i++){
+        if(a[(i-1+n) % n] + a[(i+1)%n] == 2 * a[i]){
+            return false;
         }
     }
 
-    return "-1";
+    return true;
 }
 
 /********** Good Luck :) **********/
@@ -106,28 +93,38 @@ int main () {
     IOS();
     int t;
     cin >> t;
-    int case_ = 1;
     while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
+        int n;
+        cin >> n;
+        vector<int> ans(2*n);
+        vector<int> a(2*n);
+        vector<int> b(2*n);
+        vector<int> c(2*n);
+        for(int i=0;i<2*n;i++){
+            cin >> a[i];
+        }
+        sort(ALL(a));
+        for(int i=0;i<n;i++){
+            b[i] = a[i];
+        }
+        for(int i=n;i<2*n;i++){
+            c[i-n] = a[i];
+        }
+        
+        for(int i=0;i<2*n;i++){
+            if(i % 2){
+                ans[i] = b[i/2];
+            } else {
+                ans[i] = c[i/2];
             }
         }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
+
+
+        for(int i=0;i<2*n;i++){
+            cout << ans[i] << (i != 2*n-1 ? ' ' : '\n');
+        }
+
+
     }
 
     return 0;

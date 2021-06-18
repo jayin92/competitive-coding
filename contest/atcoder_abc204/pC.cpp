@@ -67,68 +67,60 @@ public:
 #define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
-
+ 
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
-
+ 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+ 
+vector<vector<int>> adj;
+vector<bool> vis;
+vector<vector<bool>> con;
+vector<vector<bool>> con1;
+vector<vector<int>> a_;
+ 
 
-
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
-        
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
+void dfs(int par, int cur){
+    con[par][cur] = true;    
+    vis[cur] = true;
+    for(auto i:adj[cur]){
+        if(!vis[i]){
+            dfs(par, i);
         }
     }
-
-    return "-1";
 }
-
+ 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-    int case_ = 1;
-    while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
-            }
-        }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
+    int n, m;
+    cin >> n >> m;
+    adj.resize(n);
+    vis.resize(n, false);
+    con.resize(n, vector<bool>(n, false));
+    con1.resize(n, vector<bool>(n, false));
+    for(int i=0;i<n;i++) con[i][i] = true;
+    for(int i=0;i<m;i++){
+        int a, b;
+        cin >> a >> b;
+        a --;
+        b --;
+        adj[a].push_back(b);
     }
-
+ 
+    for(int i=0;i<n;i++){
+        fill(ALL(vis), false);
+        if(!vis[i]){
+            dfs(i, i);
+        }
+    }
+    
+    ll ans = 0;
+    for(int i=0;i<n;i++) for(int j=0;j<n;j++) ans += con[i][j];
+    cout << ans << endl;
+ 
     return 0;
 }

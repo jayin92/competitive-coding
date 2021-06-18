@@ -75,29 +75,67 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+bool flag = false;
 
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
-        
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
+void solve(){
+    int n, it;
+    string s;
+    cin >> n >> it;
+    cin >> s;
+    queue<int> q;
+    for(int i=0;i<n;i++){
+        if(s[i] == '1') q.push(i);
+    }
+    q.push(-1);
+    // it ++;
+    vector<int> idx_;
+    while(!q.empty() && it){
+        int idx = q.front();
+        q.pop();
+        if(idx == -1){
+            if(!flag) break;
+            flag = false;
+            for(int i:idx_) s[i] = '1';
+            idx_.clear();
+            debug(s);
+            q.push(-1);
+            it --;
+            continue;
         }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
+        // if(idx != 0 && idx != n - 1){
+        //     if(s[idx-1] == '1' && s[idx+1] == '1'){
+        //         continue;
+        //     }
+        // }
+        // s[idx] = '1';
+        debug(s, idx);
+        if(idx != 0){
+            if(s[idx-1] == '0'){
+                if(!(idx != 1 && s[idx-2] == '1')){
+                    flag = true;
+                    q.push(idx-1);                    
+                    idx_.pb(idx-1);
+                }
+            }
+        }
+        if(idx != n-1){
+            debug(s, idx, s[idx+1]);
+            if(s[idx+1] == '0'){
+                if(idx != n-2 && s[idx+2] == '1'){
+                    continue;
+                } else {
+                    debug(idx, idx+1);
+                    flag = true;
+                    q.push(idx+1);
+                    idx_.pb(idx+1);
+                }
+            }
         }
     }
 
-    return "-1";
+    cout << s << endl;
+
+    return;
 }
 
 /********** Good Luck :) **********/
@@ -106,29 +144,10 @@ int main () {
     IOS();
     int t;
     cin >> t;
-    int case_ = 1;
     while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
-            }
-        }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
+        solve();
     }
+    
 
     return 0;
 }

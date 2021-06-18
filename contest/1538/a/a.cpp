@@ -75,59 +75,47 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
-        
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    }
-
-    return "-1";
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
     int t;
     cin >> t;
-    int case_ = 1;
     while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        pii min_;
+        pii max_;
+        cin >> a[0];
+        min_ = max_ = {a[0], 0};
+        REP(i, n-1){
+            cin >> a[i+1];
+            if(a[i+1] < min_.X){
+                min_.X = a[i+1];
+                min_.Y = i+1;
+            }
+            if(a[i+1] > max_.X){
+                max_.X = a[i+1];
+                max_.Y = i+1;
             }
         }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
+        debug(min_, max_);
+        
+        bool f1, f2;
+        f1 = min_.Y < n/2;
+        f2 = max_.Y < n/2;
+        debug(f1, f2);
+        if(f1 == f2){
+            if(min_.Y < n/2){
+                cout << max(min_.Y, max_.Y) + 1 << endl;
+            } else {
+                cout << max(n-min_.Y, n-max_.Y) << endl;
+            }
+        } else {
+            cout << min(min(min(min_.Y + 1, n - min_.Y) + min(max_.Y + 1, n - max_.Y), max(min_.Y, max_.Y) + 1), max(n-min_.Y, n-max_.Y)) << endl;
+        }
+
     }
 
     return 0;

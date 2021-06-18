@@ -67,68 +67,87 @@ public:
 #define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
-
+ 
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
-
+ 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
-
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
+ 
+void solve(){
+    string s;
+    cin >> s;
+    int n = s.size();
+    vector<int> a(n);
+    for(int i=0;i<n;i++){
+        if(s[i] == '0') a[i] = 0;
+        else if(s[i] == '1') a[i] = 1;
+        else a[i] = -1;
+    }
+    ll ans = 0;
+    int nxt = -1;
+    int i, j, k;
+    if(a[0] != -1) nxt = 1 - a[0];
+    else nxt = -1;
+    i = 0;
+    j = 1;
+    while(j < n){
+        for(;j<n;j++){
+            if(nxt == -1){
+                debug(a[i], a[j]);
+                if(a[j] != -1) nxt = 1 - a[j];
+                else nxt = -1;
+            } else {
+                if(a[j] == -1 || nxt == a[j]){
+                    debug(a[i], a[j]);
+                    nxt = 1 - nxt;
+                } else {
+                    break;
+                }
+            }
+        }
+        ans += (j - i - 1) * (j - i) / 2;
+        if(nxt == -1){
+            continue;
+        } else {
+            nxt = 1 - a[j];
+        }
+        for(k=j-1;k>i;k--){
+            if(nxt == -1){
+                debug(a[i], a[k]);
+                if(a[k] != -1) nxt = 1 - a[k];
+                else nxt = -1;
+            } else {
+                if(a[k] == -1 || nxt == a[k]){
+                    debug(a[i], a[k]);
+                    nxt = 1 - nxt;
+                } else {
+                    break;
+                }
+            }
+        }
+        if(k != i) {
+            ans += (j - k - 1) * (j - k) / 2;
+        }
+        i = k + 1;
+        j = k + 2; 
         
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
     }
 
-    return "-1";
+    ans += n;
+    cout << ans << endl;
 }
-
+ 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
     int t;
     cin >> t;
-    int case_ = 1;
     while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
-            }
-        }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
+        solve();
     }
-
+ 
     return 0;
 }

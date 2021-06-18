@@ -67,68 +67,169 @@ public:
 #define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
-
+ 
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
-
+ 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+ 
+vector<vector<int>> adj1;
+vector<vector<int>> adj2;
+vector<set<int>> dag;
+vector<bool> vis;
+vector<vector<bool>> con;
+vector<vector<bool>> con1;
+vector<vector<int>> a_;
+vector<vector<int>> scc;
+vector<int> scc_idx;
+vector<ll> scc_sum;
+stack<int> s;
 
+int n, m;
 
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
-        
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
+void fillorder(int cur){
+    vis[cur] = true;
+    for(auto i:adj1[cur]){
+        if(vis[i] == false){
+            fillorder(i);
         }
     }
 
-    return "-1";
+    s.push(cur);
+}
+
+
+void dfs(int cur, int idx){
+    vis[cur] = true;
+    scc[idx].push_back(cur);
+    scc_idx[cur] = idx;
+    for(auto i:adj2[cur]){
+        if(!vis[i]){
+            dfs(i, idx);
+        }
+    }
+}
+
+void SCC(){
+    fill(ALL(vis), false);
+    for(int i=0;i<n;i++){
+        if(!vis[i]) fillorder(i);
+    }
+
+    fill(ALL(vis), false);
+    int idx = 0;
+    while(!s.empty()){
+        int v = s.top();
+        s.pop();
+        if(!vis[v]){
+            dfs(v, idx);
+            idx ++;
+        }
+    }
+}
+
+void makeDAG(){
+    for(int i=0;i<n;i++){
+        for(auto j:adj1[i]){
+            if(scc_idx[i] != scc_idx[j]){
+                dag[scc_idx[i]].insert(scc_idx[j]);
+            }
+        }
+    }
+}
+
+ll ans;
+
+void dag_dfs_1(int cur, int prev, ll sum){
+    ll sz = scc[cur].size();
+    if(prev != -1 && scc_sum[cur] != 0){
+        sum -= sz;
+    }
+    scc_sum[cur] += sum;
+    for(auto i:dag[cur]){
+        if(i != prev){
+            dag_dfs_1(i, cur, sum+sz);
+        }
+    }
+}
+
+void dag_dfs_2(int cur){
+    vis[cur] = true;
+    ll sz = scc[cur].size();
+    debug(scc_sum[cur]);
+    ans += sz * scc_sum[cur] + sz * sz;
+    debug(ans, cur);
+    assert(ans >= 0);
+    for(auto i:dag[cur]){
+        if(!vis[i]){
+            dag_dfs_2(i);
+        }
+    }
 }
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-    int case_ = 1;
-    while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
-            }
+    ans = 0;
+    cin >> n >> m;
+    adj1.resize(n);
+    adj2.resize(n);
+    vis.resize(n, false);
+    con.resize(n, vector<bool>(n, false));
+    con1.resize(n, vector<bool>(n, false));
+    scc.resize(n);
+    scc_idx.resize(n);
+    vector<int> ind(n, 0);
+    for(int i=0;i<m;i++){
+        int a, b;
+        cin >> a >> b;
+        a --;
+        b --;
+        adj1[a].push_back(b);
+        adj2[b].push_back(a);
+        ind[b] ++;
+    }
+    
+    SCC();
+    debug(scc);
+
+    // return 0;
+    int sz = scc.size();
+    dag.resize(sz);
+    scc_sum.resize(sz, 0); 
+    debug(scc_idx);
+
+    makeDAG();
+    
+
+    set<int> s_;
+    for(int i=0;i<sz;i++){
+        s_.insert(i);
+    }
+    for(int i=0;i<sz;i++){
+        for(auto j:dag[i]){
+            s_.erase(j);
         }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
+    }
+    debug(s_);
+
+    for(auto i:s_){
+        dag_dfs_1(i, -1, 0);
+    }
+    debug(scc_sum);
+    fill(ALL(vis), false);
+
+    for(int i=0;i<sz;i++){
+       if(!vis[i]){
+           dag_dfs_2(i);
+       }
     }
 
+    cout << ans << endl;
+    debug(dag);
+ 
     return 0;
 }

@@ -75,60 +75,120 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<vector<int>> a;
 
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
-        
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
+bool check(pii pos, int n, int k){
+    int vet = (1 + pos.X) + (n - pos.X - 1);
+    int hor = (1 + pos.Y) + (n - pos.Y - 1);
+
+    return vet >= k && hor >= k;
+}
+
+int randomPartition(int arr[], int l, int r);
+ 
+// This function returns k'th smallest element in arr[l..r] using
+// QuickSort based method. ASSUMPTION: ELEMENTS IN ARR[] ARE DISTINCT
+int kthSmallest(int arr[], int l, int r, int k)
+{
+    // If k is smaller than number of elements in array
+    if (k > 0 && k <= r - l + 1)
+    {
+        // Partition the array around a random element and
+        // get position of pivot element in sorted array
+        int pos = randomPartition(arr, l, r);
+ 
+        // If position is same as k
+        if (pos-l == k-1)
+            return arr[pos];
+        if (pos-l > k-1) // If position is more, recur for left subarray
+            return kthSmallest(arr, l, pos-1, k);
+ 
+        // Else recur for right subarray
+        return kthSmallest(arr, pos+1, r, k-pos+l-1);
+    }
+ 
+    // If k is more than the number of elements in the array
+    return INT_MAX;
+}
+ 
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+ 
+// Standard partition process of QuickSort(). It considers the last
+// element as pivot and moves all smaller element to left of it and
+// greater elements to right. This function is used by randomPartition()
+int partition(int arr[], int l, int r)
+{
+    int x = arr[r], i = l;
+    for (int j = l; j <= r - 1; j++)
+    {
+        if (arr[j] <= x)
+        {
+            swap(&arr[i], &arr[j]);
+            i++;
         }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
+    }
+    swap(&arr[i], &arr[r]);
+    return i;
+}
+ 
+// Picks a random pivot element between l and r and partitions
+// arr[l..r] around the randomly picked element using partition()
+int randomPartition(int arr[], int l, int r)
+{
+    int n = r-l+1;
+    int pivot = rand() % n;
+    swap(&arr[l + pivot], &arr[r]);
+    return partition(arr, l, r);
+}
+
+int ans = iNF;
+
+int get_median(vector<vector<int>> a, pii pos, int k){
+    int arr[k*k];
+    bool flag = false;
+    for(int i=pos.X;i<pos.X+k;i++){
+        for(int j=pos.Y;j<pos.Y+k;j++){
+            arr[(i-pos.X)*k+j-pos.Y] = a[i][j];
+            if(a[i][j] <= ans) flag = true;
         }
     }
 
-    return "-1";
+    if(!flag) return iNF; 
+
+    return kthSmallest(arr, 0, k*k-1, k*k - (k*k/2+1)  + 1);
 }
+
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-    int case_ = 1;
-    while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
-            }
+    
+    int n, k;
+    cin >> n >> k;
+    a.resize(n, vector<int>(n));
+    
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            cin >> a[i][j];
         }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
     }
+
+    
+    for(int i=0;i<=n-k;i++){
+        for(int j=0;j<=n-k;j++){
+            int tmp = get_median(a, mp(i, j), k);
+            ans = min(ans, tmp);
+        }
+    }  
+    // sort(ALL(ans));
+    cout << ans << endl;
+
 
     return 0;
 }

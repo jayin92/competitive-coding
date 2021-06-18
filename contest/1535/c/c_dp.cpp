@@ -67,68 +67,48 @@ public:
 #define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
-
+ 
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
-
+ 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
-
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
-        
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
+ 
+void solve(){
+    string s;
+    cin >> s;
+    int n = s.size();
+    vector<vector<ll>> dp(n+1, vector<ll>(2));
+    dp[0][0] = dp[0][1] = 0;
+    ll ans = 0;
+    for(int i=1;i<=n;i++){
+        char tmp = s[i-1];
+        if(tmp == '?'){
+            dp[i][0] = dp[i-1][1] + 1;
+            dp[i][1] = dp[i-1][0] + 1;
+        } else if(tmp == '0'){
+            dp[i][0] = dp[i-1][1] + 1;
+            dp[i][1] = 0;
+        } else {
+            dp[i][0] = 0;
+            dp[i][1] = dp[i-1][0] + 1;
         }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
+        ans += max(dp[i][0], dp[i][1]);
     }
+    cout << ans << endl;
 
-    return "-1";
 }
-
+ 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
     int t;
     cin >> t;
-    int case_ = 1;
     while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
-            }
-        }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
+        solve();
     }
-
+ 
     return 0;
 }

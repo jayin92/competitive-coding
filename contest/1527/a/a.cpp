@@ -74,60 +74,38 @@ const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
-
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
-        
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
+void solve(){
+    int n;
+    cin >> n;
+    bitset<50> b = n;
+    int idx = 0;
+    debug(b);
+    for(int i=49;i>=0;i--){
+        if(b[i] == 1){
+            idx = i;
+            break;
         }
     }
-
-    return "-1";
+    // debug(idx);
+    cout << (int)pow(2, idx) - 1 << endl;
+    // for(int i=n-1;i>=0;i--){
+    //     bitset<50> tmp = i;
+    //     // debug(b, tmp);
+    //     b = b & tmp;
+    //     if(b == 0){
+    //         cout << i << endl;
+    //         return;
+    //     }
+    // }
 }
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
     int t;
     cin >> t;
-    int case_ = 1;
     while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
-            }
-        }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
+        solve();
     }
 
     return 0;

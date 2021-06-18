@@ -75,59 +75,61 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-
-string add_1(string s, int k){
-    int sz = s.size();
-    if(sz % 2 == 1){
-        int i = sz / 2;
-        s[i] ++;
-        if(s[i] - 'a' + 1 <= k) return s;
-        
-        s[i] = 'a';        
-        for(i--;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    } else {
-        for(int i=sz/2-1;i>=0;i--){
-            s[i] = s[sz - i - 1] = s[i] + 1;
-            if(s[i] - 'a' + 1 <= k) return s;            
-            s[i] = s[sz - i - 1] = 'a';        
-        }
-    }
-
-    return "-1";
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
     int t;
     cin >> t;
-    int case_ = 1;
     while(t--){
-        ll ans = 0;
-        int n, k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        cout << "Case #" << case_++ << ": ";
-        string st;
-        for(int i=0;i<n;i++) st += 'a'; // string "aaaaaa" (n a)
-        while(st < s){
-            // debug(st);            
-            if(st != s) ans ++;
-            ans %= MOD;
-            st = add_1(st, k);
-            if(st == "-1"){
-                debug(st);
-                break;
-            }
+        int n;
+        ll l, r;
+        cin >> n >> l >> r;        
+        map<ll, ll> a;
+        map<ll, int> idx;
+        ll tmp;
+        for(int i=0;i<n;i++){
+            cin >> tmp;
+            a[tmp] ++;
         }
-        while(ans <= 0) ans += MOD;
-        cout << ans % MOD << endl;
+        ll ans = 0;
+        int sz = a.size();
+        vector<ll> dp(sz+1, 0);
+        int j = 1;
+        for(auto i:a){
+            idx[i.X] = j;
+            dp[j] = dp[j-1] + i.Y;
+            j++;
+        }
+        set<int> s;
+        for(auto i:a){
+            ll L = l - i.X;
+            ll R = r - i.X;
+            if(a.lower_bound(L) == a.end()) continue;
+            debug(i.X, a.lower_bound(L) -> X, a.lower_bound(R) -> X);
+            ll LL = a.lower_bound(L) -> X;
+            ll RR = a.lower_bound(R) -> X;
+            if(RR + i.X > R) continue;
+            auto idx_l = max(idx[i.X], idx[LL]);
+            LL = max(i.X, LL);
+            if(a.lower_bound(R) == a.end()){
+                RR = a.rbegin() -> X;
+            }
+            int idx_r = idx[RR];
+            if(idx_l > idx_r) continue;
+            debug(idx_l, idx_r);
+            ll cnt = dp[idx_r] - dp[idx_l-1];
+            debug(LL, RR, cnt);
+            if(LL == i.X){
+                cnt -= i.Y;
+                if(s.find(i.X) == s.end()){
+                    ans += (i.Y - 1) * i.Y / 2;
+                    s.insert(i.X);
+                }
+            }
+            ans += i.Y * cnt;
+        }
+        cout << ans << endl;
     }
 
     return 0;
