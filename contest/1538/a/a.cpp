@@ -1,6 +1,4 @@
 #include <bits/stdc++.h>
-#include <sys/time.h>
-
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -69,132 +67,56 @@ public:
 #define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
- 
+
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
-const int N = 50;
-const double TL = 1.95;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-pii d[4] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-// pii d[4] = {{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
-char con[4] = {'D', 'U', 'R', 'L'};
-// char con[4] = {'U', 'L', 'R', 'D'};
-int order[4] = {1, 3, 2, 0};
-
-string ans;
-int max_score = 0;
-int cnt = 0;
-vector<vector<int>> ti, sc;
-int n_tile = 0;
-const double TL = 1.95;
-
-double start_time = -1;
-bool first_time = true;
-
-double get_time() {
-    timeval tv;
-    gettimeofday(&tv, 0);
-    auto ret = tv.tv_sec + tv.tv_usec * 1e-6;
-
-    if(first_time) {
-        start_time = ret;
-        first_time = false;
-    }
-
-    return ret - start_time;
-}
-
-
-
-double start_time = -1;
-bool first_time = true;
-
-double limit = 0;
-
-double get_time() {
-    timeval tv;
-    gettimeofday(&tv, 0);
-    auto ret = tv.tv_sec + tv.tv_usec * 1e-6;
-
-    if(first_time) {
-        start_time = ret;
-        first_time = false;
-    }
-
-    return ret - start_time;
-}
-
-inline bool check(pii nxt, vector<bool> vis){
-    if(nxt.X >= N || nxt.Y >= N || nxt.X < 0 || nxt.Y < 0) return false;
-    if(vis[ti[nxt.X][nxt.Y]] == true) return false;
- 
-    return true;
-}
- 
-inline pii add(pii a, pii b){
-    return make_pair(a.X + b.X, a.Y + b.Y);
-}
- 
-void walk(pii s, vector<bool> vis, int score, string path){
-<<<<<<< HEAD
-    // if(cnt >= 605000) return;
-    if(get_time() >= TL) return;
-=======
-    if(get_time() >= TL) return;
-
->>>>>>> 475374bb55abfbd554dbe7bc9c52853e48b7c1f3
-    vis[ti[s.X][s.Y]] = true;
-    score += sc[s.X][s.Y];
-    bool flag = true;
- 
-    // int k = rand() % 4;
-    // int k= 2 * (rand() % 2) + 1;
-    int i;
-    // vector<int> shu = {0, 1, 2, 3};
-    // random_shuffle(ALL(shu));
-    for(int j=0;j<4;j++){
-        // int i = shu[j];
-        i = order[j];
-        pii nxt = add(s, d[i]);
-        if(check(nxt, vis)){
-            flag = false;
-            walk(nxt, vis, score, path+con[i]);           
-        }
-    }
- 
-    if(flag){
-        cnt ++;
-        if(score > max_score){
-            max_score = score;
-            ans = path;
-        }
-    }
- 
-    return;
-    
-}
- 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    pii s;
-    cin >> s.X >> s.Y;
-    ti.resize(50, vector<int>(50));
-    sc.resize(50, vector<int>(50));
-    REP(i, 50) REP(j, 50) cin >> ti[i][j], n_tile = max(n_tile, ti[i][j]);
-    REP(i, 50) REP(j, 50) cin >> sc[i][j];
- 
-    vector<bool> vis(n_tile+5, false);
- 
-    walk(s, vis, 0, "");
- 
-    cout << ans << endl;
-    
- 
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<int> a(n);
+        pii min_;
+        pii max_;
+        cin >> a[0];
+        min_ = max_ = {a[0], 0};
+        REP(i, n-1){
+            cin >> a[i+1];
+            if(a[i+1] < min_.X){
+                min_.X = a[i+1];
+                min_.Y = i+1;
+            }
+            if(a[i+1] > max_.X){
+                max_.X = a[i+1];
+                max_.Y = i+1;
+            }
+        }
+        debug(min_, max_);
+        
+        bool f1, f2;
+        f1 = min_.Y < n/2;
+        f2 = max_.Y < n/2;
+        debug(f1, f2);
+        if(f1 == f2){
+            if(min_.Y < n/2){
+                cout << max(min_.Y, max_.Y) + 1 << endl;
+            } else {
+                cout << max(n-min_.Y, n-max_.Y) << endl;
+            }
+        } else {
+            cout << min(min(min(min_.Y + 1, n - min_.Y) + min(max_.Y + 1, n - max_.Y), max(min_.Y, max_.Y) + 1), max(n-min_.Y, n-max_.Y)) << endl;
+        }
+
+    }
+
     return 0;
 }

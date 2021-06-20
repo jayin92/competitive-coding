@@ -1,6 +1,4 @@
 #include <bits/stdc++.h>
-#include <sys/time.h>
-
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -69,132 +67,128 @@ public:
 #define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
- 
+
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
-const int N = 50;
-const double TL = 1.95;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-pii d[4] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-// pii d[4] = {{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
-char con[4] = {'D', 'U', 'R', 'L'};
-// char con[4] = {'U', 'L', 'R', 'D'};
-int order[4] = {1, 3, 2, 0};
+vector<vector<int>> a;
 
-string ans;
-int max_score = 0;
-int cnt = 0;
-vector<vector<int>> ti, sc;
-int n_tile = 0;
-const double TL = 1.95;
+bool check(pii pos, int n, int k){
+    int vet = (1 + pos.X) + (n - pos.X - 1);
+    int hor = (1 + pos.Y) + (n - pos.Y - 1);
 
-double start_time = -1;
-bool first_time = true;
+    return vet >= k && hor >= k;
+}
 
-double get_time() {
-    timeval tv;
-    gettimeofday(&tv, 0);
-    auto ret = tv.tv_sec + tv.tv_usec * 1e-6;
-
-    if(first_time) {
-        start_time = ret;
-        first_time = false;
+int randomPartition(int arr[], int l, int r);
+ 
+// This function returns k'th smallest element in arr[l..r] using
+// QuickSort based method. ASSUMPTION: ELEMENTS IN ARR[] ARE DISTINCT
+int kthSmallest(int arr[], int l, int r, int k)
+{
+    // If k is smaller than number of elements in array
+    if (k > 0 && k <= r - l + 1)
+    {
+        // Partition the array around a random element and
+        // get position of pivot element in sorted array
+        int pos = randomPartition(arr, l, r);
+ 
+        // If position is same as k
+        if (pos-l == k-1)
+            return arr[pos];
+        if (pos-l > k-1) // If position is more, recur for left subarray
+            return kthSmallest(arr, l, pos-1, k);
+ 
+        // Else recur for right subarray
+        return kthSmallest(arr, pos+1, r, k-pos+l-1);
     }
-
-    return ret - start_time;
-}
-
-
-
-double start_time = -1;
-bool first_time = true;
-
-double limit = 0;
-
-double get_time() {
-    timeval tv;
-    gettimeofday(&tv, 0);
-    auto ret = tv.tv_sec + tv.tv_usec * 1e-6;
-
-    if(first_time) {
-        start_time = ret;
-        first_time = false;
-    }
-
-    return ret - start_time;
-}
-
-inline bool check(pii nxt, vector<bool> vis){
-    if(nxt.X >= N || nxt.Y >= N || nxt.X < 0 || nxt.Y < 0) return false;
-    if(vis[ti[nxt.X][nxt.Y]] == true) return false;
  
-    return true;
+    // If k is more than the number of elements in the array
+    return INT_MAX;
 }
  
-inline pii add(pii a, pii b){
-    return make_pair(a.X + b.X, a.Y + b.Y);
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
  
-void walk(pii s, vector<bool> vis, int score, string path){
-<<<<<<< HEAD
-    // if(cnt >= 605000) return;
-    if(get_time() >= TL) return;
-=======
-    if(get_time() >= TL) return;
-
->>>>>>> 475374bb55abfbd554dbe7bc9c52853e48b7c1f3
-    vis[ti[s.X][s.Y]] = true;
-    score += sc[s.X][s.Y];
-    bool flag = true;
- 
-    // int k = rand() % 4;
-    // int k= 2 * (rand() % 2) + 1;
-    int i;
-    // vector<int> shu = {0, 1, 2, 3};
-    // random_shuffle(ALL(shu));
-    for(int j=0;j<4;j++){
-        // int i = shu[j];
-        i = order[j];
-        pii nxt = add(s, d[i]);
-        if(check(nxt, vis)){
-            flag = false;
-            walk(nxt, vis, score, path+con[i]);           
+// Standard partition process of QuickSort(). It considers the last
+// element as pivot and moves all smaller element to left of it and
+// greater elements to right. This function is used by randomPartition()
+int partition(int arr[], int l, int r)
+{
+    int x = arr[r], i = l;
+    for (int j = l; j <= r - 1; j++)
+    {
+        if (arr[j] <= x)
+        {
+            swap(&arr[i], &arr[j]);
+            i++;
         }
     }
- 
-    if(flag){
-        cnt ++;
-        if(score > max_score){
-            max_score = score;
-            ans = path;
-        }
-    }
- 
-    return;
-    
+    swap(&arr[i], &arr[r]);
+    return i;
 }
  
+// Picks a random pivot element between l and r and partitions
+// arr[l..r] around the randomly picked element using partition()
+int randomPartition(int arr[], int l, int r)
+{
+    int n = r-l+1;
+    int pivot = rand() % n;
+    swap(&arr[l + pivot], &arr[r]);
+    return partition(arr, l, r);
+}
+
+int ans = iNF;
+
+int get_median(vector<vector<int>> a, pii pos, int k){
+    int arr[k*k];
+    bool flag = false;
+    for(int i=pos.X;i<pos.X+k;i++){
+        for(int j=pos.Y;j<pos.Y+k;j++){
+            arr[(i-pos.X)*k+j-pos.Y] = a[i][j];
+            if(a[i][j] <= ans) flag = true;
+        }
+    }
+
+    if(!flag) return iNF; 
+
+    return kthSmallest(arr, 0, k*k-1, k*k - (k*k/2+1)  + 1);
+}
+
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    pii s;
-    cin >> s.X >> s.Y;
-    ti.resize(50, vector<int>(50));
-    sc.resize(50, vector<int>(50));
-    REP(i, 50) REP(j, 50) cin >> ti[i][j], n_tile = max(n_tile, ti[i][j]);
-    REP(i, 50) REP(j, 50) cin >> sc[i][j];
- 
-    vector<bool> vis(n_tile+5, false);
- 
-    walk(s, vis, 0, "");
- 
-    cout << ans << endl;
     
- 
+    int n, k;
+    cin >> n >> k;
+    a.resize(n, vector<int>(n));
+    
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            cin >> a[i][j];
+        }
+    }
+
+    
+    for(int i=0;i<=n-k;i++){
+        for(int j=0;j<=n-k;j++){
+            int tmp = get_median(a, mp(i, j), k);
+            ans = min(ans, tmp);
+        }
+    }  
+    // sort(ALL(ans));
+    cout << ans << endl;
+
+
     return 0;
 }

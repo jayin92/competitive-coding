@@ -1,6 +1,4 @@
 #include <bits/stdc++.h>
-#include <sys/time.h>
-
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
@@ -74,127 +72,164 @@ const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
-const int N = 50;
-const double TL = 1.95;
-
+ 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
-pii d[4] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-// pii d[4] = {{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
-char con[4] = {'D', 'U', 'R', 'L'};
-// char con[4] = {'U', 'L', 'R', 'D'};
-int order[4] = {1, 3, 2, 0};
-
-string ans;
-int max_score = 0;
-int cnt = 0;
-vector<vector<int>> ti, sc;
-int n_tile = 0;
-const double TL = 1.95;
-
-double start_time = -1;
-bool first_time = true;
-
-double get_time() {
-    timeval tv;
-    gettimeofday(&tv, 0);
-    auto ret = tv.tv_sec + tv.tv_usec * 1e-6;
-
-    if(first_time) {
-        start_time = ret;
-        first_time = false;
-    }
-
-    return ret - start_time;
-}
-
-
-
-double start_time = -1;
-bool first_time = true;
-
-double limit = 0;
-
-double get_time() {
-    timeval tv;
-    gettimeofday(&tv, 0);
-    auto ret = tv.tv_sec + tv.tv_usec * 1e-6;
-
-    if(first_time) {
-        start_time = ret;
-        first_time = false;
-    }
-
-    return ret - start_time;
-}
-
-inline bool check(pii nxt, vector<bool> vis){
-    if(nxt.X >= N || nxt.Y >= N || nxt.X < 0 || nxt.Y < 0) return false;
-    if(vis[ti[nxt.X][nxt.Y]] == true) return false;
  
-    return true;
-}
- 
-inline pii add(pii a, pii b){
-    return make_pair(a.X + b.X, a.Y + b.Y);
-}
- 
-void walk(pii s, vector<bool> vis, int score, string path){
-<<<<<<< HEAD
-    // if(cnt >= 605000) return;
-    if(get_time() >= TL) return;
-=======
-    if(get_time() >= TL) return;
+vector<vector<int>> adj1;
+vector<vector<int>> adj2;
+vector<set<int>> dag;
+vector<bool> vis;
+vector<vector<bool>> con;
+vector<vector<bool>> con1;
+vector<vector<int>> a_;
+vector<vector<int>> scc;
+vector<int> scc_idx;
+vector<ll> scc_sum;
+stack<int> s;
 
->>>>>>> 475374bb55abfbd554dbe7bc9c52853e48b7c1f3
-    vis[ti[s.X][s.Y]] = true;
-    score += sc[s.X][s.Y];
-    bool flag = true;
- 
-    // int k = rand() % 4;
-    // int k= 2 * (rand() % 2) + 1;
-    int i;
-    // vector<int> shu = {0, 1, 2, 3};
-    // random_shuffle(ALL(shu));
-    for(int j=0;j<4;j++){
-        // int i = shu[j];
-        i = order[j];
-        pii nxt = add(s, d[i]);
-        if(check(nxt, vis)){
-            flag = false;
-            walk(nxt, vis, score, path+con[i]);           
+int n, m;
+
+void fillorder(int cur){
+    vis[cur] = true;
+    for(auto i:adj1[cur]){
+        if(vis[i] == false){
+            fillorder(i);
         }
     }
- 
-    if(flag){
-        cnt ++;
-        if(score > max_score){
-            max_score = score;
-            ans = path;
+
+    s.push(cur);
+}
+
+
+void dfs(int cur, int idx){
+    vis[cur] = true;
+    scc[idx].push_back(cur);
+    scc_idx[cur] = idx;
+    for(auto i:adj2[cur]){
+        if(!vis[i]){
+            dfs(i, idx);
         }
     }
- 
-    return;
-    
 }
- 
+
+void SCC(){
+    fill(ALL(vis), false);
+    for(int i=0;i<n;i++){
+        if(!vis[i]) fillorder(i);
+    }
+
+    fill(ALL(vis), false);
+    int idx = 0;
+    while(!s.empty()){
+        int v = s.top();
+        s.pop();
+        if(!vis[v]){
+            dfs(v, idx);
+            idx ++;
+        }
+    }
+}
+
+void makeDAG(){
+    for(int i=0;i<n;i++){
+        for(auto j:adj1[i]){
+            if(scc_idx[i] != scc_idx[j]){
+                dag[scc_idx[i]].insert(scc_idx[j]);
+            }
+        }
+    }
+}
+
+ll ans;
+
+void dag_dfs_1(int cur, int prev, ll sum){
+    ll sz = scc[cur].size();
+    if(prev != -1 && scc_sum[cur] != 0){
+        sum -= sz;
+    }
+    scc_sum[cur] += sum;
+    for(auto i:dag[cur]){
+        if(i != prev){
+            dag_dfs_1(i, cur, sum+sz);
+        }
+    }
+}
+
+void dag_dfs_2(int cur){
+    vis[cur] = true;
+    ll sz = scc[cur].size();
+    debug(scc_sum[cur]);
+    ans += sz * scc_sum[cur] + sz * sz;
+    debug(ans, cur);
+    assert(ans >= 0);
+    for(auto i:dag[cur]){
+        if(!vis[i]){
+            dag_dfs_2(i);
+        }
+    }
+}
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    pii s;
-    cin >> s.X >> s.Y;
-    ti.resize(50, vector<int>(50));
-    sc.resize(50, vector<int>(50));
-    REP(i, 50) REP(j, 50) cin >> ti[i][j], n_tile = max(n_tile, ti[i][j]);
-    REP(i, 50) REP(j, 50) cin >> sc[i][j];
- 
-    vector<bool> vis(n_tile+5, false);
- 
-    walk(s, vis, 0, "");
- 
-    cout << ans << endl;
+    ans = 0;
+    cin >> n >> m;
+    adj1.resize(n);
+    adj2.resize(n);
+    vis.resize(n, false);
+    con.resize(n, vector<bool>(n, false));
+    con1.resize(n, vector<bool>(n, false));
+    scc.resize(n);
+    scc_idx.resize(n);
+    vector<int> ind(n, 0);
+    for(int i=0;i<m;i++){
+        int a, b;
+        cin >> a >> b;
+        a --;
+        b --;
+        adj1[a].push_back(b);
+        adj2[b].push_back(a);
+        ind[b] ++;
+    }
     
+    SCC();
+    debug(scc);
+
+    // return 0;
+    int sz = scc.size();
+    dag.resize(sz);
+    scc_sum.resize(sz, 0); 
+    debug(scc_idx);
+
+    makeDAG();
+    
+
+    set<int> s_;
+    for(int i=0;i<sz;i++){
+        s_.insert(i);
+    }
+    for(int i=0;i<sz;i++){
+        for(auto j:dag[i]){
+            s_.erase(j);
+        }
+    }
+    debug(s_);
+
+    for(auto i:s_){
+        dag_dfs_1(i, -1, 0);
+    }
+    debug(scc_sum);
+    fill(ALL(vis), false);
+
+    for(int i=0;i<sz;i++){
+       if(!vis[i]){
+           dag_dfs_2(i);
+       }
+    }
+
+    cout << ans << endl;
+    debug(dag);
  
     return 0;
 }
