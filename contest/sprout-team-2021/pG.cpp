@@ -79,22 +79,40 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
-    int k;
-    cin >> k;
-    while(k--){
-        ll n, x, t;
-        cin >> n >> x >> t;
-        if(x > t){
-            cout << 0 << endl;
+    int t;
+    cin >> t;
+    int n = 10;
+    while(t--){
+        int cnt = 10;
+        if(t <= 9){
+            for(int i=0;i<n;i++){
+                cout << (i == t);
+            }
+            cnt --;
+            cout << endl;
+            for(int i=1;i<n;i++){
+                for(int j=0;j<n;j++){
+                    if(cnt > 0){
+                        cout << 1;
+                        cnt--;
+                    } else {
+                        cout << 0;
+                    }
+                }
+                cout << endl;
+            }
         } else {
-            ll d;
-            d = t / x;
-            ll ans;
-            if(n > d)
-                ans = (d-1)*d/2 + (n-d) * d;
-            else
-                ans = ((n-1)*n/2);
-            cout << ans << endl;
+            for(int i=0;i<n;i++){
+                for(int j=0;j<n;j++){
+                    if(i == 0 && j < 9) cout << 1;
+                    else if(n*i+j == t){
+                        cout << 1;
+                    } else {
+                        cout << 0;
+                    }
+                }
+                cout << endl;
+            }
         }
     }
 

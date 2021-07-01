@@ -75,28 +75,40 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<vector<int>> adj;
+vector<vector<int>> dis;
+
+void dfs(int cur, int par, int step){
+    dis[par][cur] = step;
+    for(auto i:adj[cur]){
+        if(dis[par][i] != -1){
+            dfs(i, par, step+1);
+        }
+    }
+}
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int k;
-    cin >> k;
-    while(k--){
-        ll n, x, t;
-        cin >> n >> x >> t;
-        if(x > t){
-            cout << 0 << endl;
-        } else {
-            ll d;
-            d = t / x;
-            ll ans;
-            if(n > d)
-                ans = (d-1)*d/2 + (n-d) * d;
-            else
-                ans = ((n-1)*n/2);
-            cout << ans << endl;
-        }
+    int n;
+    cin >> n;
+    adj.resize(n+1);
+    dis.resize(n+1, vector<int>(n+1, -1));
+    for(int i=0;i<n;i++){
+        int u, v;
+        cin >> u >> v;
+        adj[u].pb(v);
+        adj[v].pb(u);
     }
+    dis[1][1] = 0;
+    dfs(1, 1, 0);
+
+    f
+
+
+
+    
 
     return 0;
 }

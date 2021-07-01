@@ -79,22 +79,52 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 int main () {
     TIME(main);
     IOS();
-    int k;
-    cin >> k;
-    while(k--){
-        ll n, x, t;
-        cin >> n >> x >> t;
-        if(x > t){
-            cout << 0 << endl;
-        } else {
-            ll d;
-            d = t / x;
-            ll ans;
-            if(n > d)
-                ans = (d-1)*d/2 + (n-d) * d;
-            else
-                ans = ((n-1)*n/2);
-            cout << ans << endl;
+    int t;
+    cin >> t;
+    while(t--){
+        int n;
+        cin >> n;
+        vector<ll> a(n);
+        REP(i, n) cin >> a[i];
+        sort(ALL(a));      
+        ll delta = a[1] - a[0];
+        pii fr = {a[0], a[1]};
+        for(int i=2;i<n;i++){
+            debug(delta, fr);
+            ll tmp = a[i] - a[i-1];
+            if(tmp < delta){
+                fr = {a[i-1], a[i]};
+                delta = tmp;
+            }  
+        }
+        debug(fr);
+        vector<ll> b(n);
+        b[0] = fr.X;
+        b[n-1] = fr.Y;
+        int idx = 1;
+        int cnt = 2;
+        for(auto i:a){
+            if((cnt == 0) || (i != fr.X && i != fr.Y)){
+                b[idx++] = i;
+            } else {
+                cnt --;
+            }
+        }
+        
+        idx = lower_bound(b.begin()+1, b.end()-1, b[0]) - b.begin();
+       
+
+        vector<ll> ans(b);
+        debug(idx);
+        int idxx = 1;
+        for(int i=idx;i<n-1;i++){
+            ans[idxx++] = b[i];
+        }
+        for(int i=1;i<idx;i++){
+            ans[idxx++] = b[i];
+        }
+        REP(i, n){
+            cout << ans[i] << (i == n-1 ? "\n" : " ");
         }
     }
 

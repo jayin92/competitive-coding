@@ -296,3 +296,5 @@ TSWLatexianTemp*
 #*Notes.bib
 
 tmp.*
+
+*.in

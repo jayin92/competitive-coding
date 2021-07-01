@@ -75,27 +75,49 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+string f(int x){
+    return (x == 0 ? "Alice" : "Bob");
+}
+
+vector<bool> p(1e9+10, true);
+
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int k;
-    cin >> k;
-    while(k--){
-        ll n, x, t;
-        cin >> n >> x >> t;
-        if(x > t){
-            cout << 0 << endl;
-        } else {
-            ll d;
-            d = t / x;
-            ll ans;
-            if(n > d)
-                ans = (d-1)*d/2 + (n-d) * d;
-            else
-                ans = ((n-1)*n/2);
-            cout << ans << endl;
+    p[0] = false;
+    p[1] = false;
+    for(int i=2;i<1e9+10;i++){
+        if(i % 100000 == 0) debug(i);
+        if(p[i] == true){
+            for(int j=i*2;j<1e9+10;j+=i){
+                p[j] = false;
+            }
         }
+    }
+    vector<vector<int>> adj(1e9+10);
+    for(int i=2;i<1e9+10;i++){
+        debug(i);
+        for(int j=1;j+i<1e9+10;j++){
+            if(i+j % j == 0) adj[i].push_back(j);
+        }
+    }
+    for(int i=2;i<500;i++){
+        if(p[i]){
+            debug(adj[i]);
+        }
+    }
+    int t;
+    cin >> t;
+    while(t--){
+        ll n;
+        cin >> n;
+        if(n == 1){
+            cout << f(1) << endl;
+            continue;
+        }
+
     }
 
     return 0;
