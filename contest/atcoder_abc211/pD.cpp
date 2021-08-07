@@ -20,7 +20,7 @@ typedef pair<double,double> pdd;
 #define eb emplace_back
 #define X first
 #define Y second
-#ifdef tmd
+#ifdef jayinnn
 #define TIME(i) Timer i(#i)
 #define debug(...) do{\
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
@@ -75,18 +75,43 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-int n;
-int a[MAXN];
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    cin >> n;
-    REP(i, n) cin >> a[i];
+    int n, m;
+    cin >> n >> m;
+    queue<int> q;
+    vector<vector<int>> adj(n+1);
+    for(int i=0;i<m;i++){
+        int a, b;
+        cin >> a >> b;
+        adj[a].pb(b);
+        adj[b].pb(a);
+    }
+    vector<int> dis(n+1, -1);
+    vector<int> cnt(n+1, 0);
+    cnt[1] = 1;
+    dis[1] = 1;
+    q.push(1);
     
+    while(!q.empty()){
+        int cur = q.front();
+        q.pop();
+        for(auto i:adj[cur]){
+            if(dis[i] == -1){
+                dis[i] = dis[cur] + 1;
+                cnt[i] = cnt[cur];
+                cnt[i] %= MOD;
+                q.push(i);
+            } else if(dis[i] == dis[cur] + 1){
+                cnt[i] += cnt[cur];
+                cnt[i] %= MOD;
+            }
+        }
+    }
+    cout << cnt[n] % MOD << endl;
 
-    
 
     return 0;
 }
