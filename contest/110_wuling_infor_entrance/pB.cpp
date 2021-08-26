@@ -76,23 +76,66 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    int n, k;
-    cin >> n >> k;
-    if(k == 1){
-        int sz = to_string(n).size();
-        for(int i=sz;;i++){
-            string tmp = "";
-            for(int j=1;j<=9;j++){
-                tmp += '0' + j;
-            }
-            if(stoi(tmp) >= n){
-                cout << tmp << endl;
-                return;
+    string s;
+    cin >> s;
+    vector<int> a;
+    vector<int> cnt(14, 0);
+    int n = s.size();
+    for(int i=0;i<n;i++){
+        if(s[i] == '1'){
+            a.pb(10);
+            cnt[10]++;
+            i++;
+        } else if(s[i] == 'A'){
+            a.pb(1);
+            cnt[1] ++;
+        } else if(s[i] == 'J'){
+            a.pb(11);
+            cnt[11] ++;
+        } else if(s[i] == 'Q'){
+            a.pb(12);
+            cnt[12] ++;
+        } else if(s[i] == 'K'){
+            a.pb(13);
+            cnt[13] ++;
+        } else {
+            a.pb(s[i] - '0');
+            cnt[s[i] - '0']++;
+        }
+    }
+    sort(ALL(a));
+    debug(a);
+    bool flag = true;
+    for(int i=1;i<5;i++){
+        if(a[i-1] + 1 != a[i]){
+            flag = false;
+            break;
+        }
+    }
+    if(flag){
+        cout << "straight" << endl;
+        return;
+    }
+    flag = true;
+    for(int i=1;i<=13;i++){
+        if(cnt[i] == 3){
+            for(int j=1;j<=13;j++){
+                if(cnt[j] == 2){
+                    cout << "full house" << endl;
+                    return;
+                }
             }
         }
-    } else {
-        
     }
+    for(int i=1;i<=13;i++){
+        if(cnt[i] == 4){
+            cout << "quads" << endl;
+            return;
+        }
+    }
+
+    cout << "useless" << endl;
+    return;
 }
 
 /********** Good Luck :) **********/
@@ -101,7 +144,6 @@ int main () {
     IOS();
     int t;
     cin >> t;
-
     while(t--){
         solve();
     }

@@ -75,23 +75,100 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-void solve(){
-    int n, k;
-    cin >> n >> k;
-    if(k == 1){
-        int sz = to_string(n).size();
-        for(int i=sz;;i++){
-            string tmp = "";
-            for(int j=1;j<=9;j++){
-                tmp += '0' + j;
-            }
-            if(stoi(tmp) >= n){
-                cout << tmp << endl;
-                return;
+int n, m;
+int ans = 0;
+vector<vector<int>> g;
+queue<pii> pos;
+
+void fill(){
+    pii cur = pos.front();
+    pos.pop();
+    int hs, he;
+    int vs, ve;
+    hs = he = vs = ve = 0;
+    int x = cur.X;
+    int y = cur.Y;
+    for(int i=x;i>=0;i--){
+        if(g[i][y] == -2){
+            hs = i+1;
+            break;
+        }
+    }
+    for(int i=x;i<=n+1;i++){
+        if(g[i][y] == -2){
+            he = i-1;
+            break;
+        }
+    }
+    for(int i=y;i>=0;i--){
+        if(g[x][i] == -2){
+            vs = i+1;
+            break;
+        }
+    }
+    for(int i=y;i<=m+1;i++){
+        if(g[x][i] == -2){
+            ve = i-1;
+            break;
+        }
+    }
+    debug(x, y, vs, ve, hs, he);
+    int dv = (ve - vs + 1);
+    int dh = (he - hs + 1);
+    
+    if(g[x][vs + (dv - 1 - (y - vs))] == -1){
+        ans ++;
+        g[x][vs + (dv - 1 - (y - vs))] = g[x][y];
+        pos.push({x, vs + (dv - 1 - (y - vs))});
+    }
+    if(g[hs + (dh - 1 - (x - hs))][y] == -1){
+        ans ++;
+        g[hs + (dh - 1 - (x - hs))][y] =  g[x][y];
+        pos.push({hs + (dh - 1 - (x - hs)), y});
+    }    
+}
+
+void solve(int t){
+    cin >> n >> m;
+    ans = 0;
+    for(int i=0;i<=n;i++){
+        g[i][0] = -2;
+        g[i][m+1] = -2;
+    }
+    for(int j=0;j<=m;j++){
+        g[0][j] = g[n+1][j] = -2;
+    }
+
+    for(int i=0;i<n;i++){
+        string s;
+        cin >> s;
+        for(int j=0;j<m;j++){
+            if(s[j] == '.'){
+                g[i+1][j+1] = -1;
+            } else if(s[j] == '#'){
+                g[i+1][j+1] = -2;
+            } else {
+                g[i+1][j+1] = s[j] - 'A';
+                pos.push({i+1, j+1});
             }
         }
-    } else {
-        
+    }
+    cout << "Case #" << t + 1 << ": ";
+    while(!pos.empty()){
+        fill();
+    }
+    cout << ans << endl;
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(g[i][j] == -1){
+                cout << ".";
+            } else if(g[i][j] == -2){
+                cout << "#";
+            } else {
+                cout << (char)(g[i][j] + 'A');
+            }
+        }
+        cout << endl;
     }
 }
 
@@ -99,12 +176,15 @@ void solve(){
 int main () {
     TIME(main);
     IOS();
+    g.resize(1005, vector<int>(1005));
     int t;
     cin >> t;
-
-    while(t--){
-        solve();
+    REP(i, t){
+        solve(i);
     }
+    
+
+
 
     return 0;
 }

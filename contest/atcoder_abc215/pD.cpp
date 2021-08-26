@@ -68,43 +68,42 @@ public:
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
 
-const ll MOD = 1000000007;
+const ll MOD = 998244353;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-void solve(){
-    int n, k;
-    cin >> n >> k;
-    if(k == 1){
-        int sz = to_string(n).size();
-        for(int i=sz;;i++){
-            string tmp = "";
-            for(int j=1;j<=9;j++){
-                tmp += '0' + j;
-            }
-            if(stoi(tmp) >= n){
-                cout << tmp << endl;
-                return;
-            }
-        }
-    } else {
-        
-    }
+
+
+ll lcm(ll m, ll n) {
+    return m * n / (ll)__gcd(m, n);
 }
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-
-    while(t--){
-        solve();
+    int n, m;
+    cin >> n >> m;
+    set<int> t;
+    for(int i=1;i<=m;i++) t.insert(i);
+    int tmp;
+    for(int i=0;i<n;i++){
+        cin >> tmp;
+        for(auto j:t){
+            if(j != 1 && tmp % j == 0){
+                for(int k=j;k<=m;k+=j){
+                    t.erase(k);
+                }
+            }
+        }
     }
+
+    cout << t.size() << endl;
+    for(auto i:t) cout << i << endl;
+    
 
     return 0;
 }

@@ -75,24 +75,93 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-void solve(){
-    int n, k;
-    cin >> n >> k;
-    if(k == 1){
-        int sz = to_string(n).size();
-        for(int i=sz;;i++){
-            string tmp = "";
-            for(int j=1;j<=9;j++){
-                tmp += '0' + j;
-            }
-            if(stoi(tmp) >= n){
-                cout << tmp << endl;
-                return;
+pii d[4] = {
+    {-1, 0},
+    {1, 0},
+    {0, 1},
+    {0, -1}
+}; 
+// u, d, r, l
+
+int ops[4] = {1, 0, 3, 2};
+int order[4] = {1, 2, 0, 3};
+int ans;
+
+struct Dir{
+    bool u, d, r, l;
+};
+
+pii add(pii a, pii b){
+    pii res = {a.X + b.X, a.Y + b.Y};
+
+    return res;
+}
+
+pii mul(pii a, int s){
+    pii res = {s*a.X, s*a.Y};
+
+    return res;
+}
+
+vector<vector<vector<bool>>> tmp;
+
+void dfs(pii ori, pii cur, int idx, int step, int remain){
+    int x = cur.X;
+    int y = cur.Y;
+    // debug(cur);
+    
+    if(remain == 0){
+        if(ori == cur){
+            ans ++;
+            return;
+        }
+        idx ++;
+        remain = step;
+    }
+    if(tmp[x][y][order[idx]]){
+        dfs(ori, add(cur, d[order[idx]]), idx, step, remain - 1);
+    } else {
+        return;
+    }
+}
+
+void solve(int t){
+    int n, m;
+    cin >> n >> m;
+    char c;
+    int x, y;
+    vector<vector<vector<bool>>> g(n+2, vector<vector<bool>>(n+2, vector<bool>(4, false)));
+    for(int i=0;i<m;i++){
+        cin >> c >> x >> y;
+        if(c == 'H'){
+            g[x][y][2] = true;
+            g[x][y+1][3] = true;
+        } else {
+            swap(x, y);
+            g[x][y][1] = true;
+            g[x+1][y][0] = true;
+        }
+    }
+
+    cout << "Problem #" << t + 1 << endl;
+    bool flag = true;
+    for(int s=1;s<=n;s++){
+        ans = 0;
+        tmp = g;
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=n;j++){
+                dfs({i, j}, {i, j}, 0, s, s);
             }
         }
-    } else {
-        
+        if(ans != 0){
+            flag = false;
+            cout << "Size " << s << ":" << ans << endl;
+        }
     }
+    if(flag){
+        cout << "No squares" << endl;
+    }
+
 }
 
 /********** Good Luck :) **********/
@@ -101,9 +170,8 @@ int main () {
     IOS();
     int t;
     cin >> t;
-
-    while(t--){
-        solve();
+    REP(i, t){
+        solve(i);
     }
 
     return 0;

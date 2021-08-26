@@ -76,22 +76,28 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    int n, k;
-    cin >> n >> k;
-    if(k == 1){
-        int sz = to_string(n).size();
-        for(int i=sz;;i++){
-            string tmp = "";
-            for(int j=1;j<=9;j++){
-                tmp += '0' + j;
-            }
-            if(stoi(tmp) >= n){
-                cout << tmp << endl;
-                return;
-            }
+    int n;
+    cin >> n;
+    vector<int> a(n+1);
+    REP(i, n){
+        cin >> a[i+1];
+    }
+    for(int i=1;;i++){
+        debug(a);
+        if(is_sorted(ALL(a))){
+            cout << i-1 << endl;
+            return;
         }
-    } else {
-        
+        if(i & 1){
+            for(int j=1;j<=n-2;j+=2){
+                if(a[j] > a[j+1]) swap(a[j], a[j+1]);
+            }
+        } else {
+            for(int j=2;j<=n-1;j+=2){
+                if(a[j] > a[j+1]) swap(a[j], a[j+1]);
+            }
+            
+        }
     }
 }
 
@@ -101,7 +107,6 @@ int main () {
     IOS();
     int t;
     cin >> t;
-
     while(t--){
         solve();
     }

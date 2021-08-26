@@ -75,25 +75,64 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-void solve(){
-    int n, k;
-    cin >> n >> k;
-    if(k == 1){
-        int sz = to_string(n).size();
-        for(int i=sz;;i++){
-            string tmp = "";
-            for(int j=1;j<=9;j++){
-                tmp += '0' + j;
-            }
-            if(stoi(tmp) >= n){
-                cout << tmp << endl;
-                return;
+bool cmp(pii a, pii b){
+    return a.Y > b.Y;
+}
+
+bool check(string s, vector<char> ans){
+    int n = s.size();
+    for(int i=0;i<n;i++){
+        if(s[i] == ans[i]) return false;
+    }
+
+    return true;
+}
+
+void solve(int t){
+    string s;
+    cin >> s;
+    cout << "Case #" << t + 1 << ": ";
+    int n = s.size();
+    vector<char> ans(n);
+    vector<int> cnt(26, 0);
+    vector<vector<int>> idx(26);
+    vector<pii> cnt_(26);
+    for(int i=0;i<26;i++) cnt_[i] = {i, 0};
+    int tmp = 0;
+    for(auto i: s){
+        cnt[i - 'a'] ++;
+        cnt_[i - 'a'].Y ++;
+        idx[i - 'a'].pb(tmp++);
+    }
+    for(int i=0;i<26;i++){
+        if(n - cnt[i] < cnt[i]){
+            cout << "IMPOSSIBLE" << endl;
+            return;
+        }
+    }
+    sort(ALL(cnt_), cmp);
+    debug(cnt_);
+    for(int i=0;i<26;i++){
+        if(cnt_[i].Y == 0) break;
+        for(auto k: idx[cnt_[i].X]){
+            debug(ans, k);
+            for(int j=25;j>=0;j--){
+                if(cnt[cnt_[j].X] > 0 and cnt_[j].X != cnt_[i].X){
+                    ans[k] = (char)(cnt_[j].X + 'a');
+                    cnt[cnt_[j].X] --;
+                    break;
+                }
             }
         }
-    } else {
-        
     }
+
+    assert(check(s, ans));    
+
+    for(auto i: ans) cout << i;
+    cout << endl;
 }
+
+
 
 /********** Good Luck :) **********/
 int main () {
@@ -101,9 +140,8 @@ int main () {
     IOS();
     int t;
     cin >> t;
-
-    while(t--){
-        solve();
+    REP(i, t){
+        solve(i);
     }
 
     return 0;

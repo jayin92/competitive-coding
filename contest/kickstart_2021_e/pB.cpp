@@ -75,23 +75,41 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-void solve(){
-    int n, k;
-    cin >> n >> k;
+int min_dis(int x, int y, int r, int c){
+    int res = iNF;
+    res = min(res, x);
+    res = min(res, y);
+    res = min(res, abs(r - x));
+    res = min(res, abs(c - y));
+
+    return res;
+}
+
+void solve(int t){
+    int r, c, k;
+    cin >> r >> c >> k;
+    int r1, r2, c1, c2;
+    cin >> r1 >> c1 >> r2 >> c2;
+    cout << "Case #" << t + 1 << ": ";
     if(k == 1){
-        int sz = to_string(n).size();
-        for(int i=sz;;i++){
-            string tmp = "";
-            for(int j=1;j<=9;j++){
-                tmp += '0' + j;
-            }
-            if(stoi(tmp) >= n){
-                cout << tmp << endl;
-                return;
-            }
-        }
+        int dr = (r2 + 1 - r1);
+        int dc = (c2 + 1 - c1);
+        int circ = dr + dc;
+        circ *= 2;
+        if(r1 - 1 == 0) circ -= dc;
+        if(c1 - 1 == 0) circ -= dr;
+        if(r2 == r) circ -= dc;
+        if(c2 == c) circ -= dr;
+        int ans = iNF;        
+        ans = min(ans, min_dis(r1-1, c1-1, r, c));
+        ans = min(ans, min_dis(r1-1, c2, r, c));
+        ans = min(ans, min_dis(r2, c1-1, r, c));
+        ans = min(ans, min_dis(r2, c2, r, c));
+        ans += circ;
+        ans += 2 * dr * dc - dc - dr;
+        cout << ans << endl;
     } else {
-        
+        cout << -1 << endl;
     }
 }
 
@@ -101,9 +119,8 @@ int main () {
     IOS();
     int t;
     cin >> t;
-
-    while(t--){
-        solve();
+    REP(i, t){
+        solve(i);
     }
 
     return 0;

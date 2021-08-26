@@ -75,36 +75,20 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-void solve(){
-    int n, k;
-    cin >> n >> k;
-    if(k == 1){
-        int sz = to_string(n).size();
-        for(int i=sz;;i++){
-            string tmp = "";
-            for(int j=1;j<=9;j++){
-                tmp += '0' + j;
-            }
-            if(stoi(tmp) >= n){
-                cout << tmp << endl;
-                return;
-            }
-        }
-    } else {
-        
-    }
-}
-
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int t;
-    cin >> t;
-
-    while(t--){
-        solve();
+    string s;
+    int k;
+    cin >> s;
+    cin >> k;
+    sort(s.begin(), s.end());
+    k --;
+    while(k--){
+        next_permutation(s.begin(), s.end());
     }
+    cout << s << endl;
 
     return 0;
 }

@@ -75,24 +75,17 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-void solve(){
-    int n, k;
-    cin >> n >> k;
-    if(k == 1){
-        int sz = to_string(n).size();
-        for(int i=sz;;i++){
-            string tmp = "";
-            for(int j=1;j<=9;j++){
-                tmp += '0' + j;
-            }
-            if(stoi(tmp) >= n){
-                cout << tmp << endl;
-                return;
-            }
-        }
-    } else {
-        
-    }
+double eps = 1e-7;
+
+void solve(int t){
+    double ans;
+    ll n;
+    cin >> n;
+    
+
+
+    cout << "Case #" << t + 1 << ": ";
+    cout << fixed << setprecision(6) << ans << endl;
 }
 
 /********** Good Luck :) **********/
@@ -101,10 +94,12 @@ int main () {
     IOS();
     int t;
     cin >> t;
-
-    while(t--){
-        solve();
+    vector<double> dp(1e18+5);
+    dp[0] = 0;
+    dp[1] = 1;
+    dp[2] = 1.5;
+    REP(i, t){
+        solve(i);
     }
-
     return 0;
 }
