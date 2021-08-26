@@ -76,6 +76,26 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    REP(i, n) cin >> a[i];
+    if(n == 1){
+        cout << 0 << endl;
+        return;
+    }
+    vector<ll> cnt(32, 0);
+    for(int i=0;i<n;i++){
+        int clz = __builtin_clz(a[i]);
+        int di = 31 - clz;
+        debug(di);
+        cnt[di]++;
+    }
+    ll ans = 0;
+    for(int i=0;i<32;i++){
+        ans += cnt[i] * (cnt[i] - 1) / 2;
+    }
+    cout << ans << endl;
     
 }
 

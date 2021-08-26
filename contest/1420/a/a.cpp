@@ -76,7 +76,19 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for(int i=0;i<n;i++) cin >> a[i];
+    int tmp = a[0];
+    for(int i=1;i<n;i++){
+        if(a[i] >= tmp){
+            cout << "YES" << endl;
+            return;
+        }
+        tmp = a[i];
+    }
+    cout << "NO" << endl;
 }
 
 /********** Good Luck :) **********/
