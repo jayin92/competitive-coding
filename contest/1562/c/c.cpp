@@ -76,26 +76,29 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    int n, q;
-    cin >> n >> q;
-    vector<int> a(n);
-    REP(i, n){
-        cin >> a[i];
+    int n;
+    string s;
+    cin >> n;
+    cin >> s;
+    int sz = n / 2;
+    debug(sz);
+    for(int i=sz;i<n;i++){
+        if(s[i] == '0'){
+            cout << 1 << " " << i + 1 << " " << 1 << " " << i << endl;
+            return;
+        }
     }
-    vector<vector<vector<ll>>> dp(n, vector<vector<ll>>(2, vector<ll>(2, 0))); // index; take or not take; positive or negetive
-    dp[0][1][1] = a[0];
-    dp[0][1][0] = -1 * a[0];
-    dp[0][0][1] = dp[0][0][0] = 0;
-    for(int i=1;i<n;i++){
-        dp[i][0][1] = max(dp[i-1][1][1], dp[i-1][0][1]);
-        dp[i][0][0] = max(dp[i-1][1][0], dp[i-1][0][0]);
-        dp[i][1][1] = a[i] + max(dp[i-1][0][0], dp[i-1][1][0]);
-        dp[i][1][0] = -1 * a[i] + max(dp[i-1][0][1], dp[i-1][1][1]);
-    }   
-    ll ans = max(dp[n-1][0][1], dp[n-1][0][0]);
-    ans = max(ans, dp[n-1][1][0]);
-    ans = max(ans, dp[n-1][1][1]);
-    cout << ans << endl;
+    bool flag = true;
+    for(int i=0;i<sz;i++){
+        if(s[i] == '0'){
+            cout << i + 1 << " " << n << " " << i + 2 << " " << n << endl;
+            return;
+        }
+    }
+    if(flag){
+        debug("test");
+        cout << 1 << " " << sz << " " << 2 << " " << sz + 1 << endl;
+    }
 }
 
 /********** Good Luck :) **********/

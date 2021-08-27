@@ -75,27 +75,45 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+// 利用線段樹解決區間求和 & 單點修改
+#include <bits/stdc++.h>
+
+using namespace std;
+
+
 void solve(){
     int n, q;
     cin >> n >> q;
-    vector<int> a(n);
-    REP(i, n){
-        cin >> a[i];
+    string s;
+    cin >> s;
+    vector<int> a(n+1);
+    vector<int> pre(n+1);
+    pre[0] = 0;
+    for(int i=0;i<n;i++){
+        if(s[i] == '+'){
+            a[i+1] = 1;
+        } else {
+            a[i+1] = -1;
+        }   
     }
-    vector<vector<vector<ll>>> dp(n, vector<vector<ll>>(2, vector<ll>(2, 0))); // index; take or not take; positive or negetive
-    dp[0][1][1] = a[0];
-    dp[0][1][0] = -1 * a[0];
-    dp[0][0][1] = dp[0][0][0] = 0;
-    for(int i=1;i<n;i++){
-        dp[i][0][1] = max(dp[i-1][1][1], dp[i-1][0][1]);
-        dp[i][0][0] = max(dp[i-1][1][0], dp[i-1][0][0]);
-        dp[i][1][1] = a[i] + max(dp[i-1][0][0], dp[i-1][1][0]);
-        dp[i][1][0] = -1 * a[i] + max(dp[i-1][0][1], dp[i-1][1][1]);
-    }   
-    ll ans = max(dp[n-1][0][1], dp[n-1][0][0]);
-    ans = max(ans, dp[n-1][1][0]);
-    ans = max(ans, dp[n-1][1][1]);
-    cout << ans << endl;
+    for(int i=1;i<=n;i++){
+        if(i % 2 == 1) pre[i] = a[i] + pre[i-1];
+        else pre[i] = pre[i-1] - a[i];
+    }
+    debug(pre);
+    while(q--){
+        int l, r;
+        cin >> l >> r;
+        int tmp = pre[r] - pre[l-1];
+        debug(tmp);
+        if(abs(tmp) != 0 and abs(tmp) % 2 == 0){
+            cout << 2 << endl;
+        } else if(abs(tmp) % 2 == 1){
+            cout << 1 << endl;
+        } else {
+            cout << abs(tmp) << endl;            
+        }
+    }
 }
 
 /********** Good Luck :) **********/

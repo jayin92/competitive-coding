@@ -76,26 +76,7 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    int n, q;
-    cin >> n >> q;
-    vector<int> a(n);
-    REP(i, n){
-        cin >> a[i];
-    }
-    vector<vector<vector<ll>>> dp(n, vector<vector<ll>>(2, vector<ll>(2, 0))); // index; take or not take; positive or negetive
-    dp[0][1][1] = a[0];
-    dp[0][1][0] = -1 * a[0];
-    dp[0][0][1] = dp[0][0][0] = 0;
-    for(int i=1;i<n;i++){
-        dp[i][0][1] = max(dp[i-1][1][1], dp[i-1][0][1]);
-        dp[i][0][0] = max(dp[i-1][1][0], dp[i-1][0][0]);
-        dp[i][1][1] = a[i] + max(dp[i-1][0][0], dp[i-1][1][0]);
-        dp[i][1][0] = -1 * a[i] + max(dp[i-1][0][1], dp[i-1][1][1]);
-    }   
-    ll ans = max(dp[n-1][0][1], dp[n-1][0][0]);
-    ans = max(ans, dp[n-1][1][0]);
-    ans = max(ans, dp[n-1][1][1]);
-    cout << ans << endl;
+    
 }
 
 /********** Good Luck :) **********/

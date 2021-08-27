@@ -74,28 +74,35 @@ const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+vector<bool> np(1005, false);
 
 void solve(){
-    int n, q;
-    cin >> n >> q;
-    vector<int> a(n);
-    REP(i, n){
-        cin >> a[i];
+    int k;
+    cin >> k;
+    string s;
+    cin >> s;
+    for(int i=1;i<=1000;i++){
+        if(np[i] == false) continue;
+        debug(i);
+        int idx = 0;
+        string a = to_string(i);
+        int sz = a.size();
+        for(auto j:s){
+            if(idx == sz){
+                cout << sz << endl;
+                cout << a << endl;
+                return;
+            }       
+            if(j == a[idx]){
+                idx ++;
+            }
+        }
+        if(idx == sz){
+            cout << sz << endl;
+            cout << a << endl;
+            return;
+        }
     }
-    vector<vector<vector<ll>>> dp(n, vector<vector<ll>>(2, vector<ll>(2, 0))); // index; take or not take; positive or negetive
-    dp[0][1][1] = a[0];
-    dp[0][1][0] = -1 * a[0];
-    dp[0][0][1] = dp[0][0][0] = 0;
-    for(int i=1;i<n;i++){
-        dp[i][0][1] = max(dp[i-1][1][1], dp[i-1][0][1]);
-        dp[i][0][0] = max(dp[i-1][1][0], dp[i-1][0][0]);
-        dp[i][1][1] = a[i] + max(dp[i-1][0][0], dp[i-1][1][0]);
-        dp[i][1][0] = -1 * a[i] + max(dp[i-1][0][1], dp[i-1][1][1]);
-    }   
-    ll ans = max(dp[n-1][0][1], dp[n-1][0][0]);
-    ans = max(ans, dp[n-1][1][0]);
-    ans = max(ans, dp[n-1][1][1]);
-    cout << ans << endl;
 }
 
 /********** Good Luck :) **********/
@@ -104,6 +111,14 @@ int main () {
     IOS();
     int t;
     cin >> t;
+    np[1] = true;
+    for(int i=2;i<=1000;i++){
+        if(np[i] == false){
+            for(int j=2*i;j<=1000;j+=i){
+                np[j] = true;
+            }
+        }
+    }
     while(t--){
         solve();
     }
