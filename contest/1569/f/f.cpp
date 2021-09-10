@@ -68,55 +68,14 @@ public:
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
 
-const ll MOD = 998244353;
+const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 5005;
+const ll MAXN = 100005;
+
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-vector<vector<vector<ll>>> dp(MAXN, vector<vector<ll>>(MAXN, vector<ll>(2, 0)));
-vector<pii> a;
-vector<int> b;
-
-ll subset(int n, int sum, int occur, int ori){
-    if(sum == 0) return 1;
-    if(n == 0) return 0;
-    if(dp[sum][ori][occur] != 0) return dp[sum][ori][occur];
-    
-    if(b[n-1] > sum){
-        return dp[sum][ori][occur] = (subset(n-1, sum, occur, ori) % MOD);
-    }
-    if(b[n-1] == ori and occur == 0){
-        return dp[sum][ori][occur] = subset(n-1, sum, occur+1, ori) % MOD;        
-    } 
-    return dp[sum][ori][occur] = (subset(n-1, sum, occur, ori) + subset(n-1, sum-b[n-1], occur, ori)) % MOD;
-}
-
-
 void solve(){
-    int n;
-    cin >> n;
-    a.resize(n);
-    b.resize(n);
-    REP(i, n){
-        cin >> a[i].X;
-        a[i].Y = i;
-    }
-    REP(i, n){
-        cin >> b[i];
-    }
-    sort(ALL(a), greater<pii>());
-    ll ans = 0;
-    
-    for(int i=0;i<n;i++){
-        int ori = a[i].X;
-        for(int j=1;j<=max(0, ori-b[a[i].Y]);j++){            
-            ans += (subset(n, j, 0, ori)) % MOD;
-            ans %= MOD;
-            // debug(ans, j);
-        }
-    }
-    cout << ans % MOD << endl;
     
 }
 
@@ -125,8 +84,7 @@ int main () {
     TIME(main);
     IOS();
     int t;
-    // cin >> t;
-    t = 1;
+    cin >> t;
     while(t--){
         solve();
     }

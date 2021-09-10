@@ -68,65 +68,127 @@ public:
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0)
 #endif
 
-const ll MOD = 998244353;
+const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 5005;
+const ll MAXN = 1e6+5;
+
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
-vector<vector<vector<ll>>> dp(MAXN, vector<vector<ll>>(MAXN, vector<ll>(2, 0)));
-vector<pii> a;
-vector<int> b;
-
-ll subset(int n, int sum, int occur, int ori){
-    if(sum == 0) return 1;
-    if(n == 0) return 0;
-    if(dp[sum][ori][occur] != 0) return dp[sum][ori][occur];
-    
-    if(b[n-1] > sum){
-        return dp[sum][ori][occur] = (subset(n-1, sum, occur, ori) % MOD);
-    }
-    if(b[n-1] == ori and occur == 0){
-        return dp[sum][ori][occur] = subset(n-1, sum, occur+1, ori) % MOD;        
-    } 
-    return dp[sum][ori][occur] = (subset(n-1, sum, occur, ori) + subset(n-1, sum-b[n-1], occur, ori)) % MOD;
-}
-
+vector<bool> v(MAXN, false);
+vector<bool> h(MAXN, false);
 
 void solve(){
-    int n;
-    cin >> n;
-    a.resize(n);
-    b.resize(n);
+    int n, m, k;
+    cin >> n >> m >> k;
+    fill(ALL(v), false);
+    fill(ALL(h), false);
+    ll vv = 0;
+    ll hh = 0;
+    ll both = 0;
+    vector<pii> a(k);
+    vector<ll> cntv(MAXN, 0);
+    vector<ll> cnth(MAXN, 0);
+    vector<ll> cntvv(MAXN, 0);
+    vector<ll> cnthh(MAXN, 0);
+    vector<ll> xl(MAXN, 0);
+    vector<ll> xr(MAXN, 0);
+    vector<ll> yl(MAXN, 0);
+    vector<ll> yr(MAXN, 0);
+    int tmp;
     REP(i, n){
-        cin >> a[i].X;
-        a[i].Y = i;
+        cin >> tmp;
+        v[tmp] = true;
     }
-    REP(i, n){
-        cin >> b[i];
+    REP(i, m){
+        cin >> tmp;
+        h[tmp] = true;
     }
-    sort(ALL(a), greater<pii>());
-    ll ans = 0;
-    
-    for(int i=0;i<n;i++){
-        int ori = a[i].X;
-        for(int j=1;j<=max(0, ori-b[a[i].Y]);j++){            
-            ans += (subset(n, j, 0, ori)) % MOD;
-            ans %= MOD;
-            // debug(ans, j);
+    REP(i, k){
+        cin >> a[i].X >> a[i].Y;
+        debug(a[i]);
+        if(v[a[i].X]){
+            if(h[a[i].Y]){
+                both ++;
+            } else {
+                cntv[a[i].Y] ++;
+                cntvv[a[i].X]++;
+                vv++;
+            }
+        } else if(h[a[i].Y]){
+            cnth[a[i].X] ++;
+            cnthh[a[i].Y] ++;
+            hh++;
         }
     }
-    cout << ans % MOD << endl;
-    
+
+    ll ans = 0;
+    ans += both * (k - 1);
+    ans += vv * hh;
+    debug(both, vv, hh, ans);
+   
+    for(int i=0;i<=1e6;i++){
+       
+        if(i != 0){
+            xl[i] = xl[i-1] + cntv[i];
+            yl[i] = yl[i-1] + cnth[i];
+        } else {
+            xl[i] = cntv[i];
+            yl[i] = cnth[i];
+        }
+        
+    }
+    for(int i=1e6;i>=0;i--){
+        if(i != 1e6){
+            xr[i] = xr[i+1] + cntv[i];
+            yr[i] = yr[i+1] + cnth[i];
+        } else {
+            xr[i] = cntv[i];
+            yr[i] = cnth[i];
+        }
+        
+    }
+    for(int i=0;i<=10;i++){
+        debug(xl[i], xr[i], yl[i], yr[i], cntv[i], cnth[i]);
+    }
+    ll preh, prev;
+    preh = prev = 0;
+    for(int i=0;i<=1e6;i++){
+        if(h[i]){
+            debug(i, xl[i], xr[i]);
+            ans += (xl[i] - prev) * xr[i];
+            prev = xl[i];
+        }
+        if(v[i]){
+            debug(i, yl[i], yr[i]);
+            ans += (yl[i] - preh) * yr[i];
+            preh = yl[i];
+        }
+    }
+    for(int i=0;i<=1e6;i++){
+        if(v[i]){
+            ans -= cntvv[i] * (cntvv[i] - 1) / 2;
+        }
+        if(h[i]){
+            ans -= cnthh[i] * (cnthh[i] - 1) / 2;
+        }
+    }
+    debug(ans);
+    ans = ((k-1) * k / 2) - ans;
+
+    cout << ans << endl;
+
+
+
+
 }
+
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
     int t;
-    // cin >> t;
-    t = 1;
+    cin >> t;
     while(t--){
         solve();
     }

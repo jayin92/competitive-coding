@@ -71,62 +71,87 @@ public:
 const ll MOD = 998244353;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 5005;
+const ll MAXN = 200005;
+
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-vector<vector<vector<ll>>> dp(MAXN, vector<vector<ll>>(MAXN, vector<ll>(2, 0)));
-vector<pii> a;
-vector<int> b;
-
-ll subset(int n, int sum, int occur, int ori){
-    if(sum == 0) return 1;
-    if(n == 0) return 0;
-    if(dp[sum][ori][occur] != 0) return dp[sum][ori][occur];
-    
-    if(b[n-1] > sum){
-        return dp[sum][ori][occur] = (subset(n-1, sum, occur, ori) % MOD);
-    }
-    if(b[n-1] == ori and occur == 0){
-        return dp[sum][ori][occur] = subset(n-1, sum, occur+1, ori) % MOD;        
-    } 
-    return dp[sum][ori][occur] = (subset(n-1, sum, occur, ori) + subset(n-1, sum-b[n-1], occur, ori)) % MOD;
-}
-
+vector<ll> fac(MAXN, 0);
+vector<ll> inv(MAXN, 0);
+vector<ll> prei(MAXN, 0);
 
 void solve(){
     int n;
     cin >> n;
-    a.resize(n);
-    b.resize(n);
-    REP(i, n){
-        cin >> a[i].X;
-        a[i].Y = i;
+    vector<int> a(n);
+    REP(i, n) cin >> a[i];
+    if(n == 1){
+        cout << 1 << endl;
+        return;
     }
-    REP(i, n){
-        cin >> b[i];
-    }
-    sort(ALL(a), greater<pii>());
-    ll ans = 0;
-    
-    for(int i=0;i<n;i++){
-        int ori = a[i].X;
-        for(int j=1;j<=max(0, ori-b[a[i].Y]);j++){            
-            ans += (subset(n, j, 0, ori)) % MOD;
-            ans %= MOD;
-            // debug(ans, j);
+    int mx1 = a[0];
+    int cnt1 = 0;
+    for(int i=1;i<n;i++){
+        if(a[i] > mx1){
+            mx1 = a[i];
         }
     }
-    cout << ans % MOD << endl;
-    
+    for(int i=0;i<n;i++){
+        if(a[i] == mx1){
+            cnt1 ++;
+        }
+    }
+    debug(mx1, cnt1);
+    if(cnt1 >= 2){
+        cout << fac[n] << endl;
+        return;
+    }
+    int mx2 = 0;
+    int cnt = 0;
+    for(int i=0;i<n;i++){
+        if(a[i] > mx2 and a[i] < mx1){
+            mx2 = a[i];
+        }
+    }
+    for(int i=0;i<n;i++){
+        if(a[i] == mx2){
+            cnt ++;
+        }
+    }
+    if(mx1 - mx2 >= 2){
+        cout << 0 << endl;
+        return;
+    }
+    debug(mx2, cnt);
+
+    debug(cnt);
+    ll ans = ((fac[cnt+1] - fac[cnt]) * fac[n]);
+    debug(ans);
+    ans %= MOD;
+    ans *= prei[cnt+1];
+    ans %= MOD;
+    while(ans <= 0) ans += MOD;
+    ans %= MOD;
+    cout << ans << endl;
 }
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
+    fac[0] = fac[1] = 1;
+    inv[1] = inv[0] = 1;
+    prei[1] = prei[0] = 1;
+    for(int i=2;i<MAXN;i++){
+        fac[i] = fac[i-1] * i;
+        while(fac[i] <= 0) fac[i] += MOD;
+        fac[i] %= MOD;
+        inv[i] = MOD - (MOD / i * inv[MOD % i]) % MOD;
+        prei[i] = prei[i-1] * inv[i];
+        prei[i] %= MOD;
+    }
+   
     int t;
-    // cin >> t;
-    t = 1;
+    cin >> t;
     while(t--){
         solve();
     }
