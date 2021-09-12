@@ -82,11 +82,11 @@ void solve(int t){
     vector<vector<int>> ans(n, vector<int>(m, 1));
     cout << "Case #" << t+1 << ": ";
     if(n == 2 and m == 2){
-        ans[1][0] = ans[1][1] = 1;
         if(a <= 2 or b <= 2){
             cout << "Impossible" << endl;
             return;
         }
+        ans[1][0] = ans[1][1] = 1;
         ans[0][0] = a-2;
         ans[0][1] = b-2;
         cout << "Possible" << endl;
