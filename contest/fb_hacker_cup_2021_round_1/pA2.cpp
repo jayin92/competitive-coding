@@ -76,13 +76,13 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(int t){
-    int n;
+    ll n;
     cin >> n;
     string s;
     cin >> s;
     ll ans = 0;
     char pre = s[0];
-    int pre_idx = 0;
+    ll pre_idx = 0;
     for(int i=1;i<n;i++){
         if(s[i] == 'F'){
             continue;
