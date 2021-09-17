@@ -75,8 +75,92 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-void solve(int t){
-    cout << "Case #" << t+1 << ": ";
+
+struct V{
+    int a1, a2, y0;
+};
+
+
+struct H{
+    int x0, b1, b2;
+};
+
+bool inter(V v, H h){
+    int a1 = v.a1;
+    int a2 = v.a2;
+    int y0 = v.y0;
+    int b1 = h.b1;
+    int b2 = h.b2;
+    int x0 = h.x0;
+    return (b1 <= y0 and y0 <= b2) and (a1 <= x0 and x0 <= a2);
+}
+void solve(){
+    int n;
+    cin >> n;
+    vector<pii> a(2);
+    vector<pii> b(2);
+    int idx1, idx2;
+    idx1 = idx2 = 0;
+    for(int i=0;i<n;i++){
+        string s;
+        cin >> s;
+        for(int j=0;j<n;j++){
+            if(s[j] == '1'){
+                a[idx1++] = {i, j};
+            } else if(s[j] == '2'){
+                b[idx2++] = {i, j};
+            }
+        }
+    }
+    V va1, va2, vb1, vb2;
+    va1.a1 = a[0].X;
+    va1.a2 = a[1].X;
+    va1.y0 = a[0].Y;
+
+    va2.a1 = a[0].X;
+    va2.a2 = a[1].X;
+    va2.y0 = a[1].Y;
+
+    vb1.a1 = b[0].X;
+    vb1.a2 = b[1].X;
+    vb1.y0 = b[0].Y;
+
+    vb2.a1 = b[0].X;
+    vb2.a2 = b[1].X;
+    vb2.y0 = b[1].Y;
+    
+    H ha1, ha2, hb1, hb2;
+    ha1.b1 = min(a[0].Y, a[1].Y);
+    ha1.b2 = max(a[0].Y, a[1].Y);
+    ha1.x0 = a[0].X;
+
+    ha2.b1 = min(a[0].Y, a[1].Y);
+    ha2.b2 = max(a[0].Y, a[1].Y);
+    ha2.x0 = a[1].X;
+
+    hb1.b1 = min(b[0].Y, b[1].Y);
+    hb1.b2 = max(b[0].Y, b[1].Y);
+    hb1.x0 = b[0].X;
+
+    hb2.b1 = min(b[0].Y, b[1].Y);
+    hb2.b2 = max(b[0].Y, b[1].Y);
+    hb2.x0 = b[1].X;
+
+    bool flag = true;
+    flag |= inter(va1, hb1);
+    flag |= inter(va1, hb2);
+    flag |= inter(va2, hb1);
+    flag |= inter(va2, hb2);
+    flag |= inter(vb1, ha1);
+    flag |= inter(vb1, ha2);
+    flag |= inter(vb2, ha1);
+    flag |= inter(vb2, ha2);
+
+    if(flag){
+        cout << a[1].X - a[0].X + abs(a[1].Y - a[0].Y) + b[1].X - b[0].X + abs(b[1].Y - b[0].Y) + 2 << endl;
+    } else {
+        cout << -1 << endl;
+    }
 }
 
 /********** Good Luck :) **********/
@@ -85,8 +169,9 @@ int main () {
     IOS();
     int t;
     cin >> t;
-    REP(i, t){
-        solve(i);
+    while(t--){
+        solve();
     }
+
     return 0;
 }

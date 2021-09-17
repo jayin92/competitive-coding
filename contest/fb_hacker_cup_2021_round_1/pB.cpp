@@ -76,7 +76,48 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(int t){
-    cout << "Case #" << t + 1 << ": ";
+    int n, m, a, b;
+    cin >> n >> m >> a >> b;
+    // a: top-left to bottom-right, b: top-right to bottom-left;
+    vector<vector<int>> ans(n, vector<int>(m, 1));
+    cout << "Case #" << t+1 << ": ";
+    if(n == 2 and m == 2){
+        if(a <= 2 or b <= 2){
+            cout << "Impossible" << endl;
+            return;
+        }
+        ans[1][0] = ans[1][1] = 1;
+        ans[0][0] = a-2;
+        ans[0][1] = b-2;
+        cout << "Possible" << endl;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                cout << ans[i][j] << (j == m-1 ? "\n" : " ");
+            }
+        }
+        return;
+    }
+    int x = n + m - 3;
+    a -= x;
+    b -= x;
+    if(a <= 1 or b <= 1){
+        cout << "Impossible" << endl;
+        return;
+    }
+    debug(a, b);
+    ans[0][0] = a/2;
+    a -= a/2;
+    ans[n-1][m-1] = a;
+    ans[0][m-1] = b/2;
+    b -= b/2;
+    ans[n-1][0] = b;
+    cout << "Possible" << endl;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            cout << ans[i][j] << (j == m-1 ? "\n" : " ");
+        }
+    }
+
 }
 
 /********** Good Luck :) **********/
@@ -88,5 +129,10 @@ int main () {
     REP(i, t){
         solve(i);
     }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> a46edb86d12c9b0ec9c90553b5f02e2039cb2c55
     return 0;
 }
