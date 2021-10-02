@@ -76,28 +76,6 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    int n;
-    cin >> n;
-    ll sum = 0;
-    vector<ll> a(n);
-    for(int i=0;i<n;i++){
-        cin >> a[i];
-        sum += a[i];
-    }
-    sort(ALL(a));
-    int m;
-    cin >> m;
-    ll x, y;
-    for(int i=0;i<m;i++){
-        ll ans = 2e18;
-        cin >> x >> y;
-        int idx = lower_bound(ALL(a), x) - a.begin();
-        debug(idx, x);
-        if(idx > 0) ans = min(ans, (x - a[idx-1]) + max((ll)0, y - sum + a[idx-1]));
-        if(idx < n) ans = min(ans, max((ll)0, y - sum + a[idx]));
-        cout << ans << endl;
-
-    }
     
 }
 
@@ -106,8 +84,7 @@ int main () {
     TIME(main);
     IOS();
     int t;
-    // cin >> t;
-    t = 1;
+    cin >> t;
     while(t--){
         solve();
     }
