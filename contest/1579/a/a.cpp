@@ -75,22 +75,32 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+void solve(){
+    string s;
+    cin >> s;
+    int a, b, c;
+    a = b = c = 0;
+    for(auto i: s){
+        if(i == 'A') a ++;
+        else if(i == 'B') b ++;
+        else c++;
+    }
+    if(b == (a + c)){
+        cout << "YES" << endl;
+    } else {
+        cout << "NO" << endl;
+    }
+}
+
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int n;
-    cin >> n;
-    map<ll, ll> m;
-    for(int i=0;i<n;i++){
-        ll a, b;
-        cin >> a >> b;
-        m[b] += a;
+    int t;
+    cin >> t;
+    while(t--){
+        solve();
     }
-
-    auto it = m.end();
-    it --;
-    
 
     return 0;
 }
