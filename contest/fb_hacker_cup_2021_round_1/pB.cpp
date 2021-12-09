@@ -129,7 +129,10 @@ int main () {
     REP(i, t){
         solve(i);
     }
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> a46edb86d12c9b0ec9c90553b5f02e2039cb2c55
     return 0;
 }

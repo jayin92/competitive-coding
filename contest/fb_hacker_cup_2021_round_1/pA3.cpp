@@ -76,6 +76,7 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(int t){
+<<<<<<< HEAD
     int n;
     cin >> n;
     string s;
@@ -108,6 +109,9 @@ void solve(int t){
         }
     }
     
+=======
+    cout << "Case #" << t + 1 << ": ";
+>>>>>>> 804c1f2067dc4b0af712cd0b5dc7d1928adf4acc
 }
 
 /********** Good Luck :) **********/
@@ -119,7 +123,5 @@ int main () {
     REP(i, t){
         solve(i);
     }
- 
-
     return 0;
 }

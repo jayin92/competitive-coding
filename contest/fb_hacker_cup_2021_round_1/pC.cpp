@@ -88,6 +88,5 @@ int main () {
     REP(i, t){
         solve(i);
     }
-
     return 0;
 }
