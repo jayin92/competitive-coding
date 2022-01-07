@@ -76,7 +76,42 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(int t){
+<<<<<<< HEAD
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
+    vector<ll> pre_len(n, 0);
+    vector<ll> suf_len(n, 0);
+    pre_len[0] = 1;
+    suf_len[n-1] = 1;
+    ll cnt = 1;
+    cout << "Case #" << t+1 << ": ";
+    for(int i=1;i<n;i++){
+        if(s[i] == '.'){
+            pre_len[i] = cnt + 1;
+            cnt *= 2;
+        } else {
+            pre_len[i] = cnt + 1;
+            cnt ++;
+        }
+        pre_len[i] %= MOD;
+        cnt %= MOD;
+    }
+    ll cnt = 1;
+    for(int i=n-2;i>=0;i--){
+        if(s[i] == '.'){
+            suf_len[i] = cnt + 1;
+            cnt *= 2;
+        } else {
+            suf_len[i] = cnt + 1;
+            cnt ++;
+        }
+    }
+    
+=======
     cout << "Case #" << t + 1 << ": ";
+>>>>>>> 804c1f2067dc4b0af712cd0b5dc7d1928adf4acc
 }
 
 /********** Good Luck :) **********/
