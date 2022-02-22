@@ -15,16 +15,33 @@ void setstack(){
     setrlimit(RLIMIT_STACK ,&tmp);
 }
 
+bool is_number(string s){
+    return all_of(s.begin(), s.end(), ::isdigit);
+}
+
 void solve(){
-    
+    string s;
+    map<string, int> m;
+    while(getline(cin, s)){
+        if(s == "0") return;
+        stringstream ss;
+        ss << s;
+        string tmp;
+        int res
+        while(ss >> tmp){
+            if(tmp != "+"){
+                if(is_number(tmp)){
+
+                } else {
+
+                }
+            }
+
+    }
 }
 
 int main(){
-    #define name ""
-    #ifndef AXOLOTL
-    freopen(name".in", "r", stdin);
-    freopen(name".out", "w", stdout);
-    #endif
+    #define name "pG"
     static_assert(strlen(name));
     ios::sync_with_stdio(0);
     cin.tie(0), cout.tie(0);

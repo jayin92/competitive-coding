@@ -1,3 +1,4 @@
+
 // :19 <enter>
 #include <bits/stdc++.h>
 #include <sys/time.h>
@@ -19,91 +20,69 @@ int dx[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
 int dy[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
 
 vector<vector<bool>> a(105, vector<bool>(105));
-int ans = 0;
-int m, n;
 
+int n, m;
+int ans = 0;
 bool check(int i, int j){
-    if(i >= m || i < 0 || j >= n || j < 0) return false;
-    else return true;
+    if(i >= n || i < 0 || j >= m || j < 0) return false;
+    else return a[i][j];
 }
 
-void find_loop(pii start, pii cur, vector<pii> path){
-    // cerr << cur.X << " " << cur.Y << endl;
+void finder(pii start, pii cur, pii pre, vector<pii> path){
     if(a[cur.X][cur.Y] == 0 || a[start.X][start.Y] == 0) return;
-    if(path.size() > 0 && start == cur && a[start.X][start.Y] == 1) {
-        ans ++;
-        for(auto i: path){
-            a[i.X][i.Y] = 0;
-        }
-        a[start.X][start.Y] = 0;
-        return;
-    }
-    if(start != cur) path.push_back(cur);
-    for(int k=0;k<8;k++){
-        int nx = cur.X + dx[k];
-        int ny = cur.Y + dy[k];
-        if(check(nx, ny) && a[nx][ny] == 1){
-            bool flag = true;
+    if(start == cur){
+        if(path.size() >= 2){
+            ans ++;
+             // cout << endl;
             for(auto i: path){
-                if(i == make_pair(nx, ny)){
-                    flag = false;
-                    break;
-                }
+                // cout << i.X << " " << i.Y << endl;
+                a[i.X][i.Y] = 0;
             }
+            return;
+        } 
+    }
 
-            if(flag && make_pair(nx, ny) != start){
-                pii nxt = make_pair(nx, ny);
-                find_loop(start, nxt, path);
-            }
+    path.push_back(cur);
+    
+
+    for(int i=0;i<8;i++){
+        pii nxt = make_pair(cur.X + dx[i], cur.Y + dy[i]);
+        // cout << nxt.X << " " << nxt.Y << endl;
+        if(check(nxt.X, nxt.Y) && nxt != pre){
+            finder(start, nxt, cur, path);
+            // cout << nxt.X << " " << nxt.Y << endl;
         }
     }
 }
 
 void solve(){
-    cin >> m >> n;
+    cin >> n >> m;
     char tmp;
-    for(int i=0;i<m;i++){
-        for(int j=0;j<n;j++){
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
             cin >> tmp;
             if(tmp == '.') a[i][j] = 0;
             else a[i][j] = 1;
         }
     }
-    /*
-    for(int i=0;i<m;i++){
-        for(int j=0;j<n;j++){
-            cout << a[i][j];
-        }
-        cout << endl;
-    }
-    */
-    for(int i=0;i<m;i++){
-        for(int j=0;j<n;j++){
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
             if(a[i][j] == 1){
-                pii tmpp = make_pair(i, j);
                 vector<pii> path;
-                find_loop(tmpp, tmpp, path);
-            }
-            for(int ii=0;ii<m;ii++){
-                for(int jj=0;jj<n;jj++){
-                    // cout << a[ii][jj];
-                }
-                // cout << endl;
+                pii start = make_pair(i, j);
+                // cout << i << " " << j << endl;
+                finder(start, start, make_pair(-1, -1), path);
             }
         }
     }
 
     cout << ans << endl;
+
+            
 }
 
 int main(){
     #define name "pF"
-    /*
-    #ifndef AXOLOTL
-    freopen(name".in", "r", stdin);
-    freopen(name".out", "w", stdout);
-    #endif
-    */
     static_assert(strlen(name));
     ios::sync_with_stdio(0);
     cin.tie(0), cout.tie(0);
