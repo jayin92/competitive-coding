@@ -77,7 +77,20 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    
+    string s;
+    cin >> s;
+    stack<char> st;
+    for(auto i: s){
+        if(i == '<' && !st.empty()) st.pop();
+        else st.push(i);
+    }
+    string ans = "";
+    while(!st.empty()){
+        ans += st.top();
+        st.pop();
+    }
+    reverse(ALL(ans));
+    cout << ans << endl;
 }
 
 /********** Good Luck :) **********/
@@ -85,7 +98,7 @@ int main () {
     TIME(main);
     IOS();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--){
         solve();
     }

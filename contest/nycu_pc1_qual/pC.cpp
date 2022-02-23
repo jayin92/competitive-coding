@@ -77,7 +77,44 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    
+    int n;
+    cin >> n;
+    vector<bool> a(n);
+    char tmp;
+    for(int i=0;i<n;i++){
+        cin >> tmp;
+        if(tmp == ' ') cin >> tmp;
+        a[i] = (tmp == 'T');
+    }
+    stack<bool> st;
+    string s;
+    cin.ignore();
+    getline(cin, s);
+    int idx = 0;
+    for(auto i: s){
+        if(i == ' ') continue;
+        if('A' <= i && i <= 'Z'){
+            st.push(a[idx++]);
+        } else {
+            if(i == '-'){
+                bool cur = st.top();
+                st.pop();
+                st.push(!cur);
+            } else if(i == '*'){
+                bool x, y;
+                x = st.top(); st.pop();
+                y = st.top(); st.pop();
+                st.push(x && y);
+            } else if(i == '+'){
+                bool x, y;
+                x = st.top(); st.pop();
+                y = st.top(); st.pop();
+                st.push(x || y);
+            }
+        }
+    }
+    cout << (st.top() ? "T" : "F") << endl;
+    debug(st.size());
 }
 
 /********** Good Luck :) **********/
@@ -85,7 +122,7 @@ int main () {
     TIME(main);
     IOS();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--){
         solve();
     }

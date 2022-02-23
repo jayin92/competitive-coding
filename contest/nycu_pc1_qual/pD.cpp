@@ -77,7 +77,61 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    
+    int n;
+    string s;
+    cin >> n;
+    cin.ignore();
+    getline(cin, s);
+
+    stack<char> st;
+    bool flag = true;
+    for(int i=0;i<n;i++){
+        if(s[i] == '(' || s[i] == '[' || s[i] == '{') st.push(s[i]);
+        else if(s[i] == ')' || s[i] == ']' || s[i] == '}'){
+            if(s[i] == ')'){
+                if(st.empty()){
+                    cout << ") " << i << endl;
+                    flag = false;
+                    break; 
+                }
+                else if(!st.empty() and st.top() != '('){
+                    cout << ") " << i << endl;
+                    flag = false;
+                    break; 
+                } else {
+                    st.pop();
+                }
+            } else if(s[i] == ']'){
+                if(st.empty()){
+                    cout << "] " << i << endl;
+                    flag = false;
+                    break;
+                }
+                else if(!st.empty() and st.top() != '['){
+                    cout << "] " << i << endl;
+                    flag = false;
+                    break; 
+                } else {
+                    st.pop();
+                }
+            } else if(s[i] == '}'){
+                if(st.empty()){
+                    cout << "} " << i << endl;
+                    flag = false;
+                    break; 
+                }
+                else if(!st.empty() and st.top() != '{'){
+                    cout << "} " << i << endl;
+                    flag = false;
+                    break; 
+                } else {
+                    st.pop();
+                }
+            }
+        }
+        
+    }
+    if(flag) cout << "ok so far" << endl;
 }
 
 /********** Good Luck :) **********/
@@ -85,7 +139,7 @@ int main () {
     TIME(main);
     IOS();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--){
         solve();
     }

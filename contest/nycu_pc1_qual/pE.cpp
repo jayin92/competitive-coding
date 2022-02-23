@@ -72,12 +72,55 @@ public:
 const ll MOD = 1000000007;
 const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
-const ll MAXN = 100005;
+const ll MAXN = 2505;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+vector<int> par(MAXN);
+
+int find(int x){
+    if(par[x] == x) return x;
+    return par[x] = find(par[x]);
+}
+
+void merge(int x, int y){
+    int px = find(x);
+    int py = find(y);
+    if(px != py){
+        par[py] = px;
+        par[px] = px;
+    }
+}
+
 void solve(){
-    
+    int n;
+    cin >> n;
+    vector<bool> vis(n, false);
+    vector<vector<int>> a(n, vector<int>(n, 0));
+    priority_queue< pair<int, pii>, vector<pair<int, pii>>, greater<pair<int, pii>> > pq;
+    for(int i=0;i<n;i++){
+        par[i] = i;
+        for(int j=0;j<n;j++){
+            cin >> a[i][j];
+        }
+    }
+    for(int i=0;i<n;i++){
+        for(int j=i+1;j<n;j++){
+            pq.push(mp(a[i][j], mp(i, j)));
+        }
+    }
+    while(!pq.empty()){
+        auto tmp = pq.top();
+        pq.pop();
+        int x = tmp.Y.X;
+        int y = tmp.Y.Y;
+        debug(tmp.X, x, y);
+        if(find(x) == find(y)) continue;
+        else {
+            merge(x, y);
+            cout << x + 1 << " " << y + 1 << endl;
+        }
+    }
 }
 
 /********** Good Luck :) **********/
@@ -85,7 +128,7 @@ int main () {
     TIME(main);
     IOS();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--){
         solve();
     }

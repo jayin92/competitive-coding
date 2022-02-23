@@ -76,8 +76,35 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+inline bool check(char c){
+    return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
+}
+
 void solve(){
-    
+    string s;
+    while(getline(cin, s)){
+        int n = s.size();
+        for(int i=0;i<n-1;i++){
+            if(s[i] == '0' && (s[i+1] == 'X' || s[i+1] == 'x')){
+                string tmp = "";
+                tmp += s[i]; tmp += s[i+1];
+                for(int j=i+2;j<n;j++){
+                    if(check(s[j])){
+                        tmp += s[j];
+                    } else {
+                        break;
+                    }
+                }
+                stringstream ss;
+                if(tmp.size() > 2){
+                    long long x;
+                    ss << hex << tmp;
+                    ss >> x;
+                    cout << tmp << " " << x << endl;
+                }
+            }
+        }
+    }
 }
 
 /********** Good Luck :) **********/
@@ -85,7 +112,7 @@ int main () {
     TIME(main);
     IOS();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--){
         solve();
     }

@@ -76,16 +76,63 @@ const ll MAXN = 100005;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
+map<int, string> m;
+
+int cal(int sum, int x){
+    switch(x){
+        case 0:
+            sum += 4;
+            break;
+        case 1:
+            sum -= 4;
+            break;
+        case 2:
+            sum *= 4;
+            break;
+        case 3:
+            sum /= 4;
+            break;
+    }   
+
+    return sum;
+}
+
+char con[4] = {'+', '-', '*', '/'};
+
 void solve(){
-    
+    int n;
+    cin >> n;
+    if(m[n].size() == 0){
+        cout << "no solution" << endl;
+    } else {
+        for(int i=0;i<3;i++){
+            cout << "4 " << con[i] << " ";
+        }
+        cout << "4 = " << n << endl;
+    }
 }
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
+    for(int i=0;i<4;i++){
+        for(int j=0;j<4;j++){
+            for(int k=0;k<4;k++){
+                
+                int res = cal(4, i);
+                res = cal(res, j);
+                res = cal(res, k);
+                if(m[res].size() == 3) break;
+                m[res] += to_string(i);
+                m[res] += to_string(j);
+                m[res] += to_string(k);
+            }
+        }
+    }
     int t = 1;
     cin >> t;
+    
     while(t--){
         solve();
     }

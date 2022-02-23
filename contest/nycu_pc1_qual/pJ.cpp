@@ -77,7 +77,11 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    
+    string s;
+    getline(cin, s);
+    for(auto i: s){
+        
+    }
 }
 
 /********** Good Luck :) **********/

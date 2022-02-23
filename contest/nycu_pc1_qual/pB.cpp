@@ -77,16 +77,39 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    
+    int n;
+    cin >> n;
+    if(n == 0) exit(0);
+    string name, order;
+    map<string, vector<string>> m;
+    string tmp;
+    cin.ignore();
+    for(int i=0;i<n;i++){
+        getline(cin, tmp);
+        stringstream ss;
+        ss << tmp;
+        ss >> name;
+        while(ss >> order){
+            m[order].pb(name);
+        }
+    }
+
+    for(auto i: m){
+        cout << i.X << " ";
+        sort(ALL(i.Y));
+        for(auto j: i.Y) cout << j << " ";
+        cout << endl;
+    }
+
+    cout << endl;
 }
 
 /********** Good Luck :) **********/
 int main () {
     TIME(main);
     IOS();
-    int t = 1;
-    cin >> t;
-    while(t--){
+    // cin >> t;
+    while(true){
         solve();
     }
 
