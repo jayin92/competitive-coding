@@ -79,6 +79,8 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 void solve(){
     string s;
     getline(cin, s);
+    list<char> l;
+    auto it = l.begin();
     for(auto i: s){
         
     }
