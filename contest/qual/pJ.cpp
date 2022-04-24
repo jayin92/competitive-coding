@@ -80,7 +80,7 @@ void solve(){
     string s;
     getline(cin, s);
     list<char> l;
-    auto cur = l.begin();
+    auto it = l.begin();
     for(auto i: s){
         debug(*cur);
         // for(auto j: l){
