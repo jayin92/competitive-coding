@@ -77,11 +77,30 @@ const ll MAXN = 100005;
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 void solve(){
-    string s;
-    getline(cin, s);
-    for(auto i: s){
-        
+    ll n, p;
+    cin >> n >> p;
+    vector<vector<ll>> a(n, vector<ll>(p));
+    vector<ll> dis(n, 0);
+    vector<ll> mi(n, 0);
+    vector<ll> mx(n, 0);
+    vector<vector<ll>> dp(n, vector<ll>(2));
+    for(int i=0;i<n;i++){
+        cin >> mi[i];
+        mx[i] = mi[i];
+        for(int j=1;j<p;j++){
+            cin >> a[i][j];
+            mx[i] = max(mx[i], a[i][j]);
+            mi[i] = min(mi[i], a[i][j]);
+        }
+        dis[i] = mx[i] - mi[i];
     }
+    dp[0][0] = mx[0] + dis[0];
+    dp[0][1] = mi[0] + dis[0];
+    for(int i=1;i<n;i++){
+        dp[i][0] = min(abs(mi[i-1]-mx[i]) + dp[i-1][0], abs(mx[i-1]-mx[i]) + dp[i-1][1]) + dis[i];
+        dp[i][1] = min(abs(mi[i-1]-mi[i]) + dp[i-1][0], abs(mx[i-1]-mi[i]) + dp[i-1][1]) + dis[i];
+    }
+    cout << min(dp[n-1][0], dp[n-1][1]) << endl;
 }
 
 /********** Good Luck :) **********/
@@ -90,7 +109,8 @@ int main () {
     IOS();
     int t = 1;
     cin >> t;
-    while(t--){
+    for(int i=0;i<t;i++){
+        cout << "CASE #" << i+1 << ": ";
         solve();
     }
 
