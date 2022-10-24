@@ -27,6 +27,7 @@ void dijkstra(int src){
         pll edge = pq.top();
         pq.pop();
         ll u = edge.second;
+        cout << u << endl;
         for(auto i:w[u]){
             ll w = i.second;
             ll v = i.first;
@@ -52,16 +53,16 @@ int main () {
         w[a].pb(mp(b, tmp));
         w[b].pb(mp(a, tmp));
     }
-    dijkstra(1); // source = 1
+    dijkstra(0); // source = 1
     vector<int> ans;
     int cur;
-    if(d[n] != INF){ // if d[n] = INF, there is no shortest path from vertex 1 to vertex n
-        cur = n;
-        while(cur != 1){
+    if(d[n-1] != INF){ // if d[n] = INF, there is no shortest path from vertex 1 to vertex n
+        cur = n-1;
+        while(cur != 0){
             ans.push_back(cur);
             cur = parent[cur];
         }
-        ans.push_back(1);
+        ans.push_back(0);
         int sz = ans.size();
         for(int i=sz-1;i>=0;i--){
             cout << ans[i] << " ";
