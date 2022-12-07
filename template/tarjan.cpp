@@ -1,3 +1,4 @@
+// :80 <enter>
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
@@ -73,53 +74,77 @@ const ll INF = 0x3f3f3f3f3f3f3f3f;
 const int iNF = 0x3f3f3f3f;
 const ll MAXN = 100005;
 
-int main(){
-    IOS();
-    int n;
-    cin >> n;
-    vector<vector<int>> aa(n+1);
-    vector<int> d(n+1);
-    int x;
-    for(int i=1;i<=n;i++){
-        cin >> x;
-        aa[x].push_back(i);
-        d[i] = x;
-    }
-    if(aa[0].size() != 1){
-        cout << -1 << endl;
-        return 0;
-    }
-    set<int> s;
-    set<int> ss;
-    vector<pii> ans;
-    ans.reserve(n);
-    // queue<int> tmp;
-    s.insert(aa[0][0]);
-    for(int i=1;i<n;i++){
-        ss = s;
-        for(auto idx: aa[i]){
-            s.insert(idx);
-            int l, r;
-            auto it = upper_bound(ss.begin(), ss.end(), idx);
-            if(it == ss.begin()) l = *ss.rbegin();
-            else l = *prev(it);
-            if(it == ss.end()) r = *ss.begin();
-            else r = *it;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-            if(d[l] == i - 1){
-                ans.push_back({l, idx});
-            } else if(d[r] == i - 1){
-                ans.push_back({r, idx});
-            } else {
-                cout << -1 << endl;
-                return 0;
+int tt = 0;
+int n, m;
+
+vector<int> t;
+vector<int> low;
+vector<vector<int>> adj;
+vector<bool> isCV;
+vector<bool> vis;
+
+void tarjan(int cur, int parent){
+    int children = 0;
+
+    vis[cur] = true;
+
+    low[cur] = t[cur] = tt++;
+
+    for(auto i: adj[cur]){
+        if(!vis[i]){
+            children ++;
+            tarjan(i, cur);
+            low[cur] = min(low[cur], low[i]);
+
+            if(parent != -1 and low[i] >= t[cur]){
+                isCV[cur] = true;
             }
+        } else if(i != parent){
+            low[cur] = min(low[cur], t[i]);
         }
     }
-    
-    for(auto i: ans){
-        cout << i.first << " " << i.second << endl;
+
+    if(parent == -1 and children > 1){
+        isCV[cur] = true;
     }
+}
+
+void solve(){
+    cin >> n >> m;
+    adj.resize(n+1);
+    low.resize(n+1, 0);
+    t.resize(n+1, 0);
+    vis.resize(n+1, false);
+    isCV.resize(n+1, false);
+    int u, v;
+    for(int i=0;i<m;i++){
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    tarjan(1, -1);
+    vector<int> ans;
+    for(int i=1;i<=n;i++){
+        if(isCV[i]) ans.push_back(i);
+    }
+
+    int sz = ans.size();
+    cout << sz << endl;
+    for(int i=0;i<sz;i++){
+        cout << ans[i] << (i == sz-1 ? '\n' : ' ');
+    }
+    
+}
+
+/********** Good Luck :) **********/
+int main () {
+    TIME(main);
+    IOS();
+    solve();
 
     return 0;
 }
+
